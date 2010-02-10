@@ -1,0 +1,31 @@
+#Eclipse's specific
+.project
+.pydevproject
+.pydevproject.bak
+
+#buildout's specific
+.installed.cfg
+eggs/*
+bin/*
+develop-eggs/*
+parts/*
+downloads/*
+
+#egg's specific
+*.egg-info
+
+#defaults
+*.pyc
+*.pyo
+
+#coverage report
+src/test_a_khavr/coverage_report/*
+
+#sqlite3 db
+xscheduling.db
+
+#temp file
+tempfile
+src/xscheduling/local_settings.py
+#media
+src/xscheduling/site_media/*

@@ -1,0 +1,17 @@
+1.1 Dependencies
+~~~~~~~~~~~~~~~~~
+   Download all dependencies before proceeding to step 1, 
+   You will need the following programs:
+    - Python (2.5 or higher, 
+    but may work on earlier versions of Python)
+  - git,
+  - tar accepting "-j" option (any recent GNU tar),
+  - Postgres is in your PATH i.e. "/usr/local/pgsql/bin/" pg_config gets detected by python postgres lib. 
+
+1.2 Starting the Project
+~~~~~~~~~~~~~~~~~~~~~~~~
+  To start the project:
+  1. python ./bootstrap.py
+  2. ./bin/buildout
+  3. ./bin/site runserver
+  
