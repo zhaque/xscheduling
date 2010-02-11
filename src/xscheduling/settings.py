@@ -1,5 +1,8 @@
 # Django settings for xscheduling project.
 
+import os.path
+from django.conf import global_settings
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
