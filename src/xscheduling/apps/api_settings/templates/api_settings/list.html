@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<ul>
+ {% for api in apis %}
+    <li>
+   {% if api.enabled %}
+    <a href="">{% trans 'disable' %}</a>
+   {% else %}
+    <a href="">{% trans 'enable' %}</a>
+   {% endif %}
+    <dl>
+    <dt>{{ api.name|capfirst }}</dt>
+    <dd>uri: {{ api.uri }}</dd>
+    <dd>api key: {{ api.api_key }}</dd>
+    <dd>optional: {% if api.optional %}True{% else %}False{% endif %}</dd>
+    <dl>
+    </li>
+ {% endfor %}
+</ul>
+{% endblock %}

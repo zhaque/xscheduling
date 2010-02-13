@@ -1,5 +1,12 @@
 from django.views.generic.simple import direct_to_template
+from django.contrib.auth.decorators import login_required
+from django.utils.text import capfirst
+from django.utils.translation import ugettext as _
+from api_settings.models import Api
 
+@login_required
 def list_api(request):
   context_vars = dict()
-  return direct_to_template(request, template='api_settings/list_api.html', extra_context=context_vars)
+  context_vars['header'] = capfirst(_('user API list'))
+  context_vars['apis'] = Api.objects.filter(user=request.user)
+  return direct_to_template(request, template='api_settings/list.html', extra_context=context_vars)
