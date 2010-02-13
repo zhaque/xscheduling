@@ -1,0 +1,27 @@
+- model: api_settings.Api
+  pk: 1
+  fields:
+    name: Google
+    uri: http://ajax.googleapis.com/ajax/services/search/web
+    api_key: HJFGHFHFJHJGJHG3927382JHHHI48VY458TY4
+    user: 1
+    enabled: 1
+    optional: 0
+- model: api_settings.Api
+  pk: 2
+  fields:
+    name: Yahoo
+    uri: http://www.yahoo.com
+    api_key: C4NC40G45NCG84GN4X5MG4M
+    user: 1
+    enabled: 1
+    optional: 0
+- model: api_settings.Api
+  pk: 3
+  fields:
+    name: WorkflowMax
+    uri: http://www.workflowmax.com/
+    api_key: ceiofby4xf948fy4x58fy4nx9gxg45g
+    user: 1
+    enabled: 1
+    optional: 0

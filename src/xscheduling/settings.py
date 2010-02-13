@@ -87,4 +87,6 @@ INSTALLED_APPS = (
     'app_media',
     'south',
     'uni_form',
+    
+    'api_settings',
 )
