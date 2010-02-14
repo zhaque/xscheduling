@@ -4,4 +4,5 @@ urlpatterns = patterns('',
     url(r'^$', 'api_settings.views.list_api', name='api_settings-list'),
     url(r'^(?P<object_id>\d+)/enable/$', 'api_settings.views.enable_api', name='api_settings-enable'),
     url(r'^(?P<object_id>\d+)/disable/$', 'api_settings.views.disable_api', name='api_settings-disable'),
+    url(r'^(?P<object_id>\d+)/apikey/$', 'api_settings.views.set_apikey', name='api_settings-set-apikey'),
 )

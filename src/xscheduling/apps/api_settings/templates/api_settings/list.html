@@ -11,9 +11,9 @@ $(document).ready(function() {
   $("#api_{{ api.id }}>a").click(function(e){
     e.preventDefault();
     
-    $.post(this.href, function(json) {
-      eval('obj =' + json);
-      if (obj[0].fields.enabled) {
+    $.post(this.href, {}, function(json) {
+      var api = json[0];
+      if (api.fields.enabled) {
         $("#api_{{ api.id }}>a").html("{% trans 'disable' %}");
         $("#api_{{ api.id }}>a").attr("href", "{% url api_settings-disable api.id %}");
       }
@@ -23,6 +23,31 @@ $(document).ready(function() {
       }
     }, "json");
   });
+  
+  $("#apikey_{{ api.id }}").click(function(e){
+    if ($("#apikey_{{ api.id }}>span>input").html() != null) return;
+    var lApikey = $("#apikey_{{ api.id }}>span").html();
+    $("#apikey_{{ api.id }}>span").html('<input type="text" value="' + lApikey + '"/><a href="{% url api_settings-set-apikey api.id %}">{% trans 'save' %}</a>&nbsp;<a href="#">{% trans 'cancel' %}</a>');
+    $("#apikey_{{ api.id }}>span>a").click(function(em){
+      em.preventDefault();
+      var lNew_key = $("#apikey_{{ api.id }}>span>input").attr('value')
+      $.post(this.href, {apikey: lNew_key}, function(json) {
+        var api = json[0];
+        if (api.fields.api_key == lNew_key) {
+          $("#apikey_{{ api.id }}>span").html(lNew_key);
+        }
+        else {
+          $("#apikey_{{ api.id }}>span>a").html('{% trans 'failed, try again' %}');
+        }
+      }, "json");
+    });      
+    $("#apikey_{{ api.id }}>span>a+a").click(function(ex){
+      $("#apikey_{{ api.id }}>span").html(lApikey);
+      ex.stopPropagation()
+    });      
+  });
+
+
 {% endfor %}
  });
 </script>
@@ -40,7 +65,7 @@ $(document).ready(function() {
     <dl>
     <dt>{{ api.name|capfirst }}</dt>
     <dd>uri: {{ api.uri }}</dd>
-    <dd>api key: {{ api.api_key }}</dd>
+    <dd id="apikey_{{ api.id }}">api key: <span>{{ api.api_key }}</span></dd>
     <dd>optional: {% if api.optional %}True{% else %}False{% endif %}</dd>
     </dl>
     </li>
