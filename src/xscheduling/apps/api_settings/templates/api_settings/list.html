@@ -28,7 +28,7 @@ $(document).ready(function() {
     if ($("#apikey_{{ api.id }}>span>input").html() != null) return;
     var lApikey = $("#apikey_{{ api.id }}>span").html();
     $("#apikey_{{ api.id }}>span").html('<input type="text" value="' + lApikey + '"/><a href="{% url api_settings-set-apikey api.id %}">{% trans 'save' %}</a>&nbsp;<a href="#">{% trans 'cancel' %}</a>');
-    $("#apikey_{{ api.id }}>span>a").click(function(em){
+    $("#apikey_{{ api.id }}>span>a:first").click(function(em){
       em.preventDefault();
       var lNew_key = $("#apikey_{{ api.id }}>span>input").attr('value')
       $.post(this.href, {apikey: lNew_key}, function(json) {
