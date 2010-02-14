@@ -1,21 +1,48 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block scriptfiles %}
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript"> google.load("jquery", "1.3.2"); </script>
+<script language="javascript">
+$(document).ready(function() {
+
+{% for api in apis %}
+  $("#api_{{ api.id }}>a").click(function(e){
+    e.preventDefault();
+    
+    $.post(this.href, function(json) {
+      eval('obj =' + json);
+      if (obj[0].fields.enabled) {
+        $("#api_{{ api.id }}>a").html("{% trans 'disable' %}");
+        $("#api_{{ api.id }}>a").attr("href", "{% url api_settings-disable api.id %}");
+      }
+      else {
+        $("#api_{{ api.id }}>a").html("{% trans 'enable' %}");
+        $("#api_{{ api.id }}>a").attr("href", "{% url api_settings-enable api.id %}");
+      }
+    }, "json");
+  });
+{% endfor %}
+ });
+</script>
+{% endblock %}
+
 {% block content %}
 <ul>
  {% for api in apis %}
-    <li>
+    <li id="api_{{ api.id }}">
    {% if api.enabled %}
-    <a href="">{% trans 'disable' %}</a>
+    <a href="{% url api_settings-disable api.id %}">{% trans 'disable' %}</a>
    {% else %}
-    <a href="">{% trans 'enable' %}</a>
+    <a href="{% url api_settings-enable api.id %}">{% trans 'enable' %}</a>
    {% endif %}
     <dl>
     <dt>{{ api.name|capfirst }}</dt>
     <dd>uri: {{ api.uri }}</dd>
     <dd>api key: {{ api.api_key }}</dd>
     <dd>optional: {% if api.optional %}True{% else %}False{% endif %}</dd>
-    <dl>
+    </dl>
     </li>
  {% endfor %}
 </ul>
