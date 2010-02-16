@@ -12,6 +12,8 @@ install_requires = [
         'South==0.6.2',
         'django-extensions==0.4.1',
 
+        'Fabric',
+
         'django-uni-form',
         'app_media',
         'django-profiles',
