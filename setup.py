@@ -16,6 +16,7 @@ install_requires = [
         'app_media',
         'django-profiles',
         'django-registration',
+        'Djangorestmodel',
 ]
 
 extras_require = dict(
