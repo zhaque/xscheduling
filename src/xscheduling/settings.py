@@ -89,4 +89,5 @@ INSTALLED_APPS = (
     'uni_form',
     
     'api_settings',
+    'wmax_clients',
 )
