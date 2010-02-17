@@ -9,7 +9,7 @@
     <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ client.website }}</dd>
     <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ client.referral_source }}</dd>
     {% for contact in client.contacts %}
-    <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
+    <h2><a href="{% url workflowmax-contact contact.id %}">{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</a></h2>
       {% include 'workflowmax/block/contact.html' %}
     {% endfor %}
     {% for note in client.notes %}

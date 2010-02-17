@@ -8,7 +8,8 @@ from workflowmax.models import Client, Contact
 
 def list_clients(request):
   context_vars = dict()
-  context_vars['header'] = capfirst(_('client and contact list'))
+  context_vars['header'] = capfirst(_('client list'))
+  context_vars['clients'] = Client.client_objects.all()
   return direct_to_template(request, template='workflowmax/list.html', extra_context=context_vars)
 
 def get_client(request, object_id):
