@@ -36,6 +36,8 @@ class ClientManager(object):
   def all(self):
     response = rest_client.Client("").GET("http://api.workflowmax.com/client.api/list?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA") 
     soup = BeautifulStoneSoup(response.content)
+    if soup.status and soup.status.contents[0].lower() == 'error':
+      raise ResponseStatusError(soup.errordescription.contents[0])
     objects = list()
     for client_xml in soup.clients.contents:
       objects.append(globals()[self.model](xml=str(client_xml)))
