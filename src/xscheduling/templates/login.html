@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% filter capfirst %}{% trans 'login' %}{% endfilter %}{% endblock %}
+{% block stylefiles %}
+  <link href="{{ MEDIA_URL }}login.css" rel="stylesheet" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block lang %}{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+
+<h1>{% filter capfirst %}{% trans 'login' %}{% endfilter %}</h1>
+
+<form method="post" action="?next={{ next|default:"/" }}">
+{% if form.errors %}
+<p class="error">{% trans 'Please correct the errors below' %}:</p>
+{% endif %}
+<dl>
+<dt><label for="id_username">{{ form.username.label_tag }}:</label>{% if form.username.errors %} <span class="error">{{ form.username.errors|join:", " }}</span>{% endif %}</dt>
+<dd>{{ form.username }}</dd>
+<dt><label for="id_password">{{ form.password.label_tag }}:</label>{% if form.password.errors %} <span class="error">{{ form.password.errors|join:", " }}</span>{% endif %}</dt>
+<dd>{{ form.password }}</dd>
+<dt><input type="submit" value="{% filter capfirst %}{% trans 'login' %}{% endfilter %}" /></dt>
+</dl>
+<p class="comment">{% url auth_password_reset as resetpass_url %}{% blocktrans %}If you forgot password, and know email, you can <a href="{{ resetpass_url }}">reset password</a>.{% endblocktrans %}</p>
+</form>
+
+{% endblock %}

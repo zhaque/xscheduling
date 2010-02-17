@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if client %}
+  {% include 'workflowmax/block/client.html' %}
+{% endif %}
+{% if contact %}
+  {% include 'workflowmax/block/contact.html' %}
+{% endif %}
+{% endblock %}

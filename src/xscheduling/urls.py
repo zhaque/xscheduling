@@ -5,5 +5,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}, name='logout'),
     url(r'^api-settings/', include('api_settings.urls')),
+    url(r'^workflowmax/', include('workflowmax.urls')),
 )

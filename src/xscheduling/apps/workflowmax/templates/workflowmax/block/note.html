@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if note %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'title' %}{% endfilter %}</dt><dd>{{ note.title }}</dd>
+    <dt>{% filter capfirst %}{% trans 'text' %}{% endfilter %}</dt><dd>{{ note.text }}</dd>
+    <dt>{% filter capfirst %}{% trans 'folder' %}{% endfilter %}</dt><dd>{{ note.folder }}</dd>
+    <dt>{% filter capfirst %}{% trans 'date' %}{% endfilter %}</dt><dd>{{ note.date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'created_by' %}{% endfilter %}</dt><dd>{{ note.created_by }}</dd>
+  </dl>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

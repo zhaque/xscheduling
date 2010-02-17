@@ -1,0 +1,22 @@
+{% load i18n %}
+{% if client %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</dt><dd>{{ client.address }}</dd>
+    <dt>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %}</dt><dd>{{ client.postal_address }}</dd>
+    <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ client.phone }}</dd>
+    <dt>{% filter capfirst %}{% trans 'fax' %}{% endfilter %}</dt><dd>{{ client.fax }}</dd>
+    <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ client.website }}</dd>
+    <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ client.referral_source }}</dd>
+    {% for contact in client.contacts %}
+    <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
+      {% include 'workflowmax/block/contact.html' %}
+    {% endfor %}
+    {% for note in client.notes %}
+    <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
+      {% include 'workflowmax/block/note.html' %}
+    {% endfor %}
+  </dl>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}
