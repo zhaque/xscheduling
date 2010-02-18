@@ -88,15 +88,14 @@ class Client(object):
   put = "http://api.workflowmax.com/client.api/update?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
   post = "http://api.workflowmax.com/client.api/add?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
 
-  def __init__(self, xml_client=None):
-    if not xml_client: return
-    if not isinstance(xml_client, xml_models.Model):
-      raise InvalidObjectType('object is not child of xml_models.Model')
+  def __init__(self, xml_client=None, xml=None):
     self.xml_client = xml_client
+    if xml_client and not isinstance(xml_client, xml_models.Model):
+      raise InvalidObjectType('object is not child of xml_models.Model')
+    if xml:
+      self.xml_client = XmlClient(xml=xml)
 
   def __getattr__(self, name):
-    if not hasattr(self, 'xml_client'):
-      raise AttributeError()
     return getattr(self.xml_client, name)
 
 #  def __setattr__(self, name, value):
@@ -173,7 +172,7 @@ class Client(object):
     
     try:
       if self.referral_source:
-        referral_source_tag = Tag(soup, 'ReferralSourcee')
+        referral_source_tag = Tag(soup, 'ReferralSource')
         referral_source_tag.insert(0, NavigableString(self.referral_source))
         client_tag.insert(i, referral_source_tag)
     except AttributeError:
@@ -183,7 +182,7 @@ class Client(object):
       response = rest_client.Client("").PUT(self.put, str(soup))
     else:
       response = rest_client.Client("").POST(self.post, str(soup))
-    return response.content
+    return Client(xml=response.content)
 
   def to_dict(self):
     d = dict()
