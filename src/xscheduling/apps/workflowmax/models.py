@@ -179,10 +179,19 @@ class Client(object):
     except AttributeError:
       pass
 
-    print soup
     if method == "PUT":
       response = rest_client.Client("").PUT(self.put, str(soup))
     else:
       response = rest_client.Client("").POST(self.post, str(soup))
     return response.content
 
+  def to_dict(self):
+    d = dict()
+    d['name'] = self.name
+    d['address'] = self.address
+    d['postal_address'] = self.postal_address
+    d['phone'] = self.phone
+    d['fax'] = self.fax
+    d['website'] = self.website
+    d['referral_source'] = self.referral_source
+    return d
