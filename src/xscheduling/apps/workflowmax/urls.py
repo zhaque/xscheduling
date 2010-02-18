@@ -5,5 +5,7 @@ urlpatterns = patterns('',
     url(r'^client/add/$', 'workflowmax.views.add_client', name='workflowmax-client-add'),
     url(r'^client/(?P<object_id>\d+)/$', 'workflowmax.views.get_client', name='workflowmax-client'),
     url(r'^client/(?P<object_id>\d+)/edit/$', 'workflowmax.views.edit_client', name='workflowmax-client-edit'),
+    url(r'^client/(?P<object_id>\d+)/contact/add/$', 'workflowmax.views.add_contact', name='workflowmax-contact-add'),
     url(r'^contact/(?P<object_id>\d+)/$', 'workflowmax.views.get_contact', name='workflowmax-contact'),
+    url(r'^contact/(?P<object_id>\d+)/edit/$', 'workflowmax.views.edit_contact', name='workflowmax-contact-edit'),
 )

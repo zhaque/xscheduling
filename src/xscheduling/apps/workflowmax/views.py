@@ -5,7 +5,7 @@ from django.utils.text import capfirst
 from django.utils.translation import ugettext as _
 from django.views.generic.simple import direct_to_template
 from workflowmax.models import Client, Contact
-from workflowmax.forms import ClientForm
+from workflowmax.forms import ClientForm, ContactForm
 from uni_form.helpers import FormHelper, Submit, Reset
 
 def list_clients(request):
@@ -89,3 +89,63 @@ def add_client(request):
       return HttpResponseRedirect(reverse('workflowmax-client', args=[client.id]))
   
   return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+
+def add_contact(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('workflowmax-list'))
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('add new contact for client %d') % object_id)
+  form = ContactForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  if request.method == "POST":
+    form = ContactForm(request.POST, request.FILES)
+    if form.is_valid():
+      contact = Contact()
+      contact.client_id = object_id
+      contact.name = form.cleaned_data['name']
+      contact.mobile = form.cleaned_data['mobile']
+      contact.email = form.cleaned_data['email']
+      contact.phone = form.cleaned_data['phone']
+      contact.position = form.cleaned_data['position']
+      contact = contact.save()
+      return HttpResponseRedirect(reverse('workflowmax-client', args=[object_id]))
+  
+  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+
+def edit_contact(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('workflowmax-list'))
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('edit contact %d') % object_id)
+  contact = Contact.objects.get(id=object_id)
+  form = ContactForm(contact.to_dict())
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  if request.method == "POST":
+    form = ContactForm(request.POST, request.FILES)
+    if form.is_valid():
+      contact.name = form.cleaned_data['name']
+      contact.mobile = form.cleaned_data['mobile']
+      contact.email = form.cleaned_data['email']
+      contact.phone = form.cleaned_data['phone']
+      contact.position = form.cleaned_data['position']
+      contact.save()
+      return HttpResponseRedirect(reverse('workflowmax-contact', args=[contact.id]))
+  
+  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+
+
+

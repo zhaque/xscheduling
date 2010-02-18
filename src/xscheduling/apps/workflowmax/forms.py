@@ -15,3 +15,11 @@ class ClientForm(forms.Form):
 #  contacts = xml_models.Collection(Contact, order_by="name", xpath="/client/contacts/contact")
 #  notes = xml_models.Collection(Note, order_by="title", xpath="/client/notes/note")
 
+class ContactForm(forms.Form):
+  name = forms.CharField(label = capfirst(_('name')))
+  mobile = forms.CharField(label = capfirst(_('mobile')), required=False)
+  email = forms.CharField(label = capfirst(_('email')), required=False)
+  phone = forms.CharField(label = capfirst(_('phone')), required=False)
+  position = forms.CharField(label = capfirst(_('position')), required=False)
+
+

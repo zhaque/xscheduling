@@ -11,7 +11,7 @@ class InvalidObjectType(Exception):
     def __init__(self, error):
         Exception.__init__(self, "InvalidObjectType: %s" % error)
 
-class Contact(xml_models.Model):
+class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
   name = xml_models.CharField(xpath="/contact/name")
   mobile = xml_models.CharField(xpath="/contact/mobile")
@@ -26,6 +26,110 @@ class Contact(xml_models.Model):
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
     self._xml = str(soup.contact)
+
+class ContactManager(object):
+  def get(self, **kw):
+    return Contact(XmlContact.objects.get(**kw))
+
+class Contact(object):
+  objects = ContactManager()
+  put = "http://api.workflowmax.com/client.api/contact/%s?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
+  post = "http://api.workflowmax.com/client.api/contact?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
+
+  def __init__(self, xml_contact=None, xml=None):
+    self.xml_contact = xml_contact
+    if xml_contact and not isinstance(xml_contact, xml_models.Model):
+      raise InvalidObjectType('object is not child of xml_models.Model')
+    if xml:
+      self.xml_contact = XmlContact(xml=xml)
+
+  def __getattr__(self, name):
+    return getattr(self.xml_contact, name)
+
+  def save(self):
+    soup = BeautifulSoup()
+    contact_tag = Tag(soup, 'Contact')
+    soup.insert(0, contact_tag)
+    i = 0
+    method = "PUT"
+
+    try:
+      id_tag = Tag(soup, 'ID')
+      id_tag.insert(0, NavigableString('%d' % self.id))
+      contact_tag.insert(i, id_tag)
+      i = i+1
+    except AttributeError:
+      pass
+
+    try:
+      client_tag = Tag(soup, 'Client')
+      client_id_tag = Tag(soup, 'ID')
+      client_id_tag.insert(0, NavigableString('%d' % self.client_id))
+      client_tag.insert(0, client_id_tag)
+      contact_tag.insert(i, client_tag)
+      i = i+1
+      method = "POST"
+    except AttributeError:
+      pass
+    
+    try:
+      name_tag = Tag(soup, 'Name')
+      name_tag.insert(0, NavigableString(self.name))
+      contact_tag.insert(i, name_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide client's name.")  
+    
+    try:
+      if self.mobile:
+        mobile_tag = Tag(soup, 'Mobile')
+        mobile_tag.insert(0, NavigableString(self.mobile))
+        contact_tag.insert(i, mobile_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    try:
+      if self.email:
+        email_tag = Tag(soup, 'Email')
+        email_tag.insert(0, NavigableString(self.email))
+        contact_tag.insert(i, email_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    try:
+      if self.phone:
+        phone_tag = Tag(soup, 'Phone')
+        phone_tag.insert(0, NavigableString(self.phone))
+        contact_tag.insert(i, phone_tag)
+        i = i+1
+    except AttributeError:
+      pass
+
+    try:
+      if self.position:
+        position_tag = Tag(soup, 'Position')
+        position_tag.insert(0, NavigableString(self.position))
+        contact_tag.insert(i, position_tag)
+        i = i+1
+    except AttributeError:
+      pass
+
+    if method == "PUT":
+      response = rest_client.Client("").PUT(self.put % self.id, str(soup))
+    else:
+      response = rest_client.Client("").POST(self.post, str(soup))
+    return Contact(xml=response.content)
+
+  def to_dict(self):
+    d = dict()
+    d['name'] = self.name
+    d['mobile'] = self.mobile
+    d['email'] = self.email
+    d['phone'] = self.phone
+    d['position'] = self.position
+    return d
 
 class Note(xml_models.Model):
   title = xml_models.CharField(xpath="/note/title")
@@ -77,9 +181,6 @@ class ClientManager(object):
       res.append(Client(xml_client))
     return res
 
-  def filter(self, **kw):
-    return XmlClient.objects.filter(**kw)
-
   def get(self, **kw):
     return Client(XmlClient.objects.get(**kw))
 
@@ -98,10 +199,6 @@ class Client(object):
   def __getattr__(self, name):
     return getattr(self.xml_client, name)
 
-#  def __setattr__(self, name, value):
-#    if name == 'id':
-#      raise AttributeError('You cannot set ID manually')
-  
   def save(self):
     soup = BeautifulSoup()
     client_tag = Tag(soup, 'Client')

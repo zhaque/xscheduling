@@ -17,6 +17,7 @@
       {% include 'workflowmax/block/note.html' %}
     {% endfor %}
   </dl>
+  <a href="{% url workflowmax-contact-add client.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
   <a href="{% url workflowmax-client-edit client.id %}">{% filter capfirst %}{% trans 'edit client' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
