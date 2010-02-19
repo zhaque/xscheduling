@@ -2,6 +2,7 @@ from django.db import models
 import xml_models
 import rest_client
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableString
+from django.conf import settings
 
 class ResponseStatusError(Exception):
     def __init__(self, error):
@@ -19,7 +20,7 @@ class XmlContact(xml_models.Model):
   phone = xml_models.CharField(xpath="/contact/phone")
   position = xml_models.CharField(xpath="/contact/position")
   
-  finders = { (id,): "http://api.workflowmax.com/client.api/contact/%s?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"} 
+  finders = { (id,): "http://api.workflowmax.com/client.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)} 
 
   def validate_on_load(self):
     soup = BeautifulStoneSoup(self._xml)
@@ -33,8 +34,8 @@ class ContactManager(object):
 
 class Contact(object):
   objects = ContactManager()
-  put = "http://api.workflowmax.com/client.api/contact/%s?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
-  post = "http://api.workflowmax.com/client.api/contact?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
+  put = "http://api.workflowmax.com/client.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  post = "http://api.workflowmax.com/client.api/contact?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_contact=None, xml=None):
     self.xml_contact = xml_contact
@@ -139,9 +140,8 @@ class Note(xml_models.Model):
   created_by = xml_models.CharField(xpath="/note/createdBy")
 
 class XmlClientManager(object):
-
   def all(self):
-    response = rest_client.Client("").GET("http://api.workflowmax.com/client.api/list?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA") 
+    response = rest_client.Client("").GET("http://api.workflowmax.com/client.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)) 
     soup = BeautifulStoneSoup(response.content)
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
@@ -162,7 +162,7 @@ class XmlClient(xml_models.Model):
   contacts = xml_models.Collection(Contact, order_by="name", xpath="/client/contacts/contact")
   notes = xml_models.Collection(Note, order_by="title", xpath="/client/notes/note")
 
-  finders = { (id,): "http://api.workflowmax.com/client.api/get/%s?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"}
+  finders = { (id,): "http://api.workflowmax.com/client.api/get/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)}
   
   client_objects = XmlClientManager()
 
@@ -186,8 +186,8 @@ class ClientManager(object):
 
 class Client(object):
   objects = ClientManager()
-  put = "http://api.workflowmax.com/client.api/update?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
-  post = "http://api.workflowmax.com/client.api/add?apiKey=14C10292983D48CE86E1AA1FE0F8DDFE&accountKey=F44B9DB0ED704D7AB0A6AA2AC09CB3EA"
+  put = "http://api.workflowmax.com/client.api/update?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  post = "http://api.workflowmax.com/client.api/add?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_client=None, xml=None):
     self.xml_client = xml_client
