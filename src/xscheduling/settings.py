@@ -92,6 +92,7 @@ INSTALLED_APPS = (
     
     'api_settings',
     'workflowmax',
+    'schedule',
 )
 
 LOGIN_URL = '/login/'

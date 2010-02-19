@@ -12,33 +12,33 @@ def list_clients(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('client list'))
   context_vars['clients'] = Client.objects.all()
-  return direct_to_template(request, template='workflowmax/list.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
 
 def get_client(request, object_id):
   try:
     object_id = int(object_id)
   except ValueError:
-    return HttpResponseRedirect(reverse('workflowmax-list'))
+    return HttpResponseRedirect(reverse('schedule-list'))
   context_vars = dict()
   context_vars['header'] = '%s %d' % (capfirst(_('client')), object_id)
   context_vars['client'] = Client.objects.get(id=object_id)
-  return direct_to_template(request, template='workflowmax/view.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
 
 def get_contact(request, object_id):
   try:
     object_id = int(object_id)
   except ValueError:
-    return HttpResponseRedirect(reverse('workflowmax-list'))
+    return HttpResponseRedirect(reverse('schedule-list'))
   context_vars = dict()
   context_vars['header'] = '%s %d' % (capfirst(_('contact')), object_id)
   context_vars['contact'] = Contact.objects.get(id=object_id)
-  return direct_to_template(request, template='workflowmax/view.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
 
 def edit_client(request, object_id):
   try:
     object_id = int(object_id)
   except ValueError:
-    return HttpResponseRedirect(reverse('workflowmax-list'))
+    return HttpResponseRedirect(reverse('schedule-list'))
   context_vars = dict()
   context_vars['header'] = '%s %d' % (capfirst(_('client')), object_id)
   client = Client.objects.get(id=object_id)
@@ -60,9 +60,9 @@ def edit_client(request, object_id):
       client.website = form.cleaned_data['website']
       client.referral_source = form.cleaned_data['referral_source']
       client.save()
-      return HttpResponseRedirect(reverse('workflowmax-client', args=[client.id]))
+      return HttpResponseRedirect(reverse('schedule-client', args=[client.id]))
   
-  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def add_client(request):
   context_vars = dict()
@@ -86,15 +86,15 @@ def add_client(request):
       client.website = form.cleaned_data['website']
       client.referral_source = form.cleaned_data['referral_source']
       client = client.save()
-      return HttpResponseRedirect(reverse('workflowmax-client', args=[client.id]))
+      return HttpResponseRedirect(reverse('schedule-client', args=[client.id]))
   
-  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def add_contact(request, object_id):
   try:
     object_id = int(object_id)
   except ValueError:
-    return HttpResponseRedirect(reverse('workflowmax-list'))
+    return HttpResponseRedirect(reverse('schedule-list'))
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new contact for client %d') % object_id)
   form = ContactForm()
@@ -115,15 +115,15 @@ def add_contact(request, object_id):
       contact.phone = form.cleaned_data['phone']
       contact.position = form.cleaned_data['position']
       contact = contact.save()
-      return HttpResponseRedirect(reverse('workflowmax-client', args=[object_id]))
+      return HttpResponseRedirect(reverse('schedule-client', args=[object_id]))
   
-  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def edit_contact(request, object_id):
   try:
     object_id = int(object_id)
   except ValueError:
-    return HttpResponseRedirect(reverse('workflowmax-list'))
+    return HttpResponseRedirect(reverse('schedule-list'))
   context_vars = dict()
   context_vars['header'] = capfirst(_('edit contact %d') % object_id)
   contact = Contact.objects.get(id=object_id)
@@ -143,9 +143,9 @@ def edit_contact(request, object_id):
       contact.phone = form.cleaned_data['phone']
       contact.position = form.cleaned_data['position']
       contact.save()
-      return HttpResponseRedirect(reverse('workflowmax-contact', args=[contact.id]))
+      return HttpResponseRedirect(reverse('schedule-contact', args=[contact.id]))
   
-  return direct_to_template(request, template='workflowmax/form.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 
 
