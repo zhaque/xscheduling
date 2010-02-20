@@ -1,0 +1,34 @@
+Current Workflowmax models architechture:
+
+Base model is: xml_models.Model
+Since django-rest-models application is read-only by design, we need to add there objects.all()-style call and add ability to save data, generated xml and do POST/PUT via save() method (we really want ot get Django-style model experience)
+
+Let's take for example workflowmax client API.
+It provides us ability to make GET/list, GET/id, PUT, POST calls, so we want to get something like this in the result:
+1. Client.objects.get(id=foo_id)
+2. Client.objects.all()
+3. c = Client()
+   c.save()
+
+Consider p.1:
+this behaviour is provided by xml_models.Model out of the box, we just need to create a child of xml_models.Model object (as described in its documentation) and define workflowmax API specific fields and finders url, we also override validate_on_load() function for response validation.
+
+To achieve p.2 we need to add all() function to our XmlClient model. Here we get XmlClientManager class with all() method defined. Since this method is API specific, we cannot put it inside xml_models.XmlModelManager class. Moreover xml_models.XmlModelManager is constructed in xml_models.Model __init__(), so we cannot simply make a child of this class for XmlClient. That's why XmlClientManager is connected to "client_objects" member inside XmlClient, not to "objects"
+(as you can see, we went the simplest way, so it's broad field for improvements and refactoring)
+
+p.3 requires our model to have read/write fields and ability to generate xml to be sent to API via POST/PUT.
+xml_models.Model and its child XmlClient do not store data in their fields, they parse stored xml on the fly and return values. That's why we have new Client model not based on them, it stores XmlClient object inside and ask for its fields through __getattr__ method.
+It also stores POST/PUT urls and defines save() method.
+But to save p.1 and p.2 working here we need to define ClientManager for Client model. It's just a proxy-like class that reroutes methods inside and fixes return results to be of Client class. This manager also allows us to merge XmlClient's "objects" and "client_objects" calls into one "objects" call, so we get p.1-3 working as stated at the beginning.
+
+So we have Client model based on XmlClient based on xml_models.Model
+we also have ClientManager class for Client and XmlClientManager class for XmlClient.
+
+You can easily follow the same way for Contact model.
+
+LIMITATIONS:
+I do know that it MUST be a way to this thing much more beautiful and with less code. 
+Client model's fields read correct values from xml with proper type checking, but does not check type of written values.
+
+
+
