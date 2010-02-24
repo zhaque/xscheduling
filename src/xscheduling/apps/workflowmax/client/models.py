@@ -3,14 +3,7 @@ import xml_models
 import rest_client
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableString
 from django.conf import settings
-
-class ResponseStatusError(Exception):
-    def __init__(self, error):
-        Exception.__init__(self, "ResponseStatusError: %s" % error)
-
-class InvalidObjectType(Exception):
-    def __init__(self, error):
-        Exception.__init__(self, "InvalidObjectType: %s" % error)
+from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
 class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
@@ -140,14 +133,16 @@ class Note(xml_models.Model):
   created_by = xml_models.CharField(xpath="/note/createdBy")
 
 class XmlClientManager(object):
+  list_url = "http://api.workflowmax.com/client.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+
   def all(self):
-    response = rest_client.Client("").GET("http://api.workflowmax.com/client.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)) 
+    response = rest_client.Client("").GET(self.list_url)
     soup = BeautifulStoneSoup(response.content)
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
     objects = list()
-    for client_xml in soup.clients.contents:
-      objects.append(XmlClient(xml=str(client_xml)))
+    for object_xml in soup.clients.contents:
+      objects.append(XmlClient(xml=str(object_xml)))
     return objects
 
 class XmlClient(xml_models.Model):

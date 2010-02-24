@@ -4,8 +4,8 @@ from django.http import HttpResponseRedirect
 from django.utils.text import capfirst
 from django.utils.translation import ugettext as _
 from django.views.generic.simple import direct_to_template
-from workflowmax.models import Client, Contact
-from workflowmax.forms import ClientForm, ContactForm
+from workflowmax.client.models import Client, Contact
+from workflowmax.client.forms import ClientForm, ContactForm
 from uni_form.helpers import FormHelper, Submit, Reset
 
 def list_clients(request):
