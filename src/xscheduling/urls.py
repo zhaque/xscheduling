@@ -9,5 +9,5 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}, name='logout'),
     url(r'^api-settings/', include('api_settings.urls')),
     url(r'^schedule/', include('schedule.urls')),
-    url(r'^', 'django.views.generic.simple.redirect_to', { 'url': '/schedule/'}),
+    url(r'^', 'django.views.generic.simple.redirect_to', { 'url': '/schedule/client/'}),
 )

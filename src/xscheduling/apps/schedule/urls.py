@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
-    url(r'^$', 'schedule.views.list_clients', name='schedule-list'),
+    url(r'^client/$', 'schedule.views.list_clients', name='schedule-list'),
     url(r'^client/add/$', 'schedule.views.add_client', name='schedule-client-add'),
     url(r'^client/(?P<object_id>\d+)/$', 'schedule.views.get_client', name='schedule-client'),
     url(r'^client/(?P<object_id>\d+)/edit/$', 'schedule.views.edit_client', name='schedule-client-edit'),
