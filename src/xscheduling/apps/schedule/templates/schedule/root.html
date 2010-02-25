@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h1>
+<a href="{% url schedule-client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a>
+<h1>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h1>
+<a href="{% url schedule-staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a>
+{% endblock %}
