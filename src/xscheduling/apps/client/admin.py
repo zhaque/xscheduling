@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-from client.models import Client, Contact, Note
+from client.models import Client, Contact, Note, Address
 
 class ContactInline(admin.StackedInline):
   model = Contact
@@ -18,6 +18,7 @@ class ClientAdmin(admin.ModelAdmin):
   search_fields = ['name']
 
 admin.site.register(Client, ClientAdmin)
+admin.site.register(Address)
 
 
 
