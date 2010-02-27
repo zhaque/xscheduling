@@ -18,4 +18,12 @@
 </ul>
 <a href="{% url schedule-staff-add %}">{% filter capfirst %}{% trans 'add new staff' %}{% endfilter %}</a>
 {% endif %}
+{% if suppliers %}
+<ul>
+  {% for supplier in suppliers %}
+  <li><a href="{% url schedule-supplier supplier.id %}">{% filter capfirst %}{% trans 'supplier' %}{% endfilter %} {{ supplier.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url schedule-supplier-add %}">{% filter capfirst %}{% trans 'add new supplier' %}{% endfilter %}</a>
+{% endif %}
 {% endblock %}

@@ -5,6 +5,8 @@ from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableStrin
 from django.conf import settings
 from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
+from workflowmax.client.models import Note
+
 class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
   name = xml_models.CharField(xpath="/contact/name")
@@ -13,7 +15,7 @@ class XmlContact(xml_models.Model):
   phone = xml_models.CharField(xpath="/contact/phone")
   position = xml_models.CharField(xpath="/contact/position")
   
-  finders = { (id,): "http://api.workflowmax.com/client.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)} 
+  finders = { (id,): "http://api.workflowmax.com/supplier.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)} 
 
   def validate_on_load(self):
     soup = BeautifulStoneSoup(self._xml)
@@ -27,8 +29,8 @@ class ContactManager(object):
 
 class Contact(object):
   objects = ContactManager()
-  put = "http://api.workflowmax.com/client.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
-  post = "http://api.workflowmax.com/client.api/contact?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  put = "http://api.workflowmax.com/supplier.api/contact/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  post = "http://api.workflowmax.com/supplier.api/contact?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_contact=None, xml=None):
     self.xml_contact = xml_contact
@@ -56,11 +58,11 @@ class Contact(object):
       pass
 
     try:
-      client_tag = Tag(soup, 'Client')
-      client_id_tag = Tag(soup, 'ID')
-      client_id_tag.insert(0, NavigableString('%d' % self.owner_id))
-      client_tag.insert(0, client_id_tag)
-      contact_tag.insert(i, client_tag)
+      supplier_tag = Tag(soup, 'Supplier')
+      supplier_id_tag = Tag(soup, 'ID')
+      supplier_id_tag.insert(0, NavigableString('%d' % self.owner_id))
+      supplier_tag.insert(0, supplier_id_tag)
+      contact_tag.insert(i, supplier_tag)
       i = i+1
       method = "POST"
     except AttributeError:
@@ -125,15 +127,8 @@ class Contact(object):
     d['position'] = self.position
     return d
 
-class Note(xml_models.Model):
-  title = xml_models.CharField(xpath="/note/title")
-  text = xml_models.CharField(xpath="/note/text")
-  folder = xml_models.CharField(xpath="/note/folder")
-  date = xml_models.DateField(xpath="/note/date", date_format="%Y-%m-%dT%H:%M:%S")
-  created_by = xml_models.CharField(xpath="/note/createdBy")
-
-class XmlClientManager(object):
-  list_url = "http://api.workflowmax.com/client.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+class XmlSupplierManager(object):
+  list_url = "http://api.workflowmax.com/supplier.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def all(self):
     response = rest_client.Client("").GET(self.list_url)
@@ -141,69 +136,69 @@ class XmlClientManager(object):
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
     objects = list()
-    for object_xml in soup.clients.contents:
-      objects.append(XmlClient(xml=str(object_xml)))
+    for object_xml in soup.suppliers.contents:
+      objects.append(XmlSupplier(xml=str(object_xml)))
     return objects
 
-class XmlClient(xml_models.Model):
-  id = xml_models.IntField(xpath="/client/id")
-  name = xml_models.CharField(xpath="/client/name")
-  address = xml_models.CharField(xpath="/client/address")
-  postal_address = xml_models.CharField(xpath="/client/postaladdress")
-  phone = xml_models.CharField(xpath="/client/phone")
-  fax = xml_models.CharField(xpath="/client/fax")
-  website = xml_models.CharField(xpath="/client/website")
-  referral_source = xml_models.CharField(xpath="/client/referralsource")
-  contacts = xml_models.Collection(Contact, order_by="name", xpath="/client/contacts/contact")
-  notes = xml_models.Collection(Note, order_by="title", xpath="/client/notes/note")
+class XmlSupplier(xml_models.Model):
+  id = xml_models.IntField(xpath="/supplier/id")
+  name = xml_models.CharField(xpath="/supplier/name")
+  address = xml_models.CharField(xpath="/supplier/address")
+  postal_address = xml_models.CharField(xpath="/supplier/postaladdress")
+  phone = xml_models.CharField(xpath="/supplier/phone")
+  fax = xml_models.CharField(xpath="/supplier/fax")
+  website = xml_models.CharField(xpath="/supplier/website")
+  referral_source = xml_models.CharField(xpath="/supplier/referralsource")
+  contacts = xml_models.Collection(Contact, order_by="name", xpath="/supplier/contacts/contact")
+  notes = xml_models.Collection(Note, order_by="title", xpath="/supplier/notes/note")
 
-  finders = { (id,): "http://api.workflowmax.com/client.api/get/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)}
+  finders = { (id,): "http://api.workflowmax.com/supplier.api/get/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)}
   
-  client_objects = XmlClientManager()
+  supplier_objects = XmlSupplierManager()
 
   def validate_on_load(self):
     soup = BeautifulStoneSoup(self._xml)
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
-    self._xml = str(soup.client)
+    self._xml = str(soup.supplier)
 
 
-class ClientManager(object):
+class SupplierManager(object):
   def all(self):
-    cl = XmlClient.client_objects.all()
+    xml_objects = XmlSupplier.supplier_objects.all()
     res = list()
-    for xml_client in cl:
-      res.append(Client(xml_client))
+    for xml_object in xml_objects:
+      res.append(Supplier(xml_object))
     return res
 
   def get(self, **kw):
-    return Client(XmlClient.objects.get(**kw))
+    return Supplier(XmlSupplier.objects.get(**kw))
 
-class Client(object):
-  objects = ClientManager()
-  put = "http://api.workflowmax.com/client.api/update?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
-  post = "http://api.workflowmax.com/client.api/add?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+class Supplier(object):
+  objects = SupplierManager()
+  put = "http://api.workflowmax.com/supplier.api/update?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  post = "http://api.workflowmax.com/supplier.api/add?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_object=None, xml=None):
     self.xml_object = xml_object
     if xml_object and not isinstance(xml_object, xml_models.Model):
       raise InvalidObjectType('object is not child of xml_models.Model')
     if xml:
-      self.xml_object = XmlClient(xml=xml)
+      self.xml_object = XmlSupplier(xml=xml)
 
   def __getattr__(self, name):
     return getattr(self.xml_object, name)
 
   def save(self):
     soup = BeautifulSoup()
-    client_tag = Tag(soup, 'Client')
-    soup.insert(0, client_tag)
+    supplier_tag = Tag(soup, 'Supplier')
+    soup.insert(0, supplier_tag)
     i = 0
     method = "POST"
     try:
       id_tag = Tag(soup, 'ID')
       id_tag.insert(0, NavigableString('%d' % self.id))
-      client_tag.insert(i, id_tag)
+      supplier_tag.insert(i, id_tag)
       i = i+1
       method = "PUT"
     except AttributeError:
@@ -212,16 +207,16 @@ class Client(object):
     try:
       name_tag = Tag(soup, 'Name')
       name_tag.insert(0, NavigableString(self.name))
-      client_tag.insert(i, name_tag)
+      supplier_tag.insert(i, name_tag)
       i = i+1
     except AttributeError:
-      raise ValueError("You must provide client's name.")  
+      raise ValueError("You must provide supplier's name.")  
     
     try:
       if self.address:
         address_tag = Tag(soup, 'Address')
         address_tag.insert(0, NavigableString(self.address))
-        client_tag.insert(i, address_tag)
+        supplier_tag.insert(i, address_tag)
         i = i+1
     except AttributeError:
       pass
@@ -230,7 +225,7 @@ class Client(object):
       if self.postal_address:
         postal_address_tag = Tag(soup, 'PostalAddress')
         postal_address_tag.insert(0, NavigableString(self.postal_address))
-        client_tag.insert(i, postal_address_tag)
+        supplier_tag.insert(i, postal_address_tag)
         i = i+1
     except AttributeError:
       pass
@@ -239,7 +234,7 @@ class Client(object):
       if self.phone:
         phone_tag = Tag(soup, 'Phone')
         phone_tag.insert(0, NavigableString(self.phone))
-        client_tag.insert(i, phone_tag)
+        supplier_tag.insert(i, phone_tag)
         i = i+1
     except AttributeError:
       pass
@@ -248,7 +243,7 @@ class Client(object):
       if self.fax:
         fax_tag = Tag(soup, 'Fax')
         fax_tag.insert(0, NavigableString(self.fax))
-        client_tag.insert(i, fax_tag)
+        supplier_tag.insert(i, fax_tag)
         i = i+1
     except AttributeError:
       pass
@@ -257,7 +252,7 @@ class Client(object):
       if self.website:
         website_tag = Tag(soup, 'WebSite')
         website_tag.insert(0, NavigableString(self.website))
-        client_tag.insert(i, website_tag)
+        supplier_tag.insert(i, website_tag)
         i = i+1
     except AttributeError:
       pass
@@ -266,7 +261,7 @@ class Client(object):
       if self.referral_source:
         referral_source_tag = Tag(soup, 'ReferralSource')
         referral_source_tag.insert(0, NavigableString(self.referral_source))
-        client_tag.insert(i, referral_source_tag)
+        supplier_tag.insert(i, referral_source_tag)
     except AttributeError:
       pass
 
@@ -274,7 +269,7 @@ class Client(object):
       response = rest_client.Client("").PUT(self.put, str(soup))
     else:
       response = rest_client.Client("").POST(self.post, str(soup))
-    return Client(xml=response.content)
+    return Supplier(xml=response.content)
 
   def to_dict(self):
     d = dict()
