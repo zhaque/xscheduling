@@ -1,0 +1,31 @@
+{% load i18n %}
+{% if job %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ job.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'description' %}{% endfilter %}</dt><dd>{{ job.description }}</dd>
+    <dt>{% filter capfirst %}{% trans 'state' %}{% endfilter %}</dt><dd>{{ job.state }}</dd>
+    <dt>{% filter capfirst %}{% trans 'type' %}{% endfilter %}</dt><dd>{{ job.type }}</dd>
+    <dt>{% filter capfirst %}{% trans 'start_date' %}{% endfilter %}</dt><dd>{{ job.start_date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'due_date' %}{% endfilter %}</dt><dd>{{ job.due_date }}</dd>
+
+    {% for client in job.clients %}
+      <h2><a href="{% url schedule-client client.id %}">{% filter capfirst %}{% trans 'client' %}{% endfilter %} {{ client.id }}</a></h2>
+      <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
+    {% endfor %}
+    {% for staff in job.assigned %}
+      <h2><a href="{% url schedule-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></h2>
+      <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.name }}</dd>
+    {% endfor %}
+    {% for contact in job.contacts %}
+      <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
+      <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ contact.name }}</dd>
+    {% endfor %}
+    {% for note in job.notes %}
+      <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
+      {% include 'schedule/block/note.html' %}
+    {% endfor %}
+  </dl>
+  <a href="{% url schedule-job-edit job.id %}">{% filter capfirst %}{% trans 'change job state' %}{% endfilter %}</a>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

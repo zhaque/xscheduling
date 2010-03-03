@@ -11,6 +11,8 @@ from workflowmax.staff.models import Staff
 from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
 from workflowmax.supplier.forms import SupplierForm
+from workflowmax.job.models import Job
+from workflowmax.job.forms import AddJobForm, EditJobForm
 
 
 def root(request):
@@ -222,6 +224,19 @@ def add_staff(request):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+def get_staff_jobs(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('schedule-staff-list'))
+  context_vars = dict()
+  context_vars['header'] = '%s %d' % (capfirst(_('job list for staff')), object_id)
+  staff = Staff.objects.get(id=object_id)
+  context_vars['staff'] = staff
+  context_vars['jobs'] = Job.objects.filter(staff=staff)
+  return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
+
+
 # Supplier views
 def list_suppliers(request):
   context_vars = dict()
@@ -356,5 +371,63 @@ def edit_supplier_contact(request, owner_id, object_id):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+#Job views
+def list_jobs(request):
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('current job list'))
+  context_vars['jobs'] = Job.objects.current()
+  return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
+
+def get_job(request, object_id):
+  context_vars = dict()
+  context_vars['header'] = '%s %s' % (capfirst(_('job')), object_id)
+  context_vars['job'] = Job.objects.get(id=object_id)
+  return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
+  
+def add_job(request):
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('add new job'))
+  form = AddJobForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  if request.method == "POST":
+    form = AddJobForm(request.POST, request.FILES)
+    if form.is_valid():
+      job = Job()
+      job.name = form.cleaned_data['name']
+      job.description = form.cleaned_data['description']
+      job.start_date = strptime(form.cleaned_data['start_date'], '%Y%m%d')
+      job.due_date = strptime(form.cleaned_data['due_date'], '%Y%m%d')
+      client_id = form.cleaned_data['client']
+      client = Client.objects.get(id=client_id)
+      job.clients = [client,]
+      job = job.save()
+      return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
+  
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
+
+def edit_job(request, object_id):
+  context_vars = dict()
+  context_vars['header'] = '%s %s' % (capfirst(_('job')), object_id)
+  job = Job.objects.get(id=object_id)
+  form = EditJobForm(job.to_dict())
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  if request.method == "POST":
+    form = EditJobForm(request.POST, request.FILES)
+    if form.is_valid():
+      job.state = form.cleaned_data['state']
+      job.save()
+      return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
+  
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 

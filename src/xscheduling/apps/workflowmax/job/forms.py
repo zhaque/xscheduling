@@ -5,7 +5,7 @@ from django.utils.text import capfirst
 from workflowmax.job.models import Job
 from workflowmax.client.models import Client
 
-class JobForm(forms.Form):
+class AddJobForm(forms.Form):
   name = forms.CharField(label = capfirst(_('name')))
   description = forms.CharField(label = capfirst(_('description')), widget=Textarea())
   start_date = forms.DateField(label = capfirst(_('start date')), input_formats=['%Y%m%d',])
@@ -24,3 +24,5 @@ class JobForm(forms.Form):
       choices.append((client.id, client.name))
     self.fields['client'].choices = choices
 
+class EditJobForm(forms.Form):
+  state = forms.CharField(label = capfirst(_('state')))

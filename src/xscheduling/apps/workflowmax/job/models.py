@@ -40,6 +40,7 @@ class XmlMilestone(xml_models.Model):
 class XmlJobManager(object):
   current_url = "http://api.workflowmax.com/job.api/current?detailed=%s&apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
   list_url = "http://api.workflowmax.com/job.api/list?from=%s&to=%s&apiKey=%s&accountKey=%s" % ('%s', '%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  staff_url = "http://api.workflowmax.com/job.api/staff/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def _handle_response(self, response):
     soup = BeautifulStoneSoup(response.content)
@@ -56,6 +57,10 @@ class XmlJobManager(object):
 
   def all(self, from_date, to_date):
     response = rest_client.Client("").GET(self.list_url % (from_date, to_date))
+    return self._handle_response(response)
+
+  def filter(self, staff):
+    response = rest_client.Client("").GET(self.staff_url % staff.id)
     return self._handle_response(response)
 
 class XmlJob(xml_models.Model):
@@ -100,6 +105,11 @@ class JobManager(object):
 
   def get(self, **kw):
     return Job(XmlJob.objects.get(**kw))
+
+  def filter(self, **kw):
+    if kw['staff']:
+      return self._handle_xml_objects(XmlJob.job_objects.filter(staff=kw['staff']))
+    return []
 
 class Job(object):
   objects = JobManager()
@@ -213,8 +223,9 @@ class Job(object):
       response = rest_client.Client("").POST(self.post, str(soup))
     return Job(xml=response.content)
 
-#  def to_dict(self):
-#    d = dict()
+  def to_dict(self):
+    d = dict()
+    d['state'] = self.state
 #    d['name'] = self.name
 #    d['description'] = self.description
 #    d['start_date'] = self.start_date
@@ -222,5 +233,5 @@ class Job(object):
 #    d['client_id'] = self.clients[0].id
 #    d['contact_id'] = self.contacts[0].id if self.contacts
 #    d['client_number'] = self.client_number if hasattr(self, 'client_number')
-#    return d
+    return d
 
