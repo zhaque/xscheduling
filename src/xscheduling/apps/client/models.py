@@ -1,7 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-class Contact(models.Model):
+class WorkflowmaxBase(models.Model):
+  wm_id = models.CharField(_('worfkflowmax id'), max_length=255, default='', blank=True)
+
+class Contact(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
   email = models.EmailField(_('email'), null=True, blank=True)
@@ -47,9 +50,9 @@ class Address(models.Model):
     verbose_name_plural = _('address')
 
   def __unicode__(self):
-    return self.postcode
+    return '%s, %s, %s, %s, %s, %s' % (self.id, self.postcode, self.address, self.city, self.county, self.country)
 
-class Client(models.Model):
+class Client(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='client_address', verbose_name=_('address'), blank=True, null=True)
   postal_address = models.OneToOneField(Address, related_name='client_postal_address', verbose_name=_('postal address'), blank=True, null=True)
@@ -65,5 +68,14 @@ class Client(models.Model):
   def __unicode__(self):
     return self.name
 
-
+  def save(self):
+    if not self.address:
+      address = Address()
+      address.save()
+      self.address = address
+    if not self.postal_address:
+      postal_address = Address()
+      postal_address.save()
+      self.postal_address = postal_address
+    super(Client, self).save()
 

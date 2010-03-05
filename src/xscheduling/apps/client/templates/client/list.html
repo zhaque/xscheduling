@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if clients %}
+<ul>
+  {% for client in clients %}
+  <li><a href="{% url client-view client.id %}">{% filter capfirst %}{% trans 'client' %}{% endfilter %} {{ client.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url client-add %}">{% filter capfirst %}{% trans 'add new client' %}{% endfilter %}</a>
+{% endif %}
+{% endblock %}

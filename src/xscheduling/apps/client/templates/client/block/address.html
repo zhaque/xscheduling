@@ -1,0 +1,14 @@
+{% load i18n %}
+{% if address %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'postcode' %}{% endfilter %}</dt><dd>{{ address.postcode }}</dd>
+    <dt>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</dt><dd>{{ address.address }}</dd>
+    <dt>{% filter capfirst %}{% trans 'city' %}{% endfilter %}</dt><dd>{{ address.city }}</dd>
+    <dt>{% filter capfirst %}{% trans 'county' %}{% endfilter %}</dt><dd>{{ address.county }}</dd>
+    <dt>{% filter capfirst %}{% trans 'country' %}{% endfilter %}</dt><dd>{{ address.country }}</dd>
+    <dt>{% filter capfirst %}{% trans 'latitude' %}{% endfilter %}</dt><dd>{{ address.latitude }}</dd>
+    <dt>{% filter capfirst %}{% trans 'longitude' %}{% endfilter %}</dt><dd>{{ address.longitude }}</dd>
+  </dl>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

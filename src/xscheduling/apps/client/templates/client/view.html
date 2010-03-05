@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if client %}
+  {% include 'client/block/client.html' %}
+{% endif %}
+{% if contact %}
+  {% include 'client/block/contact.html' %}
+{% endif %}
+{% endblock %}
