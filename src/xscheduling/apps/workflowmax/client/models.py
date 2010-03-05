@@ -133,10 +133,10 @@ class Note(xml_models.Model):
   created_by = xml_models.CharField(xpath="/note/createdBy")
 
 class XmlClientManager(object):
-  list_url = "http://api.workflowmax.com/client.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  list_url = "http://api.workflowmax.com/client.api/list?detailed=%s&apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
-  def all(self):
-    response = rest_client.Client("").GET(self.list_url)
+  def all(self, detailed=False):
+    response = rest_client.Client("").GET(self.list_url % str(detailed).lower())
     soup = BeautifulStoneSoup(response.content)
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
@@ -169,8 +169,8 @@ class XmlClient(xml_models.Model):
 
 
 class ClientManager(object):
-  def all(self):
-    cl = XmlClient.client_objects.all()
+  def all(self, detailed=False):
+    cl = XmlClient.client_objects.all(detailed)
     res = list()
     for xml_client in cl:
       res.append(Client(xml_client))

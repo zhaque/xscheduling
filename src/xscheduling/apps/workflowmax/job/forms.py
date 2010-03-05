@@ -16,7 +16,7 @@ class AddJobForm(forms.Form):
   template_id = forms.CharField(label = capfirst(_('template id')), required=False)
 
   def __init__(self, *args, **kwargs):
-    super(JobForm, self).__init__(*args, **kwargs)
+    super(AddJobForm, self).__init__(*args, **kwargs)
 
     choices =[]
     clients = Client.objects.all()
