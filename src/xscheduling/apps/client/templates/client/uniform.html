@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load uni_form_tags %}
 
 {% block content %}
-{% if client %}
-  {% include 'client/block/client.html' %}
-{% endif %}
+{% uni_form form helper %}
 {% endblock %}

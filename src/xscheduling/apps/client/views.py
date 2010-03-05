@@ -86,11 +86,61 @@ def edit_client(request, object_id):
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)
 
 def add_contact(request, object_id):
-  pass
-def get_contact(request, owner_id, object_id):
-  pass
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    client = Client.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('client-list'))
+
+  form = ContactForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = ContactForm(request.POST, request.FILES)
+    if form.is_valid():
+      contact = form.save(commit=False)
+      contact.client = client
+      contact.save()
+      return HttpResponseRedirect(reverse('client-view', args=[client.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='client/uniform.html', extra_context=context_vars)
+  
+
 def edit_contact(request, owner_id, object_id):
-  pass
+  context_vars = dict()
+  try:
+    owner_id = int(owner_id)
+    client = Client.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('client-list'))
+  try:
+    object_id = int(object_id)
+    contact = Contact.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('client-view', args=[client.id]))
+
+  form = ContactForm(instance=contact)
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = ContactForm(request.POST, request.FILES, instance=contact)
+    if form.is_valid():
+      form.save()
+      return HttpResponseRedirect(reverse('client-view', args=[client.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='client/uniform.html', extra_context=context_vars)
+
 def add_note(request, object_id):
   pass
 def get_note(request, owner_id, object_id):
