@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
 
 class WorkflowmaxBase(models.Model):
   wm_id = models.CharField(_('worfkflowmax id'), max_length=255, default='', blank=True)
@@ -19,6 +20,22 @@ class Contact(WorkflowmaxBase):
 
   def __unicode__(self):
     return self.name
+
+  def wm_sync(self):
+    if self.name and self.client.wm_id:
+      wm_contact = WorkflowmaxContact()
+      if self.wm_id:
+        wm_contact.id = int(self.wm_id)
+      wm_contact.name = self.name
+      wm_contact.owner_id = int(self.client.wm_id)
+      wm_contact.mobile = self.mobile
+      wm_contact.email = self.email
+      wm_contact.phone = self.phone
+      wm_contact.position = self.position
+      wm_contact = wm_contact.save()
+      if not self.wm_id:
+        self.wm_id = wm_contact.id
+        self.save()
 
 class Note(models.Model):
   title = models.CharField(_('title'), max_length=255)
@@ -50,7 +67,7 @@ class Address(models.Model):
     verbose_name_plural = _('address')
 
   def __unicode__(self):
-    return '%s, %s, %s, %s, %s, %s' % (self.id, self.postcode, self.address, self.city, self.county, self.country)
+    return '%s, %s, %s, %s, %s' % (self.postcode, self.address, self.city, self.county, self.country)
 
 class Client(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
@@ -79,3 +96,22 @@ class Client(WorkflowmaxBase):
       self.postal_address = postal_address
     super(Client, self).save()
 
+  def wm_sync(self):
+    if self.name:
+      wm_client = WorkflowmaxClient()
+      if self.wm_id:
+        wm_client.id = int(self.wm_id)
+      wm_client.name = self.name
+      wm_client.address = str(self.address)
+      wm_client.postal_address = str(self.postal_address)
+      wm_client.phone = self.phone
+      wm_client.fax = self.fax
+      wm_client.website = self.website
+      wm_client.referral_source = self.referral_source
+      wm_client = wm_client.save()
+      if not self.wm_id:
+        self.wm_id = wm_client.id
+        self.save()
+      if self.contacts.all():
+        for contact in self.contacts.all():
+          contact.wm_sync()

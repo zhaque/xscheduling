@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -49,6 +50,8 @@ def add_client(request):
         if not postal_address_form.is_valid():
           raise InvalidForm()
         postal_address_form.save()
+        if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+          client.wm_sync()
         return HttpResponseRedirect(reverse('client-view', args=[client.id]))
     except InvalidForm:
       pass
@@ -78,6 +81,8 @@ def edit_client(request, object_id):
       client = client_form.save()
       address_form.save()
       postal_address_form.save()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        client.wm_sync()
       return HttpResponseRedirect(reverse('client-view', args=[client.id]))
   
   context_vars['client_form'] = client_form
@@ -105,6 +110,8 @@ def add_contact(request, object_id):
       contact = form.save(commit=False)
       contact.client = client
       contact.save()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        contact.wm_sync()
       return HttpResponseRedirect(reverse('client-view', args=[client.id]))
   
   context_vars['form'] = form
@@ -135,6 +142,8 @@ def edit_contact(request, owner_id, object_id):
     form = ContactForm(request.POST, request.FILES, instance=contact)
     if form.is_valid():
       form.save()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        contact.wm_sync()
       return HttpResponseRedirect(reverse('client-view', args=[client.id]))
   
   context_vars['form'] = form
