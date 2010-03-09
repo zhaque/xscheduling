@@ -39,7 +39,7 @@ def common_settings():
     source_settings()
     env.user = 'root'
     env.POSTGRES_USER = 'xscheduling' 
-    env.POSTGRES_PASSWORD = 'xschedulingTW88EL'
+    env.POSTGRES_PASSWORD = 'fredbetts'
     env.POSTGRES_DB = 'xscheduling'
     env.UBUNTU_VERSION = 'jaunty'
 
@@ -52,8 +52,8 @@ def stage_settings():
 
 def production_settings():
     common_settings()
-    env.host_string = 'xscheduling.com'
-    env.VPS_IP = '127.0.0.1'
+    env.host_string = 'li152-75.members.linode.com'
+    env.VPS_IP = '109.74.205.75'
     env.PAYPAL_EMAIL = 'admin_1255085897_biz@xscheduling.com'
     env.PAYPAL_TEST = 'True'
 
