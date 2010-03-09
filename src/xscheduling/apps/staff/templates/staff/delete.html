@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if error %}
+  <p>{% blocktrans %}Object not found. You're trying to delete smth that does not belong to you or not exist.{% endblocktrans %}</p>
+{% else %}
+  <form action="" name="delete" method="post">
+  <p>{{ comment }}</p>
+  <input type="submit" value="{% filter capfirst %}{% trans 'destroy' %}{% endfilter %}"/>
+  </form>
+{% endif %}
+{% endblock %}

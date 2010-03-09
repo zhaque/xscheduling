@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^api-settings/', include('api_settings.urls')),
     url(r'^schedule/', include('schedule.urls')),
     url(r'^client/', include('client.urls')),
+    url(r'^staff/', include('staff.urls')),
     url(r'^$', 'django.views.generic.simple.redirect_to', { 'url': '/schedule/'}),
 )

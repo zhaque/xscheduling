@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if staff %}
+  {% include 'staff/block/staff.html' %}
+{% endif %}
+{% endblock %}

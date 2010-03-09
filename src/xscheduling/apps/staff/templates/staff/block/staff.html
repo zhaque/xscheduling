@@ -1,0 +1,20 @@
+{% load i18n %}
+{% if staff %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ staff.phone }}</dd>
+    <dt>{% filter capfirst %}{% trans 'mobile' %}{% endfilter %}</dt><dd>{{ staff.mobile }}</dd>
+    <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ staff.email }}</dd>
+    <dt>{% filter capfirst %}{% trans 'payrollcode' %}{% endfilter %}</dt><dd>{{ staff.payrollcode }}</dd>
+    {% if staff.address %}
+      <h2>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h2>
+      {% with staff.address as address %}
+      {% include 'client/block/address.html' %}
+      {% endwith %}
+    {% endif %}
+  </dl>
+  <a href="{% url staff-edit staff.id %}">{% filter capfirst %}{% trans 'edit staff' %}{% endfilter %}</a>
+  <a href="{% url staff-delete staff.id %}">{% filter capfirst %}{% trans 'delete staff' %}{% endfilter %}</a>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

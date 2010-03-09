@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     'workflowmax',
     'schedule',
     'client',
+    'staff',
 )
 
 LOGIN_URL = '/login/'

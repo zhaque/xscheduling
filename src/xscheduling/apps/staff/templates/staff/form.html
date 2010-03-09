@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load uni_form_tags %}
+
+{% block content %}
+<form action="" method="post" class="uniForm">
+<h3>{% trans 'staff' %}</h3>
+{{ staff_form|as_uni_form }}
+<h3>{% trans 'address' %}</h3>
+{{ address_form|as_uni_form }}
+<input type="submit" value="{% trans 'save' %}"/>
+</form>
+{% endblock %}
