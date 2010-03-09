@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.utils.text import capfirst
+from django.views.generic.create_update import delete_object
 from django.views.generic.simple import direct_to_template
 
 from uni_form.helpers import FormHelper, Submit, Reset
@@ -66,10 +67,10 @@ def edit_client(request, object_id):
   context_vars = dict()
   try:
     object_id = int(object_id)
-  except ValueError:
+    client = Client.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('client-list'))
   
-  client = Client.objects.get(id=object_id)
   context_vars['header'] = capfirst(_('edit client %s') % client.name)
   client_form = ClientForm(prefix='client', instance=client)
   address_form = AddressForm(prefix='address', instance=client.address)
@@ -90,6 +91,17 @@ def edit_client(request, object_id):
   context_vars['address_form'] = address_form
   context_vars['postal_address_form'] = postal_address_form
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)
+
+def delete_client(request, object_id):
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    client = Client.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('client-list'))
+
+  return delete_object(request, object_id=client.id, model=Client, login_required=True, template_name='client/delete.html', post_delete_redirect=reverse('client-list'), extra_context={'header': capfirst(_('delete client')), 'comment': capfirst(_('you are trying to delete client "%s". Sure?') % client.name)})
+
 
 def add_contact(request, object_id):
   context_vars = dict()
