@@ -13,5 +13,8 @@
   {% endfor %}
 </ul>
 <a href="{% url client-add %}">{% filter capfirst %}{% trans 'add new client' %}{% endfilter %}</a>
+{% else %}
+You don't have any clients, you can <a href="{% url client-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url client-add %}">{% trans 'create new client' %}</a>.
+
 {% endif %}
 {% endblock %}

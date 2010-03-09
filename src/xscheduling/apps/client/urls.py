@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^(?P<object_id>\d+)/note/add/$', 'client.views.add_note', name='client-note-add'),
     url(r'^(?P<owner_id>\d+)/note/(?P<object_id>\d+)/$', 'client.views.get_note', name='client-note-view'),
     url(r'^(?P<owner_id>\d+)/note/(?P<object_id>\d+)/edit/$', 'client.views.edit_note', name='client-note-edit'),
+    url(r'^import/$', 'client.views.import_clients', name='client-import'),
 )

@@ -26,8 +26,9 @@ class Contact(WorkflowmaxBase):
       wm_contact = WorkflowmaxContact()
       if self.wm_id:
         wm_contact.id = int(self.wm_id)
+      else:
+        wm_contact.owner_id = int(self.client.wm_id)      
       wm_contact.name = self.name
-      wm_contact.owner_id = int(self.client.wm_id)
       wm_contact.mobile = self.mobile
       wm_contact.email = self.email
       wm_contact.phone = self.phone
@@ -36,6 +37,15 @@ class Contact(WorkflowmaxBase):
       if not self.wm_id:
         self.wm_id = wm_contact.id
         self.save()
+
+  def import_wmcontact(self, wm_contact):
+    self.wm_id = wm_contact.id
+    self.name = wm_contact.name
+    self.mobile = wm_contact.mobile
+    self.email = wm_contact.email
+    self.phone = wm_contact.phone
+    self.position = wm_contact.position
+  
 
 class Note(models.Model):
   title = models.CharField(_('title'), max_length=255)
@@ -69,6 +79,13 @@ class Address(models.Model):
   def __unicode__(self):
     return '%s, %s, %s, %s, %s' % (self.postcode, self.address, self.city, self.county, self.country)
 
+  def import_wmaddress(self, wm_address):
+    if wm_address:
+      try:
+        (self.postcode, self.address, self.city, self.county, self.country) = wm_address.split(',')
+      except ValueError:
+        pass
+
 class Client(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='client_address', verbose_name=_('address'), blank=True, null=True)
@@ -96,6 +113,11 @@ class Client(WorkflowmaxBase):
       self.postal_address = postal_address
     super(Client, self).save()
 
+  def delete(self):
+    super(Client, self).delete()
+    self.address.delete()
+    self.postal_address.delete()
+
   def wm_sync(self):
     if self.name:
       wm_client = WorkflowmaxClient()
@@ -115,3 +137,27 @@ class Client(WorkflowmaxBase):
       if self.contacts.all():
         for contact in self.contacts.all():
           contact.wm_sync()
+
+  # we have to include save() here (and only this model), because of OneToOne field behaviour
+  def import_wmclient(self, wm_client):
+    address = Address()
+    address.import_wmaddress(wm_client.address)
+    address.save()
+    self.address = address
+    postal_address = Address()
+    postal_address.import_wmaddress(wm_client.postal_address)
+    postal_address.save()
+    self.postal_address = postal_address
+    self.wm_id = wm_client.id
+    self.name = wm_client.name
+    self.phone = wm_client.phone
+    self.fax = wm_client.fax
+    self.website = wm_client.website
+    self.referral_source = wm_client.referral_source
+    self.save()
+    for wm_contact in wm_client.contacts:
+      contact = Contact()
+      contact.client = self
+      contact.import_wmcontact(wm_contact)
+      contact.save()
+

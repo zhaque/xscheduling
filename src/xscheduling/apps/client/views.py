@@ -10,6 +10,7 @@ from uni_form.helpers import FormHelper, Submit, Reset
 
 from client.forms import ClientForm, ContactForm, AddressForm, InvalidForm
 from client.models import Client, Note, Contact, Address
+from workflowmax.client.models import Client as WorkflowmaxClient
 
 def list_clients(request):
   context_vars = dict()
@@ -156,3 +157,19 @@ def get_note(request, owner_id, object_id):
   pass
 def edit_note(request, owner_id, object_id):
   pass
+
+def import_clients(request):
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('import clients from workflowmax'))
+  context_vars['comment'] = capfirst(_('this will destroy all your local clients, please confirm your decision.'))
+  if request.method == "POST":
+    for client in Client.objects.all():
+      client.delete()
+    wm_clients = WorkflowmaxClient.objects.all()
+    for wm_client in wm_clients:
+      client = Client()
+      client.import_wmclient(wm_client)
+    return HttpResponseRedirect(reverse('client-list'))
+  
+  return direct_to_template(request, template='client/import.html', extra_context=context_vars)
+  
