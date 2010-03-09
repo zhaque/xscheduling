@@ -138,6 +138,11 @@ class Client(WorkflowmaxBase):
         for contact in self.contacts.all():
           contact.wm_sync()
 
+  def wm_delete(self):
+    if self.wm_id:
+      wm_client = WorkflowmaxClient.objects.get(id=self.wm_id)
+      wm_client.delete()
+
   # we have to include save() here (and only this model), because of OneToOne field behaviour
   def import_wmclient(self, wm_client):
     address = Address()

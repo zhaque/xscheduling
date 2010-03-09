@@ -20,6 +20,7 @@
   </dl>
   <a href="{% url schedule-client-contact-add client.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
   <a href="{% url schedule-client-edit client.id %}">{% filter capfirst %}{% trans 'edit client' %}{% endfilter %}</a>
+  <a href="{% url schedule-client-delete client.id %}">{% filter capfirst %}{% trans 'delete client' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

@@ -100,6 +100,9 @@ def delete_client(request, object_id):
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('client-list'))
 
+  if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+    client.wm_delete()
+  
   return delete_object(request, object_id=client.id, model=Client, login_required=True, template_name='client/delete.html', post_delete_redirect=reverse('client-list'), extra_context={'header': capfirst(_('delete client')), 'comment': capfirst(_('you are trying to delete client "%s". Sure?') % client.name)})
 
 

@@ -91,6 +91,22 @@ def add_client(request):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+def delete_client(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('schedule-client-list'))
+  context_vars = dict()
+  context_vars['header'] = '%s %d' % (capfirst(_('delete client')), object_id)
+  context_vars['comment'] = _('You are trying to delete client "%d". Sure?') % object_id
+  client = Client.objects.get(id=object_id)
+  
+  if request.method == "POST":
+    client.delete()
+    return HttpResponseRedirect(reverse('schedule-client-list'))
+
+  return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
+
 def add_client_contact(request, object_id):
   try:
     object_id = int(object_id)
