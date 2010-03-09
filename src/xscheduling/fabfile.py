@@ -62,8 +62,8 @@ def server_setup():
     mail_server_setup()
     log_setup()
     github_setup()
-    postgresql_setup()
-    postgresql_user_db_flush()
+#    postgresql_setup()
+#    postgresql_user_db_flush()
 
 def project_setup():
     user_setup()    
@@ -111,7 +111,7 @@ def install_packages():
     
     #Because if high-possibility of hanging up by system when too much packages install. 
     sudo('apt-get -y install build-essential gcc libc6-dev', pty=True)
-    sudo('apt-get -y install wget nmap unzip wget csstidy ant curl python-dev python-egenix-mxdatetime memcached tar mc libmemcache-dev gettext', pty=True)
+    sudo('apt-get -y install wget nmap unzip wget csstidy ant curl python-beautifulsoup python-dev python-egenix-mxdatetime memcached tar mc libmemcache-dev gettext', pty=True)
 
 def mail_server_setup():
     sudo('apt-get -y install sendmail;', pty=True)
