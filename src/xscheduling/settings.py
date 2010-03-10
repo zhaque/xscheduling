@@ -96,6 +96,7 @@ INSTALLED_APPS = (
     'client',
     'staff',
     'supplier',
+    'job',
 )
 
 LOGIN_URL = '/login/'
