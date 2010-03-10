@@ -3,11 +3,11 @@
 
 {% block content %}
 <h1>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h1>
-<a href="{% url schedule-client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a>
+<a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a>
 <h1>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h1>
-<a href="{% url schedule-staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a>
+<a href="{% url staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a>
 <h1>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h1>
-<a href="{% url schedule-supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a>
+<a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a>
 <h1>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h1>
-<a href="{% url schedule-job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a>
+<a href="{% url schedule-job-list %}">{% filter capfirst %}{% trans 'job list (still workflowmax)' %}{% endfilter %}</a>
 {% endblock %}
