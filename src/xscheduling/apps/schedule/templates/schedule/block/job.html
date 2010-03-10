@@ -26,6 +26,7 @@
     {% endfor %}
   </dl>
   <a href="{% url schedule-job-edit job.id %}">{% filter capfirst %}{% trans 'change job state' %}{% endfilter %}</a>
+  <a href="{% url schedule-job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

@@ -478,4 +478,14 @@ def edit_job(request, object_id):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+def delete_job(request, object_id):
+  context_vars = dict()
+  context_vars['header'] = '%s %s' % (capfirst(_('delete job')), object_id)
+  context_vars['comment'] = _('You are trying to delete job "%s". Sure?') % object_id
+  job = Job.objects.get(id=object_id)
+  
+  if request.method == "POST":
+    job.delete()
+    return HttpResponseRedirect(reverse('schedule-job-list'))
 
+  return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)

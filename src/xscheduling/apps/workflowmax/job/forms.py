@@ -11,7 +11,7 @@ class AddJobForm(forms.Form):
   start_date = forms.DateField(label = capfirst(_('start date')), input_formats=['%Y%m%d',])
   due_date = forms.DateField(label = capfirst(_('due date')), input_formats=['%Y%m%d',])
   client = forms.ChoiceField(label = capfirst(_('client')), choices=())
-  contact = forms.ChoiceField(label = capfirst(_('contact')), choices=(), required=False)
+#  contact = forms.ChoiceField(label = capfirst(_('contact')), choices=(), required=False)
   client_number = forms.CharField(label = capfirst(_('client number')), required=False)
   template_id = forms.CharField(label = capfirst(_('template id')), required=False)
 
