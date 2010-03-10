@@ -105,9 +105,8 @@ def delete_staff(request, object_id):
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('staff-list'))
 
-# we cannot delete staff via api
-#  if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
-#    staff.wm_delete()
+  if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+    staff.wm_delete()
   
   return delete_object(request, object_id=staff.id, model=Staff, login_required=True, template_name='staff/delete.html', post_delete_redirect=reverse('staff-list'), extra_context={'header': capfirst(_('delete staff')), 'comment': capfirst(_('you are trying to delete staff "%s". Sure?') % staff.name)})
 

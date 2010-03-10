@@ -52,6 +52,7 @@ class Staff(object):
   objects = StaffManager()
   put = "http://api.workflowmax.com/staff.api/update?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
   post = "http://api.workflowmax.com/staff.api/add?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  delete_url = "http://api.workflowmax.com/staff.api/delete?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_object=None, xml=None):
     self.xml_object = xml_object
@@ -137,6 +138,22 @@ class Staff(object):
       response = rest_client.Client("").POST(self.post, str(soup))
     return Staff(xml=response.content)
 
+  def delete(self):
+    soup = BeautifulSoup()
+    staff_tag = Tag(soup, 'Staff')
+    soup.insert(0, staff_tag)
+    try:
+      id_tag = Tag(soup, 'ID')
+      id_tag.insert(0, NavigableString('%d' % self.id))
+      staff_tag.insert(0, id_tag)
+    except AttributeError:
+      raise ValueError("You must have id for delete operation.")  
+
+    response = rest_client.Client("").POST(self.delete_url, str(soup))
+    soup = BeautifulStoneSoup(response.content)
+    if soup.status and soup.status.contents[0].lower() == 'error':
+      raise ResponseStatusError(soup.errordescription.contents[0])
+    
   def to_dict(self):
     d = dict()
     d['name'] = self.name

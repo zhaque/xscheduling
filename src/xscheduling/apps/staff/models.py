@@ -46,6 +46,11 @@ class Staff(WorkflowmaxBase):
         self.wm_id = wm_staff.id
         self.save()
 
+  def wm_delete(self):
+    if self.wm_id:
+      wm_staff = WorkflowmaxStaff.objects.get(id=self.wm_id)
+      wm_staff.delete()
+
   # we have to include save() here, because of OneToOne field behaviour
   def import_wmstaff(self, wm_staff):
     address = Address()
