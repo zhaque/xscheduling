@@ -54,7 +54,7 @@ class Staff(WorkflowmaxBase):
   # we have to include save() here, because of OneToOne field behaviour
   def wm_import(self, wm_staff):
     address = Address()
-    address.import_wmaddress(wm_staff.address)
+    address.wm_import(wm_staff.address)
     address.save()
     self.address = address
     self.wm_id = wm_staff.id

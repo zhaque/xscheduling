@@ -11,6 +11,15 @@ class WorkflowmaxBase(models.Model):
   class Meta:
     abstract = True
 
+  def wm_sync(self):
+    raise NotImplementedException()
+
+  def wm_import(self, wm_object):
+    raise NotImplementedException()
+
+  def wm_delete(self):
+    raise NotImplementedException()
+
 class ContactBase(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
@@ -90,7 +99,7 @@ class Address(models.Model):
   def __unicode__(self):
     return '%s, %s, %s, %s, %s' % (self.postcode, self.address, self.city, self.county, self.country)
 
-  def import_wmaddress(self, wm_address):
+  def wm_import(self, wm_address):
     if wm_address:
       try:
         (self.postcode, self.address, self.city, self.county, self.country) = wm_address.split(',')
@@ -140,11 +149,11 @@ class ClientBase(WorkflowmaxBase):
   # we have to include save() here, because of OneToOne field behaviour
   def wm_import(self, wm_object):
     address = Address()
-    address.import_wmaddress(wm_object.address)
+    address.wm_import(wm_object.address)
     address.save()
     self.address = address
     postal_address = Address()
-    postal_address.import_wmaddress(wm_object.postal_address)
+    postal_address.wm_import(wm_object.postal_address)
     postal_address.save()
     self.postal_address = postal_address
     self.wm_id = wm_object.id
