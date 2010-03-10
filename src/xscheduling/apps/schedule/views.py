@@ -240,6 +240,22 @@ def add_staff(request):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+def delete_staff(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('schedule-staff-list'))
+  context_vars = dict()
+  context_vars['header'] = '%s %d' % (capfirst(_('delete staff')), object_id)
+  context_vars['comment'] = _('You are trying to delete staff "%d". Sure?') % object_id
+  staff = Staff.objects.get(id=object_id)
+  
+  if request.method == "POST":
+    staff.delete()
+    return HttpResponseRedirect(reverse('schedule-staff-list'))
+
+  return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
+
 def get_staff_jobs(request, object_id):
   try:
     object_id = int(object_id)
@@ -325,6 +341,22 @@ def add_supplier(request):
       return HttpResponseRedirect(reverse('schedule-supplier', args=[supplier.id]))
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
+
+def delete_supplier(request, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('schedule-supplier-list'))
+  context_vars = dict()
+  context_vars['header'] = '%s %d' % (capfirst(_('delete supplier')), object_id)
+  context_vars['comment'] = _('You are trying to delete supplier "%d". Sure?') % object_id
+  supplier = Supplier.objects.get(id=object_id)
+  
+  if request.method == "POST":
+    supplier.delete()
+    return HttpResponseRedirect(reverse('schedule-supplier-list'))
+
+  return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
 
 def add_supplier_contact(request, object_id):
   try:

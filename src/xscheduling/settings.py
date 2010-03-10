@@ -95,6 +95,7 @@ INSTALLED_APPS = (
     'schedule',
     'client',
     'staff',
+    'supplier',
 )
 
 LOGIN_URL = '/login/'

@@ -31,7 +31,7 @@ def import_staff(request):
     wm_staff_list = WorkflowmaxStaff.objects.all()
     for wm_staff in wm_staff_list:
       staff = Staff()
-      staff.import_wmstaff(wm_staff)
+      staff.wm_import(wm_staff)
     return HttpResponseRedirect(reverse('staff-list'))
   
   return direct_to_template(request, template='staff/import.html', extra_context=context_vars)

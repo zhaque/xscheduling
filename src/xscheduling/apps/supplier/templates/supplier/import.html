@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+  <form action="" name="import" method="post">
+  <p>{{ comment }}</p>
+  <input type="submit" value="{% filter capfirst %}{% trans 'import' %}{% endfilter %}"/>
+  </form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% load i18n %}
+{% if supplier %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ supplier.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ supplier.phone }}</dd>
+    <dt>{% filter capfirst %}{% trans 'fax' %}{% endfilter %}</dt><dd>{{ supplier.fax }}</dd>
+    <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ supplier.website }}</dd>
+    <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ supplier.referral_source }}</dd>
+    {% if supplier.address %}
+      <h2>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h2>
+      {% with supplier.address as address %}
+      {% include 'client/block/address.html' %}
+      {% endwith %}
+    {% endif %}
+    {% if supplier.postal_address %}
+      <h2>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %}</h2>
+      {% with supplier.postal_address as address %}
+      {% include 'client/block/address.html' %}
+      {% endwith %}
+    {% endif %}
+    {% for contact in supplier.contacts.all %}
+    <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
+      {% include 'client/block/contact.html' %}
+      <a href="{% url supplier-contact-edit supplier.id contact.id %}">{% filter capfirst %}{% trans 'edit contact' %}{% endfilter %}</a>
+    {% endfor %}
+    {% for note in supplier.notes.all %}
+    <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
+      {% include 'client/block/note.html' %}
+    {% endfor %}
+  </dl>
+  <a href="{% url supplier-contact-add supplier.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
+  <a href="{% url supplier-edit supplier.id %}">{% filter capfirst %}{% trans 'edit supplier' %}{% endfilter %}</a>
+  <a href="{% url supplier-delete supplier.id %}">{% filter capfirst %}{% trans 'delete supplier' %}{% endfilter %}</a>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

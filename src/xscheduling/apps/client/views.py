@@ -105,7 +105,6 @@ def delete_client(request, object_id):
   
   return delete_object(request, object_id=client.id, model=Client, login_required=True, template_name='client/delete.html', post_delete_redirect=reverse('client-list'), extra_context={'header': capfirst(_('delete client')), 'comment': capfirst(_('you are trying to delete client "%s". Sure?') % client.name)})
 
-
 def add_contact(request, object_id):
   context_vars = dict()
   try:
@@ -132,8 +131,7 @@ def add_contact(request, object_id):
   
   context_vars['form'] = form
   context_vars['helper'] = helper
-  return direct_to_template(request, template='client/uniform.html', extra_context=context_vars)
-  
+  return direct_to_template(request, template='client/uniform.html', extra_context=context_vars)  
 
 def edit_contact(request, owner_id, object_id):
   context_vars = dict()
@@ -183,7 +181,7 @@ def import_clients(request):
     wm_clients = WorkflowmaxClient.objects.all()
     for wm_client in wm_clients:
       client = Client()
-      client.import_wmclient(wm_client)
+      client.wm_import(wm_client)
     return HttpResponseRedirect(reverse('client-list'))
   
   return direct_to_template(request, template='client/import.html', extra_context=context_vars)

@@ -52,7 +52,7 @@ class Staff(WorkflowmaxBase):
       wm_staff.delete()
 
   # we have to include save() here, because of OneToOne field behaviour
-  def import_wmstaff(self, wm_staff):
+  def wm_import(self, wm_staff):
     address = Address()
     address.import_wmaddress(wm_staff.address)
     address.save()

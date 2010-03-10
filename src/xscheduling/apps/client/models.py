@@ -2,24 +2,44 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
 
+class NotImplementedException(Exception):
+  "Method not implemented"
+  pass
+
 class WorkflowmaxBase(models.Model):
   wm_id = models.CharField(_('worfkflowmax id'), max_length=255, default='', blank=True)
+  class Meta:
+    abstract = True
 
-class Contact(WorkflowmaxBase):
+class ContactBase(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
   email = models.EmailField(_('email'), null=True, blank=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)
   position = models.CharField(_('position'), max_length=255, null=True, blank=True)
-  client = models.ForeignKey('Client', verbose_name="client", related_name='contacts')
 
   class Meta:
+    abstract = True
     ordering = ['name']
     verbose_name = _('contact')
     verbose_name_plural = _('contacts')
 
   def __unicode__(self):
     return self.name
+
+  def wm_sync(self):
+    raise NotImplementedException()
+
+  def wm_import(self, wm_contact):
+    self.wm_id = wm_contact.id
+    self.name = wm_contact.name
+    self.mobile = wm_contact.mobile
+    self.email = wm_contact.email
+    self.phone = wm_contact.phone
+    self.position = wm_contact.position
+  
+class Contact(ContactBase):
+  client = models.ForeignKey('Client', verbose_name="client", related_name='contacts')
 
   def wm_sync(self):
     if self.name and self.client.wm_id:
@@ -37,15 +57,6 @@ class Contact(WorkflowmaxBase):
       if not self.wm_id:
         self.wm_id = wm_contact.id
         self.save()
-
-  def import_wmcontact(self, wm_contact):
-    self.wm_id = wm_contact.id
-    self.name = wm_contact.name
-    self.mobile = wm_contact.mobile
-    self.email = wm_contact.email
-    self.phone = wm_contact.phone
-    self.position = wm_contact.position
-  
 
 class Note(models.Model):
   title = models.CharField(_('title'), max_length=255)
@@ -86,18 +97,17 @@ class Address(models.Model):
       except ValueError:
         pass
 
-class Client(WorkflowmaxBase):
+class ClientBase(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
-  address = models.OneToOneField(Address, related_name='client_address', verbose_name=_('address'), blank=True, null=True)
-  postal_address = models.OneToOneField(Address, related_name='client_postal_address', verbose_name=_('postal address'), blank=True, null=True)
+  address = models.OneToOneField(Address, related_name='%(class)s_address', verbose_name=_('address'), blank=True, null=True)
+  postal_address = models.OneToOneField(Address, related_name='%(class)s_postal_address', verbose_name=_('postal address'), blank=True, null=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)
   fax = models.CharField(_('fax'), max_length=255, null=True, blank=True)
   website = models.URLField(_('website'), null=True, blank=True)
   referral_source = models.CharField(_('referral source'), max_length=255, null=True, blank=True)
 
   class Meta:
-    verbose_name = _('client')
-    verbose_name_plural = _('clients')
+    abstract = True
 
   def __unicode__(self):
     return self.name
@@ -111,12 +121,45 @@ class Client(WorkflowmaxBase):
       postal_address = Address()
       postal_address.save()
       self.postal_address = postal_address
-    super(Client, self).save()
+    super(ClientBase, self).save()
 
   def delete(self):
-    super(Client, self).delete()
+    super(ClientBase, self).delete()
     self.address.delete()
     self.postal_address.delete()
+
+  def wm_sync(self):
+    raise NotImplementedException()
+
+  def wm_delete(self):
+    raise NotImplementedException()
+
+  def wm_import_contacts(self, wm_client):
+    raise NotImplementedException()
+
+  # we have to include save() here, because of OneToOne field behaviour
+  def wm_import(self, wm_object):
+    address = Address()
+    address.import_wmaddress(wm_object.address)
+    address.save()
+    self.address = address
+    postal_address = Address()
+    postal_address.import_wmaddress(wm_object.postal_address)
+    postal_address.save()
+    self.postal_address = postal_address
+    self.wm_id = wm_object.id
+    self.name = wm_object.name
+    self.phone = wm_object.phone
+    self.fax = wm_object.fax
+    self.website = wm_object.website
+    self.referral_source = wm_object.referral_source
+    self.save()
+    self.wm_import_contacts(wm_object)
+
+class Client(ClientBase):
+  class Meta:
+    verbose_name = _('client')
+    verbose_name_plural = _('clients')
 
   def wm_sync(self):
     if self.name:
@@ -143,26 +186,11 @@ class Client(WorkflowmaxBase):
       wm_client = WorkflowmaxClient.objects.get(id=self.wm_id)
       wm_client.delete()
 
-  # we have to include save() here (and only this model), because of OneToOne field behaviour
-  def import_wmclient(self, wm_client):
-    address = Address()
-    address.import_wmaddress(wm_client.address)
-    address.save()
-    self.address = address
-    postal_address = Address()
-    postal_address.import_wmaddress(wm_client.postal_address)
-    postal_address.save()
-    self.postal_address = postal_address
-    self.wm_id = wm_client.id
-    self.name = wm_client.name
-    self.phone = wm_client.phone
-    self.fax = wm_client.fax
-    self.website = wm_client.website
-    self.referral_source = wm_client.referral_source
-    self.save()
+  def wm_import_contacts(self, wm_client):
     for wm_contact in wm_client.contacts:
       contact = Contact()
       contact.client = self
-      contact.import_wmcontact(wm_contact)
+      contact.wm_import(wm_contact)
       contact.save()
+
 
