@@ -4,6 +4,7 @@ from django.forms.widgets import Textarea
 from django.utils.text import capfirst
 from workflowmax.job.models import Job
 from workflowmax.client.models import Client
+from workflowmax.staff.models import Staff
 
 class AddJobForm(forms.Form):
   name = forms.CharField(label = capfirst(_('name')))
@@ -25,4 +26,14 @@ class AddJobForm(forms.Form):
     self.fields['client'].choices = choices
 
 class EditJobForm(forms.Form):
-  state = forms.CharField(label = capfirst(_('state')))
+  state = forms.CharField(label = capfirst(_('state')), required=False)
+  assigned = forms.MultipleChoiceField(label = capfirst(_('assigned to')), choices=(), required=False)
+
+  def __init__(self, *args, **kwargs):
+    super(EditJobForm, self).__init__(*args, **kwargs)
+
+    choices =[]
+    staff_list = Staff.objects.all()
+    for staff in staff_list:
+      choices.append((staff.id, staff.name))
+    self.fields['assigned'].choices = choices

@@ -100,7 +100,7 @@ class JobManager(object):
     return self._handle_xml_objects(xml_objects)
 
   def all(self, from_date, to_date):
-    xml_objects = XmlJob.job_objects.all(from_date, to_date)
+    xml_objects = XmlJob.job_objects.all(from_date.strftime('%Y%m%d'), to_date.strftime('%Y%m%d'))
     return self._handle_xml_objects(xml_objects)
 
   def get(self, **kw):
@@ -113,7 +113,8 @@ class JobManager(object):
 
 class Job(object):
   objects = JobManager()
-  put = "http://api.workflowmax.com/job.api/state?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  put_state = "http://api.workflowmax.com/job.api/state?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  put_assign = "http://api.workflowmax.com/job.api/assign?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
   post = "http://api.workflowmax.com/job.api/add?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
   delete_url = "http://api.workflowmax.com/job.api/delete?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
@@ -127,100 +128,146 @@ class Job(object):
   def __getattr__(self, name):
     return getattr(self.xml_object, name)
 
-  def save(self):
+  def _prepare_soup_root_tag(self):
     soup = BeautifulSoup()
-    job_tag = Tag(soup, 'Job')
-    soup.insert(0, job_tag)
+    root_tag = Tag(soup, 'Job')
+    soup.insert(0, root_tag)
+    return (soup, root_tag)
+
+  def _prepare_soup_put_state(self):
+    soup, root_tag = self._prepare_soup_root_tag()
     i = 0
-    method = 'POST'
     try:
       id_tag = Tag(soup, 'ID')
       id_tag.insert(0, NavigableString(self.id))
-      job_tag.insert(i, id_tag)
+      root_tag.insert(i, id_tag)
       i = i+1
-      method = 'PUT'
+    except AttributeError:
+      raise ValueError("You must have ID for PUT.")
+    
+    try:
+      state_tag = Tag(soup, 'State')
+      state_tag.insert(0, NavigableString(self.state))
+      root_tag.insert(i, state_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job state.")
+    return soup
+
+  def _prepare_soup_put_assign(self):
+    soup, root_tag = self._prepare_soup_root_tag()
+    try:
+      id_tag = Tag(soup, 'ID')
+      id_tag.insert(0, NavigableString(self.id))
+      root_tag.insert(0, id_tag)
+    except AttributeError:
+      raise ValueError("You must have ID for PUT.")
+    
+    i = 1
+    old_list = [x.id for x in self.xml_object.assigned]
+    new_list = [x.id for x in self.assigned]
+    added = [x for x in new_list if x not in old_list]
+    removed = [x for x in old_list if x not in new_list]
+    for staff_id in added:
+      add_tag = Tag(soup, 'add', [('id', '%s' % staff_id),])
+      add_tag.isSelfClosing=True
+      root_tag.insert(i, add_tag)
+      i = i+1
+    for staff_id in removed:
+      remove_tag = Tag(soup, 'remove', [('id', '%s' % staff_id),])
+      remove_tag.isSelfClosing=True
+      root_tag.insert(i, remove_tag)
+      i = i+1
+    return soup
+
+  def _prepare_soup_post(self):
+    soup, root_tag = self._prepare_soup_root_tag()
+    i = 0
+    try:
+      name_tag = Tag(soup, 'Name')
+      name_tag.insert(0, NavigableString(self.name))
+      root_tag.insert(i, name_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job name.")  
+
+    try:
+      description_tag = Tag(soup, 'Description')
+      description_tag.insert(0, NavigableString(self.description))
+      root_tag.insert(i, description_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job description.")  
+
+    try:
+      client_id_tag = Tag(soup, 'ClientID')
+      client_id_tag.insert(0, NavigableString('%d' % self.clients[0].id))
+      root_tag.insert(i, client_id_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job client id.")  
+    
+    try:
+      start_date_tag = Tag(soup, 'StartDate')
+      start_date_tag.insert(0, NavigableString(self.start_date.strftime('%Y%m%d')))
+      root_tag.insert(i, start_date_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job start date.")  
+
+    try:
+      due_date_tag = Tag(soup, 'DueDate')
+      due_date_tag.insert(0, NavigableString(self.due_date.strftime('%Y%m%d')))
+      root_tag.insert(i, due_date_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job due date.")  
+
+    try:
+      if self.contacts:
+        contact_id_tag = Tag(soup, 'ClientID')
+        contact_id_tag.insert(0, NavigableString('%d' % self.contacts[0].id))
+        root_tag.insert(i, contact_id_tag)
+        i = i+1
     except AttributeError:
       pass
     
-    if method == 'PUT':
-      try:
-        state_tag = Tag(soup, 'State')
-        state_tag.insert(0, NavigableString(self.name))
-        job_tag.insert(i, state_tag)
+    try:
+      if self.client_number:
+        client_number_tag = Tag(soup, 'ClientNumber')
+        client_number_tag.insert(0, NavigableString(self.client_number))
+        root_tag.insert(i, client_number_tag)
         i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job state.")
-    else:
-      try:
-        name_tag = Tag(soup, 'Name')
-        name_tag.insert(0, NavigableString(self.name))
-        job_tag.insert(i, name_tag)
+    except AttributeError:
+      pass
+    
+    try:
+      if self.template_id:
+        template_id_tag = Tag(soup, 'TemplateID')
+        template_id_tag.insert(0, NavigableString(self.template_id))
+        root_tag.insert(i, template_id_tag)
         i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job name.")  
-  
-      try:
-        description_tag = Tag(soup, 'Description')
-        description_tag.insert(0, NavigableString(self.description))
-        job_tag.insert(i, description_tag)
-        i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job description.")  
-  
-      try:
-        client_id_tag = Tag(soup, 'ClientID')
-        client_id_tag.insert(0, NavigableString('%d' % self.clients[0].id))
-        job_tag.insert(i, client_id_tag)
-        i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job client id.")  
-      
-      try:
-        start_date_tag = Tag(soup, 'StartDate')
-        start_date_tag.insert(0, NavigableString(self.start_date.strftime('%Y%m%d')))
-        job_tag.insert(i, start_date_tag)
-        i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job start date.")  
-  
-      try:
-        due_date_tag = Tag(soup, 'DueDate')
-        due_date_tag.insert(0, NavigableString(self.due_date.strftime('%Y%m%d')))
-        job_tag.insert(i, due_date_tag)
-        i = i+1
-      except AttributeError:
-        raise ValueError("You must provide job due date.")  
-  
-      try:
-        if self.contacts:
-          contact_id_tag = Tag(soup, 'ClientID')
-          contact_id_tag.insert(0, NavigableString('%d' % self.contacts[0].id))
-          job_tag.insert(i, contact_id_tag)
-          i = i+1
-      except AttributeError:
-        pass
-      
-      try:
-        if self.client_number:
-          client_number_tag = Tag(soup, 'ClientNumber')
-          client_number_tag.insert(0, NavigableString(self.client_number))
-          job_tag.insert(i, client_number_tag)
-          i = i+1
-      except AttributeError:
-        pass
-      
-      try:
-        if self.template_id:
-          template_id_tag = Tag(soup, 'TemplateID')
-          template_id_tag.insert(0, NavigableString(self.template_id))
-          job_tag.insert(i, template_id_tag)
-          i = i+1
-      except AttributeError:
-        pass    
+    except AttributeError:
+      pass    
+    return soup
 
-    if method == "PUT":
-      response = rest_client.Client("").PUT(self.put, str(soup))
+  def save(self):
+    method = 'POST'
+    try:
+      self.id
+      method = 'PUT'
+    except AttributeError:
+      pass
+
+    if method == 'PUT':
+      if self.state != self.xml_object.state:
+        soup = self._prepare_soup_put_state()
+        response = rest_client.Client("").PUT(self.put_state, str(soup))
+        Job(xml=response.content) # exception will be raised in case of error
+      soup = self._prepare_soup_put_assign()
+      response = rest_client.Client("").PUT(self.put_assign, str(soup))
     else:
+      soup = self._prepare_soup_post()
       response = rest_client.Client("").POST(self.post, str(soup))
     return Job(xml=response.content)
 
@@ -243,6 +290,7 @@ class Job(object):
   def to_dict(self):
     d = dict()
     d['state'] = self.state
+    d['assigned'] = [x.id for x in self.assigned]
 #    d['name'] = self.name
 #    d['description'] = self.description
 #    d['start_date'] = self.start_date

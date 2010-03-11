@@ -101,7 +101,7 @@ def delete_supplier(request, object_id):
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('supplier-list'))
 
-  if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
     supplier.wm_delete()
   
   return delete_object(request, object_id=supplier.id, model=Supplier, login_required=True, template_name='supplier/delete.html', post_delete_redirect=reverse('supplier-list'), extra_context={'header': capfirst(_('delete supplier')), 'comment': capfirst(_('you are trying to delete supplier "%s". Sure?') % supplier.name)})

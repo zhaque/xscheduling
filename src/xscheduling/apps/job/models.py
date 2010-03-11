@@ -1,13 +1,17 @@
 from datetime import datetime, timedelta
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from client.models import WorkflowmaxBase, Client
 from staff.models import Staff
 from supplier.models import Supplier
+from workflowmax.client.models import Client as WorkflowmaxClient
+from workflowmax.exceptions import ResponseStatusError
 from workflowmax.job.models import Job as WorkflowmaxJob
+from workflowmax.staff.models import Staff as WorkflowmaxStaff
 
 class JobState(models.Model):
-  order = models.PositiveSmallIntegerField(_('order'), max_length=255)
+  order = models.PositiveSmallIntegerField(_('order'), default=10)
   name = models.CharField(_('name'), max_length=255)
 
   class Meta:
@@ -20,7 +24,7 @@ class JobState(models.Model):
 
 class JobType(models.Model):
 # I think we don't need order for types, maybe we need something like short name or abbreviations. 
-#  order = models.SmallPositiveIntegerField(_('order'), max_length=255)
+#  order = models.SmallPositiveIntegerField(_('order'))
   name = models.CharField(_('name'), max_length=255)
 
   class Meta:
@@ -110,4 +114,56 @@ class Job(WorkflowmaxBase):
 
   def __unicode__(self):
     return self.name
+
+  def wm_import(self, wm_object):
+    self.wm_id = wm_object.id
+    self.name = wm_object.name
+    self.description = wm_object.description
+    self.start_date = wm_object.start_date
+    self.due_date = wm_object.due_date
+    if wm_object.state:
+      self.state, is_new = JobState.objects.get_or_create(name=wm_object.state)
+    else:
+      # we MUST have at least one state in db
+      self.state = JobState.objects.all()[0]
+    if wm_object.type:
+      self.type, is_new = JobType.objects.get_or_create(name=wm_object.type)
+    else:
+      # we MUST have at least one type in db
+      self.type = JobType.objects.all()[0]
+    for wm_client in wm_object.clients:
+      self.client, is_new = Client.objects.get_or_create(wm_id=wm_client.id, name=wm_client.name)
+    self.save()
+    for wm_staff in wm_object.assigned:
+      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, name=wm_staff.name)
+      self.staff.add(staff)
+
+  def wm_delete(self):
+    if self.wm_id:
+      wm_job = WorkflowmaxJob.objects.get(id=self.wm_id)
+      wm_job.delete()
+
+  def wm_sync(self):
+    if self.name and self.description and self.start_date and self.due_date and self.client and self.client.wm_id:
+      wm_job = WorkflowmaxJob()
+      if self.wm_id:
+        wm_job.id = self.wm_id
+      wm_job.name = self.name
+      wm_job.description = self.description
+      wm_job.start_date = self.start_date
+      wm_job.due_date = self.due_date
+      wm_client = WorkflowmaxClient.objects.get(id=self.client.wm_id)
+      wm_job.clients = [wm_client,]
+      wm_job = wm_job.save()
+      if not self.wm_id:
+        self.wm_id = wm_job.id
+        self.save()
+      if self.staff.all():
+        wm_job.assigned = []
+        for staff in self.staff.all():
+          try:
+            wm_job.assigned.append(WorkflowmaxStaff.objects.get(id=staff.wm_id))
+          except ResponseStatusError:
+            pass
+        wm_job.save()
 

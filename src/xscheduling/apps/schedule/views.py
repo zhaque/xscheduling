@@ -7,13 +7,13 @@ from django.views.generic.simple import direct_to_template
 from uni_form.helpers import FormHelper, Submit, Reset
 from workflowmax.client.models import Client, Contact
 from workflowmax.client.forms import ClientForm, ContactForm
+from workflowmax.exceptions import ResponseStatusError
+from workflowmax.job.models import Job
+from workflowmax.job.forms import AddJobForm, EditJobForm
 from workflowmax.staff.models import Staff
 from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
 from workflowmax.supplier.forms import SupplierForm
-from workflowmax.job.models import Job
-from workflowmax.job.forms import AddJobForm, EditJobForm
-
 
 def root(request):
   return direct_to_template(request, template='schedule/root.html')
@@ -473,6 +473,13 @@ def edit_job(request, object_id):
     form = EditJobForm(request.POST, request.FILES)
     if form.is_valid():
       job.state = form.cleaned_data['state']
+      if form.cleaned_data['assigned']:
+        job.assigned = []
+        for assigned_id in form.cleaned_data['assigned']:
+          try:
+            job.assigned.append(Staff.objects.get(id=assigned_id))
+          except ResponseStatusError:
+            pass
       job.save()
       return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
   

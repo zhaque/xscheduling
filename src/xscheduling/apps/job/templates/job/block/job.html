@@ -1,0 +1,28 @@
+{% load i18n %}
+{% if job %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ job.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'description' %}{% endfilter %}</dt><dd>{{ job.description }}</dd>
+    <dt>{% filter capfirst %}{% trans 'state' %}{% endfilter %}</dt><dd>{{ job.state }}</dd>
+    <dt>{% filter capfirst %}{% trans 'type' %}{% endfilter %}</dt><dd>{{ job.type }}</dd>
+    <dt>{% filter capfirst %}{% trans 'start_date' %}{% endfilter %}</dt><dd>{{ job.start_date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'due_date' %}{% endfilter %}</dt><dd>{{ job.due_date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'client' %}{% endfilter %}</dt><dd><a href="{% url client-view job.client.id %}">{{ job.client }}</a></dd>
+    <dt>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</dt>
+      <dd>
+      {% for staff in job.staff.all %}
+        <a href="{% url staff-view staff.id %}">{{ staff }}</a>
+      {% endfor %}
+      </dd>
+    <dt>{% filter capfirst %}{% trans 'suppliers' %}{% endfilter %}</dt>
+      <dd>
+      {% for supplier in job.suppliers.all %}
+        <a href="{% url supplier-view supplier.id %}">{{ supplier }}</a>
+      {% endfor %}
+      </dd>
+  </dl>
+  <a href="{% url job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
+  <a href="{% url job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}
