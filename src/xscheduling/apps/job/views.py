@@ -11,8 +11,8 @@ from django.views.generic.simple import direct_to_template
 from uni_form.helpers import FormHelper, Submit, Reset
 
 from client.models import Client, Address
-from job.forms import JobForm
-from job.models import Job, Task, Milestone, JobState, JobType
+from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
+from job.models import Job, Task, Milestone, JobState, JobType, Note
 from workflowmax.job.models import Job as WorkflowmaxJob
 
 def list_jobs(request):
@@ -35,13 +35,13 @@ def get_job(request, object_id):
 def add_job(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new job'))
-  job_form = JobForm()
+  job_form = AddJobForm()
   helper = FormHelper()
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   if request.method == "POST":
-    job_form = JobForm(request.POST, request.FILES)
+    job_form = AddJobForm(request.POST, request.FILES)
     if job_form.is_valid():
       job = job_form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
@@ -53,7 +53,30 @@ def add_job(request):
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
 def edit_job(request, object_id):
-  pass
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    job = Job.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  
+  context_vars['header'] = capfirst(_('edit job %s') % job.name)
+  job_form = EditJobForm(instance=job)
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  if request.method == "POST":
+    job_form = EditJobForm(request.POST, request.FILES, instance=job)
+    if job_form.is_valid():
+      job = job_form.save()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        job.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = job_form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
 def delete_job(request, object_id):
   context_vars = dict()
@@ -75,7 +98,7 @@ def import_jobs(request):
   if request.method == "POST":
     for job in Job.objects.all():
       job.delete()
-    wm_jobs = WorkflowmaxJob.objects.all(datetime.now() - timedelta(days=365), datetime.now())
+    wm_jobs = WorkflowmaxJob.objects.all(datetime.now() - timedelta(days=365), datetime.now() + timedelta(days=365))
 #    wm_jobs = WorkflowmaxJob.objects.current()
     for wm_job in wm_jobs:
       job = Job()
@@ -84,4 +107,234 @@ def import_jobs(request):
   
   return direct_to_template(request, template='job/import.html', extra_context=context_vars)
   
+def add_task(request, object_id):
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    job = Job.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
 
+  form = TaskForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = TaskForm(request.POST, request.FILES)
+    if form.is_valid():
+      task = form.save(commit=False)
+      task.job = job
+      task.save()
+      form.save_m2m()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        task.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
+
+def edit_task(request, owner_id, object_id):
+  context_vars = dict()
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    task = Task.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+  form = TaskForm(instance=task)
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = TaskForm(request.POST, request.FILES, instance=task)
+    if form.is_valid():
+      form.save()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        task.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
+
+def delete_task(request, owner_id, object_id):
+  context_vars = dict()
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    task = Task.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+#  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#    task.wm_delete()
+  
+  return delete_object(request, object_id=task.id, model=Task, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete task')), 'comment': capfirst(_('you are trying to delete task "%s". Sure?') % task.name)})
+
+
+def add_milestone(request, object_id):
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    job = Job.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+
+  form = MilestoneForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = MilestoneForm(request.POST, request.FILES)
+    if form.is_valid():
+      milestone = form.save(commit=False)
+      milestone.job = job
+      milestone.save()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        milestone.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
+
+def edit_milestone(request, owner_id, object_id):
+  context_vars = dict()
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    milestone = Milestone.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+  form = MilestoneForm(instance=milestone)
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = MilestoneForm(request.POST, request.FILES, instance=milestone)
+    if form.is_valid():
+      form.save()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        milestone.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
+
+def delete_milestone(request, owner_id, object_id):
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    milestone = Milestone.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+#  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#    milestone.wm_delete()
+  
+  return delete_object(request, object_id=milestone.id, model=Milestone, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete milestone')), 'comment': capfirst(_('you are trying to delete milestone "%s". Sure?') % milestone)})
+
+
+def add_note(request, object_id):
+  context_vars = dict()
+  try:
+    object_id = int(object_id)
+    job = Job.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+
+  form = NoteForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = NoteForm(request.POST, request.FILES)
+    if form.is_valid():
+      note = form.save(commit=False)
+      note.job = job
+      note.save()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        note.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
+
+def edit_note(request, owner_id, object_id):
+  context_vars = dict()
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    note = Note.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+  form = NoteForm(instance=note)
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  
+  if request.method == "POST":
+    form = NoteForm(request.POST, request.FILES, instance=note)
+    if form.is_valid():
+      form.save()
+#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#        note.wm_sync()
+      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
+
+def delete_note(request, owner_id, object_id):
+  try:
+    owner_id = int(owner_id)
+    job = Job.objects.get(id=owner_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-list'))
+  try:
+    object_id = int(object_id)
+    note = Note.objects.get(id=object_id)
+  except ValueError, ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+
+#  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+#    note.wm_delete()
+  
+  return delete_object(request, object_id=note.id, model=Note, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete note')), 'comment': capfirst(_('you are trying to delete note "%s". Sure?') % note)})

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
@@ -67,21 +68,31 @@ class Contact(ContactBase):
         self.wm_id = wm_contact.id
         self.save()
 
-class Note(models.Model):
+class NoteBase(models.Model):
   title = models.CharField(_('title'), max_length=255)
   text = models.TextField(_('text'))
   folder = models.CharField(_('folder'), max_length=255, null=True, blank=True)
-  date = models.DateTimeField(_('date'), null=True, blank=True)
-  created_by = models.CharField(_('created_by'), max_length=255, null=True, blank=True)
-  client = models.ForeignKey('Client', verbose_name="client", related_name='notes')
+  date = models.DateTimeField(_('date'), null=True, blank=True, default=datetime.now())
+  created_by = models.CharField(_('created by'), max_length=255, null=True, blank=True)
 
   class Meta:
+    abstract = True
     ordering = ['title']
     verbose_name = _('note')
     verbose_name_plural = _('notes')
 
   def __unicode__(self):
     return self.title
+
+  def wm_import(self, wm_object):
+    self.title = wm_object.title
+    self.text = wm_object.text
+    self.folder = wm_object.folder
+    self.date = wm_object.date
+    self.created_by = wm_object.created_by
+
+class Note(NoteBase):
+  client = models.ForeignKey('Client', verbose_name="client", related_name='notes')
 
 class Address(models.Model):
   postcode = models.CharField(max_length=10)
@@ -136,12 +147,6 @@ class ClientBase(WorkflowmaxBase):
     super(ClientBase, self).delete()
     self.address.delete()
     self.postal_address.delete()
-
-  def wm_sync(self):
-    raise NotImplementedException()
-
-  def wm_delete(self):
-    raise NotImplementedException()
 
   def wm_import_contacts(self, wm_client):
     raise NotImplementedException()

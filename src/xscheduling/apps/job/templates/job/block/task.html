@@ -1,0 +1,21 @@
+{% load i18n %}
+{% if task %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ task.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'description' %}{% endfilter %}</dt><dd>{{ task.description }}</dd>
+    <dt>{% filter capfirst %}{% trans 'estimated minutes' %}{% endfilter %}</dt><dd>{{ task.estimated_minutes }}</dd>
+    <dt>{% filter capfirst %}{% trans 'actual minutes' %}{% endfilter %}</dt><dd>{{ task.actual_minutes }}</dd>
+    <dt>{% filter capfirst %}{% trans 'completed' %}{% endfilter %}</dt><dd>{{ task.completed }}</dd>
+    <dt>{% filter capfirst %}{% trans 'billable' %}{% endfilter %}</dt><dd>{{ task.billable }}</dd>
+    <dt>{% filter capfirst %}{% trans 'start date' %}{% endfilter %}</dt><dd>{{ task.start_date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'due date' %}{% endfilter %}</dt><dd>{{ task.due_date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</dt>
+      <dd>
+      {% for staff in task.staff.all %}
+        <a href="{% url staff-view staff.id %}">{{ staff }}</a>
+      {% endfor %}
+      </dd>
+  </dl>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

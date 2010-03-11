@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from client.models import WorkflowmaxBase, Client
+from client.models import WorkflowmaxBase, Client, NoteBase
 from staff.models import Staff
 from supplier.models import Supplier
 from workflowmax.client.models import Client as WorkflowmaxClient
@@ -35,6 +35,9 @@ class JobType(models.Model):
   def __unicode__(self):
     return self.name
 
+class Note(NoteBase):
+  job = models.ForeignKey('Job', verbose_name="job", related_name='notes')
+
 class Task(WorkflowmaxBase):
 #  id = xml_models.IntField(xpath="/task/id")
 #  name = xml_models.CharField(xpath="/task/name")
@@ -52,8 +55,8 @@ class Task(WorkflowmaxBase):
   actual_minutes = models.PositiveIntegerField(_('actual minutes'), default=0)
   completed = models.BooleanField(_('completed'), default=False)
   billable = models.BooleanField(_('billable'), default=True)
-  start_date = models.DateTimeField(_('start date'), default=datetime.now())
-  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1))
+  start_date = models.DateTimeField(_('start date'), default=datetime.now(), null=True, blank=True)
+  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), null=True, blank=True)
   staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='tasks')
   job = models.ForeignKey('Job', verbose_name = _('job'), related_name='tasks')
 
@@ -64,6 +67,23 @@ class Task(WorkflowmaxBase):
 
   def __unicode__(self):
     return self.name
+
+  def wm_import(self, wm_object):
+    self.wm_id = wm_object.id
+    self.name = wm_object.name
+    self.description = wm_object.description
+    self.estimated_minutes = wm_object.estimated_minutes
+    self.actual_minutes = wm_object.actual_minutes
+    self.completed = wm_object.completed
+    self.billable = wm_object.billable
+    if wm_object.start_date:
+      self.start_date = wm_object.start_date
+    if wm_object.due_date:
+      self.due_date = wm_object.due_date
+    self.save()
+    for wm_staff in wm_object.assigned:
+      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, name=wm_staff.name)
+      self.staff.add(staff)
 
 class Milestone(models.Model):
 #  date = xml_models.DateField(xpath="/milestone/date")
@@ -82,6 +102,10 @@ class Milestone(models.Model):
   def __unicode__(self):
     return self.description
 
+  def wm_import(self, wm_object):
+    self.date = wm_object.date
+    self.description = wm_object.description
+    self.completed = wm_object.completed
 
 class Job(WorkflowmaxBase):
 #  id = xml_models.CharField(xpath="/job/id")
@@ -137,6 +161,20 @@ class Job(WorkflowmaxBase):
     for wm_staff in wm_object.assigned:
       staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, name=wm_staff.name)
       self.staff.add(staff)
+    for wm_task in wm_object.tasks:
+      task = Task()
+      task.job = self
+      task.wm_import(wm_task)
+    for wm_milestone in wm_object.milestones:
+      milestone = Milestone()
+      milestone.job = self
+      milestone.wm_import(wm_milestone)
+      milestone.save()
+    for wm_note in wm_object.notes:
+      note = Note()
+      note.job = self
+      note.wm_import(wm_note)
+      note.save()
 
   def wm_delete(self):
     if self.wm_id:
@@ -147,7 +185,8 @@ class Job(WorkflowmaxBase):
     if self.name and self.description and self.start_date and self.due_date and self.client and self.client.wm_id:
       wm_job = WorkflowmaxJob()
       if self.wm_id:
-        wm_job.id = self.wm_id
+        wm_job = WorkflowmaxJob.objects.get(id=self.wm_id)
+        wm_job.state = self.state.name
       wm_job.name = self.name
       wm_job.description = self.description
       wm_job.start_date = self.start_date

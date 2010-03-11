@@ -20,7 +20,28 @@
         <a href="{% url supplier-view supplier.id %}">{{ supplier }}</a>
       {% endfor %}
       </dd>
+    {% for task in job.tasks.all %}
+    <h2>{% filter capfirst %}{% trans 'task' %}{% endfilter %} {{ task }}</h2>
+      {% include 'job/block/task.html' %}
+      <a href="{% url job-task-edit job.id task.id %}">{% filter capfirst %}{% trans 'edit task' %}{% endfilter %}</a>
+      <a href="{% url job-task-delete job.id task.id %}">{% filter capfirst %}{% trans 'delete task' %}{% endfilter %}</a>
+    {% endfor %}
+    {% for milestone in job.milestones.all %}
+    <h2>{% filter capfirst %}{% trans 'milestone' %}{% endfilter %} {{ milestone }}</h2>
+      {% include 'job/block/milestone.html' %}
+      <a href="{% url job-milestone-edit job.id milestone.id %}">{% filter capfirst %}{% trans 'edit milestone' %}{% endfilter %}</a>
+      <a href="{% url job-milestone-delete job.id milestone.id %}">{% filter capfirst %}{% trans 'delete milestone' %}{% endfilter %}</a>
+    {% endfor %}
+    {% for note in job.notes.all %}
+    <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %} {{ note }}</h2>
+      {% include 'client/block/note.html' %}
+      <a href="{% url job-note-edit job.id note.id %}">{% filter capfirst %}{% trans 'edit note' %}{% endfilter %}</a>
+      <a href="{% url job-note-delete job.id note.id %}">{% filter capfirst %}{% trans 'delete note' %}{% endfilter %}</a>
+    {% endfor %}
   </dl>
+  <a href="{% url job-task-add job.id %}">{% filter capfirst %}{% trans 'add task' %}{% endfilter %}</a>
+  <a href="{% url job-milestone-add job.id %}">{% filter capfirst %}{% trans 'add milestone' %}{% endfilter %}</a>
+  <a href="{% url job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a>
   <a href="{% url job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
   <a href="{% url job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
 {% else %}
