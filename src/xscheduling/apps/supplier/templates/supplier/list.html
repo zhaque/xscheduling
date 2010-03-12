@@ -15,6 +15,7 @@
 <a href="{% url supplier-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
 {% else %}
 You don't have any suppliers, you can <a href="{% url supplier-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url supplier-add %}">{% trans 'create new' %}</a>.
+<h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
 
 {% endif %}
 {% endblock %}
