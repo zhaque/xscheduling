@@ -9,5 +9,5 @@
 <h1>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h1>
 <a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a>
 <h1>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h1>
-<a href="{% url schedule-job-list %}">{% filter capfirst %}{% trans 'job list (still workflowmax)' %}{% endfilter %}</a>
+<a href="{% url job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a>
 {% endblock %}

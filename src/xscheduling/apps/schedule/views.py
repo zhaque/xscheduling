@@ -8,8 +8,8 @@ from uni_form.helpers import FormHelper, Submit, Reset
 from workflowmax.client.models import Client, Contact
 from workflowmax.client.forms import ClientForm, ContactForm
 from workflowmax.exceptions import ResponseStatusError
-from workflowmax.job.models import Job
-from workflowmax.job.forms import AddJobForm, EditJobForm
+from workflowmax.job.models import Job, Note
+from workflowmax.job.forms import AddJobForm, EditJobForm, NoteForm
 from workflowmax.staff.models import Staff
 from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
@@ -48,8 +48,6 @@ def edit_client(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ClientForm(request.POST, request.FILES)
     if form.is_valid():
@@ -63,6 +61,8 @@ def edit_client(request, object_id):
       client.save()
       return HttpResponseRedirect(reverse('schedule-client', args=[client.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def add_client(request):
@@ -73,8 +73,6 @@ def add_client(request):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ClientForm(request.POST, request.FILES)
     if form.is_valid():
@@ -89,6 +87,8 @@ def add_client(request):
       client = client.save()
       return HttpResponseRedirect(reverse('schedule-client', args=[client.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def delete_client(request, object_id):
@@ -119,8 +119,6 @@ def add_client_contact(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ContactForm(request.POST, request.FILES)
     if form.is_valid():
@@ -134,6 +132,8 @@ def add_client_contact(request, object_id):
       contact = contact.save()
       return HttpResponseRedirect(reverse('schedule-client', args=[object_id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def edit_client_contact(request, owner_id, object_id):
@@ -153,8 +153,6 @@ def edit_client_contact(request, owner_id, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ContactForm(request.POST, request.FILES)
     if form.is_valid():
@@ -166,6 +164,8 @@ def edit_client_contact(request, owner_id, object_id):
       contact.save()
       return HttpResponseRedirect(reverse('schedule-client', args=[owner_id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 # Staff views
@@ -199,8 +199,6 @@ def edit_staff(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = StaffForm(request.POST, request.FILES)
     if form.is_valid():
@@ -213,6 +211,8 @@ def edit_staff(request, object_id):
       staff.save()
       return HttpResponseRedirect(reverse('schedule-staff', args=[staff.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def add_staff(request):
@@ -223,8 +223,6 @@ def add_staff(request):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = StaffForm(request.POST, request.FILES)
     if form.is_valid():
@@ -238,6 +236,8 @@ def add_staff(request):
       staff = staff.save()
       return HttpResponseRedirect(reverse('schedule-staff', args=[staff.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def delete_staff(request, object_id):
@@ -299,8 +299,6 @@ def edit_supplier(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = SupplierForm(request.POST, request.FILES)
     if form.is_valid():
@@ -314,6 +312,8 @@ def edit_supplier(request, object_id):
       supplier.save()
       return HttpResponseRedirect(reverse('schedule-supplier', args=[supplier.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def add_supplier(request):
@@ -324,8 +324,6 @@ def add_supplier(request):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = SupplierForm(request.POST, request.FILES)
     if form.is_valid():
@@ -340,6 +338,8 @@ def add_supplier(request):
       supplier = supplier.save()
       return HttpResponseRedirect(reverse('schedule-supplier', args=[supplier.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def delete_supplier(request, object_id):
@@ -370,8 +370,6 @@ def add_supplier_contact(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ContactForm(request.POST, request.FILES)
     if form.is_valid():
@@ -385,6 +383,8 @@ def add_supplier_contact(request, object_id):
       contact = contact.save()
       return HttpResponseRedirect(reverse('schedule-supplier', args=[object_id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def edit_supplier_contact(request, owner_id, object_id):
@@ -404,8 +404,6 @@ def edit_supplier_contact(request, owner_id, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = ContactForm(request.POST, request.FILES)
     if form.is_valid():
@@ -417,6 +415,8 @@ def edit_supplier_contact(request, owner_id, object_id):
       contact.save()
       return HttpResponseRedirect(reverse('schedule-supplier', args=[owner_id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 #Job views
@@ -440,8 +440,6 @@ def add_job(request):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = AddJobForm(request.POST, request.FILES)
     if form.is_valid():
@@ -456,6 +454,8 @@ def add_job(request):
       job = job.save()
       return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def edit_job(request, object_id):
@@ -467,8 +467,6 @@ def edit_job(request, object_id):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  context_vars['form'] = form
-  context_vars['helper'] = helper
   if request.method == "POST":
     form = EditJobForm(request.POST, request.FILES)
     if form.is_valid():
@@ -483,6 +481,8 @@ def edit_job(request, object_id):
       job.save()
       return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
   
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 def delete_job(request, object_id):
@@ -496,3 +496,31 @@ def delete_job(request, object_id):
     return HttpResponseRedirect(reverse('schedule-job-list'))
 
   return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
+
+def add_job_note(request, object_id):
+  job = Job.objects.get(id=object_id)
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('add new note for job %s') % job.id)
+  form = NoteForm()
+  helper = FormHelper()
+  helper.form_class = 'uniform'
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  if request.method == "POST":
+    form = NoteForm(request.POST, request.FILES)
+    if form.is_valid():
+      note = Note()
+      note.owner_id = job.id
+      note.title = form.cleaned_data['title']
+      note.text = form.cleaned_data['text']
+      note.folder = form.cleaned_data['folder']
+      note.public = form.cleaned_data['public']
+      note.save()
+      return HttpResponseRedirect(reverse('schedule-job', args=[job.id]))
+  context_vars['form'] = form
+  context_vars['helper'] = helper
+  
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
+
+
+

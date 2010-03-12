@@ -19,12 +19,12 @@ class Staff(WorkflowmaxBase):
   def __unicode__(self):
     return self.name
 
-  def save(self):
+  def save(self, *args, **kwargs):
     if not self.address:
       address = Address()
       address.save()
       self.address = address
-    super(Staff, self).save()
+    super(Staff, self).save(*args, **kwargs)
 
   def delete(self):
     super(Staff, self).delete()

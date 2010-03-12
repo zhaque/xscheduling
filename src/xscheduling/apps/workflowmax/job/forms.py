@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms.widgets import Textarea
 from django.utils.text import capfirst
-from workflowmax.job.models import Job
+from workflowmax.job.models import Job, Note
 from workflowmax.client.models import Client
 from workflowmax.staff.models import Staff
 
@@ -37,3 +37,9 @@ class EditJobForm(forms.Form):
     for staff in staff_list:
       choices.append((staff.id, staff.name))
     self.fields['assigned'].choices = choices
+
+class NoteForm(forms.Form):
+  title = forms.CharField(label = capfirst(_('title')))
+  text = forms.CharField(label = capfirst(_('text')))
+  folder = forms.CharField(label = capfirst(_('folder')), required=False)
+  public = forms.BooleanField(label = capfirst(_('public')), required=False)

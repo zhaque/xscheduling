@@ -25,6 +25,7 @@
       {% include 'schedule/block/note.html' %}
     {% endfor %}
   </dl>
+  <a href="{% url schedule-job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a>
   <a href="{% url schedule-job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
   <a href="{% url schedule-job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
 {% else %}

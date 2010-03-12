@@ -27,4 +27,5 @@ urlpatterns = patterns('',
     url(r'^job/(?P<object_id>\w+)/$', 'schedule.views.get_job', name='schedule-job'),
     url(r'^job/(?P<object_id>\w+)/edit/$', 'schedule.views.edit_job', name='schedule-job-edit'),
     url(r'^job/(?P<object_id>\w+)/delete/$', 'schedule.views.delete_job', name='schedule-job-delete'),
+    url(r'^job/(?P<object_id>\w+)/note/add/$', 'schedule.views.add_job_note', name='schedule-job-note-add'),
 )

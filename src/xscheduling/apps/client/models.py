@@ -37,9 +37,6 @@ class ContactBase(WorkflowmaxBase):
   def __unicode__(self):
     return self.name
 
-  def wm_sync(self):
-    raise NotImplementedException()
-
   def wm_import(self, wm_contact):
     self.wm_id = wm_contact.id
     self.name = wm_contact.name
@@ -74,6 +71,7 @@ class NoteBase(models.Model):
   folder = models.CharField(_('folder'), max_length=255, null=True, blank=True)
   date = models.DateTimeField(_('date'), null=True, blank=True, default=datetime.now())
   created_by = models.CharField(_('created by'), max_length=255, null=True, blank=True)
+  public = models.BooleanField(_('public'), default=True)
 
   class Meta:
     abstract = True
@@ -83,6 +81,9 @@ class NoteBase(models.Model):
 
   def __unicode__(self):
     return self.title
+
+  def wm_sync(self):
+    raise NotImplementedException()
 
   def wm_import(self, wm_object):
     self.title = wm_object.title
@@ -132,7 +133,7 @@ class ClientBase(WorkflowmaxBase):
   def __unicode__(self):
     return self.name
 
-  def save(self):
+  def save(self, *args, **kwargs):
     if not self.address:
       address = Address()
       address.save()
@@ -141,7 +142,7 @@ class ClientBase(WorkflowmaxBase):
       postal_address = Address()
       postal_address.save()
       self.postal_address = postal_address
-    super(ClientBase, self).save()
+    super(ClientBase, self).save(*args, **kwargs)
 
   def delete(self):
     super(ClientBase, self).delete()

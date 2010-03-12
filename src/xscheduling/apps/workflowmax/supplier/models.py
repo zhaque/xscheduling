@@ -7,6 +7,7 @@ from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
 from workflowmax.client.models import Note
 
+# I had to copy client's contact models becasue of inheritance problems of xml_models.Model manager
 class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
   name = xml_models.CharField(xpath="/contact/name")
@@ -33,9 +34,9 @@ class Contact(object):
   post = "http://api.workflowmax.com/supplier.api/contact?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def __init__(self, xml_contact=None, xml=None):
-    self.xml_contact = xml_contact
     if xml_contact and not isinstance(xml_contact, xml_models.Model):
       raise InvalidObjectType('object is not child of xml_models.Model')
+    self.xml_contact = xml_contact
     if xml:
       self.xml_contact = XmlContact(xml=xml)
 

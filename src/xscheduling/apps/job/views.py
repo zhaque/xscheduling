@@ -283,8 +283,8 @@ def add_note(request, object_id):
       note = form.save(commit=False)
       note.job = job
       note.save()
-#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
-#        note.wm_sync()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        note.wm_sync()
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form

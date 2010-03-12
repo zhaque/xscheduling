@@ -5,7 +5,7 @@ from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableStrin
 from django.conf import settings
 from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
-from workflowmax.client.models import Note as XmlNote
+#from workflowmax.client.models import Note as XmlNote
 
 class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
@@ -36,10 +36,97 @@ class XmlMilestone(xml_models.Model):
   description = xml_models.CharField(xpath="/milestone/description")
   completed = xml_models.BoolField(xpath="/milestone/completed")
 
+class XmlNote(xml_models.Model):
+  title = xml_models.CharField(xpath="/note/title")
+  text = xml_models.CharField(xpath="")
+  folder = xml_models.CharField(xpath="/note/folder")
+  date = xml_models.DateField(xpath="/note/date", date_format="%Y-%m-%dT%H:%M:%S")
+  created_by = xml_models.CharField(xpath="/note/createdBy")
+
+  def get_text_field(self):
+    soup = BeautifulStoneSoup(self._xml)
+    return soup.note.text.contents[0]  
+  
+  def __getattribute__(self, name):
+    if name == 'text':
+      return self.get_text_field()
+    return super(XmlNote, self).__getattribute__(name)
+
+class Note(object):
+  post = "http://api.workflowmax.com/job.api/note?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+
+  def __init__(self, xml_note=None, xml=None):
+    if xml_note and not isinstance(xml_note, xml_models.Model):
+      raise InvalidObjectType('object is not child of xml_models.Model')
+    self.xml_note = xml_note
+    if xml:
+      self.xml_note = XmlNote(xml=xml)
+
+  def __getattr__(self, name):
+    return getattr(self.xml_note, name)
+
+  def save(self):
+    soup = BeautifulSoup()
+    root_tag = Tag(soup, 'Note')
+    soup.insert(0, root_tag)
+    i = 0
+
+    try:
+      job_tag = Tag(soup, 'Job')
+      job_tag.insert(0, NavigableString('%s' % self.owner_id))
+      root_tag.insert(i, job_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job id.")  
+    
+    try:
+      title_tag = Tag(soup, 'Title')
+      title_tag.insert(0, NavigableString(self.title))
+      root_tag.insert(i, title_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide note's title.")
+    
+    try:
+      text_tag = Tag(soup, 'Text')
+      text_tag.insert(0, NavigableString(self.text))
+      root_tag.insert(i, text_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide note's text.")
+    
+    try:
+      if self.folder:
+        folder_tag = Tag(soup, 'Folder')
+        folder_tag.insert(0, NavigableString(self.folder))
+        root_tag.insert(i, folder_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    try:
+      if self.public:
+        public_tag = Tag(soup, 'Public')
+        public_tag.insert(0, NavigableString(str(self.public).lower()))
+        root_tag.insert(i, public_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    response = rest_client.Client("").POST(self.post, str(soup))
+    return Note(xml=response.content)
+
+  def to_dict(self):
+    d = dict()
+    d['title'] = self.title
+    d['text'] = self.text
+    d['folder'] = self.folder
+    d['public'] = self.public
+    return d
 
 class XmlJobManager(object):
   current_url = "http://api.workflowmax.com/job.api/current?detailed=%s&apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
-  list_url = "http://api.workflowmax.com/job.api/list?from=%s&to=%s&apiKey=%s&accountKey=%s" % ('%s', '%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  list_url = "http://api.workflowmax.com/job.api/list?from=%s&to=%s&detailed=%s&apiKey=%s&accountKey=%s" % ('%s', '%s', '%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
   staff_url = "http://api.workflowmax.com/job.api/staff/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
   def _handle_response(self, response):
@@ -51,12 +138,12 @@ class XmlJobManager(object):
       objects.append(XmlJob(xml=str(object_xml)))
     return objects
   
-  def current(self, detailed=False):
+  def current(self, detailed=True):
     response = rest_client.Client("").GET(self.current_url % str(detailed).lower())
     return self._handle_response(response)
 
-  def all(self, from_date, to_date):
-    response = rest_client.Client("").GET(self.list_url % (from_date, to_date))
+  def all(self, from_date, to_date, detailed=True):
+    response = rest_client.Client("").GET(self.list_url % (from_date, to_date, str(detailed).lower()))
     return self._handle_response(response)
 
   def filter(self, staff):

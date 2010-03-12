@@ -1,0 +1,4 @@
+- model: job.JobType
+  pk: 1
+  fields:
+    name: Software Development
