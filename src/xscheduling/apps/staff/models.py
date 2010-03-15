@@ -10,7 +10,6 @@ class Staff(WorkflowmaxBase):
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
   email = models.EmailField(_('email'), null=True, blank=True)
   payrollcode = models.CharField(_('payrollcode'), max_length=255, null=True, blank=True)
-  calendar = models.CharField(_('calendar'), max_length=255, null=True, blank=True, help_text=_('default calendar name'))
 
   class Meta:
     verbose_name = _('staff')

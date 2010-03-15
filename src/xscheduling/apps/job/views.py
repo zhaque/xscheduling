@@ -8,7 +8,7 @@ from django.utils.text import capfirst
 from django.views.generic.create_update import delete_object
 from django.views.generic.simple import direct_to_template
 
-from uni_form.helpers import FormHelper, Submit, Reset
+from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row
 
 from client.models import Client, Address
 from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
@@ -40,6 +40,16 @@ def add_job(request):
   helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
+  layout = Layout('name', 
+    'description', 
+    'state', 
+    'type', 
+    'start_date', 
+    'due_date', 
+    Row('client', HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('add new')))),
+    Row('staff', HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new')))),
+    )
+  helper.add_layout(layout)
   if request.method == "POST":
     job_form = AddJobForm(request.POST, request.FILES)
     if job_form.is_valid():

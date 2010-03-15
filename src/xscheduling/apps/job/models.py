@@ -113,8 +113,8 @@ class Job(WorkflowmaxBase):
   start_date = models.DateTimeField(_('start date'), default=datetime.now())
   due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1))
   client = models.ForeignKey(Client, verbose_name = _('client'), related_name='jobs')
-  staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='jobs')
-  suppliers = models.ManyToManyField(Supplier, verbose_name = _('suppliers'), related_name='jobs')
+  staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='jobs', null=True, blank=True)
+  suppliers = models.ManyToManyField(Supplier, verbose_name = _('suppliers'), related_name='jobs', null=True, blank=True)
 
   class Meta:
     ordering = ['name']
