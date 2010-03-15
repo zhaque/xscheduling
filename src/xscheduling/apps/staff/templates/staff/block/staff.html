@@ -1,7 +1,7 @@
 {% load i18n %}
 {% if staff %}
   <dl>
-    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.username }}</dd>
     <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ staff.phone }}</dd>
     <dt>{% filter capfirst %}{% trans 'mobile' %}{% endfilter %}</dt><dd>{{ staff.mobile }}</dd>
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ staff.email }}</dd>

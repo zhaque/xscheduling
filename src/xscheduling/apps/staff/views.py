@@ -43,7 +43,7 @@ def get_staff(request, object_id):
   except ValueError:
     return HttpResponseRedirect(reverse('staff-list'))
   staff = Staff.objects.get(id=object_id)
-  context_vars['header'] = capfirst(_('staff %s') % staff.name)
+  context_vars['header'] = capfirst(_('staff %s') % staff.username)
   context_vars['staff'] = staff
   return direct_to_template(request, template='staff/view.html', extra_context=context_vars)
 
@@ -80,7 +80,7 @@ def edit_staff(request, object_id):
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('staff-list'))
   
-  context_vars['header'] = capfirst(_('edit staff %s') % staff.name)
+  context_vars['header'] = capfirst(_('edit staff %s') % staff.username)
   staff_form = StaffForm(instance=staff)
   address_form = AddressForm(instance=staff.address)
   if request.method == "POST":
@@ -108,7 +108,7 @@ def delete_staff(request, object_id):
   if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
     staff.wm_delete()
   
-  return delete_object(request, object_id=staff.id, model=Staff, login_required=True, template_name='staff/delete.html', post_delete_redirect=reverse('staff-list'), extra_context={'header': capfirst(_('delete staff')), 'comment': capfirst(_('you are trying to delete staff "%s". Sure?') % staff.name)})
+  return delete_object(request, object_id=staff.id, model=Staff, login_required=True, template_name='staff/delete.html', post_delete_redirect=reverse('staff-list'), extra_context={'header': capfirst(_('delete staff')), 'comment': capfirst(_('you are trying to delete staff "%s". Sure?') % staff.username)})
 
 def get_staff_jobs(request, object_id):
   pass
