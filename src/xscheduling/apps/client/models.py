@@ -120,6 +120,7 @@ class Address(models.Model):
 
 class ClientBase(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255)
+  email = models.EmailField(_('email'), null=True, blank=True)
   address = models.OneToOneField(Address, related_name='%(class)s_address', verbose_name=_('address'), blank=True, null=True)
   postal_address = models.OneToOneField(Address, related_name='%(class)s_postal_address', verbose_name=_('postal address'), blank=True, null=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)

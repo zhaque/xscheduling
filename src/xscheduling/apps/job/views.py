@@ -11,6 +11,7 @@ from django.views.generic.simple import direct_to_template
 from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row
 
 from client.models import Client, Address
+from job.exceptions import NoInitialData
 from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
 from job.models import Job, Task, Milestone, JobState, JobType, Note
 from workflowmax.job.models import Job as WorkflowmaxJob
@@ -106,14 +107,17 @@ def import_jobs(request):
   context_vars['header'] = capfirst(_('import jobs from workflowmax'))
   context_vars['comment'] = capfirst(_('this will destroy all your local jobs, please confirm your decision.'))
   if request.method == "POST":
-    for job in Job.objects.all():
-      job.delete()
-    wm_jobs = WorkflowmaxJob.objects.all(datetime.now() - timedelta(days=365), datetime.now() + timedelta(days=365))
-#    wm_jobs = WorkflowmaxJob.objects.current()
-    for wm_job in wm_jobs:
-      job = Job()
-      job.wm_import(wm_job)
-    return HttpResponseRedirect(reverse('job-list'))
+    try:
+      for job in Job.objects.all():
+        job.delete()
+      wm_jobs = WorkflowmaxJob.objects.all(datetime.now() - timedelta(days=365), datetime.now() + timedelta(days=365))
+  #    wm_jobs = WorkflowmaxJob.objects.current()
+      for wm_job in wm_jobs:
+        job = Job()
+        job.wm_import(wm_job)
+      return HttpResponseRedirect(reverse('job-list'))
+    except NoInitialData, e:
+      context_vars['error'] = capfirst(e)
   
   return direct_to_template(request, template='job/import.html', extra_context=context_vars)
   

@@ -2,6 +2,7 @@
 {% if supplier %}
   <dl>
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ supplier.name }}</dd>
+    <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ supplier.email }}</dd>
     <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ supplier.phone }}</dd>
     <dt>{% filter capfirst %}{% trans 'fax' %}{% endfilter %}</dt><dd>{{ supplier.fax }}</dd>
     <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ supplier.website }}</dd>

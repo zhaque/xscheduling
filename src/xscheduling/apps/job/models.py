@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from client.models import WorkflowmaxBase, Client, NoteBase
+from job.exceptions import NoInitialData
 from staff.models import Staff
 from supplier.models import Supplier
 from workflowmax.client.models import Client as WorkflowmaxClient
@@ -139,7 +140,10 @@ class Job(WorkflowmaxBase):
       self.type, is_new = JobType.objects.get_or_create(name=wm_object.type)
     else:
       # we MUST have at least one type in db
-      self.type = JobType.objects.all()[0]
+      try:
+        self.type = JobType.objects.all()[0]
+      except IndexError:
+        raise NoInitialData('data fixtures were not loaded')
     for wm_client in wm_object.clients:
       self.client, is_new = Client.objects.get_or_create(wm_id=wm_client.id, name=wm_client.name)
     self.save()

@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block content %}
+{% if error %}
+  <p class='error'>{% filter capfirst %}{% trans 'error' %}{% endfilter %}: {{ error }}</p>
+{% endif %}
   <form action="" name="import" method="post">
   <p>{{ comment }}</p>
   <input type="submit" value="{% filter capfirst %}{% trans 'import' %}{% endfilter %}"/>
