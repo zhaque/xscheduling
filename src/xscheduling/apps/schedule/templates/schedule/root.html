@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block content %}
+{% include 'schedule/block/cal.html' %}
 <h1>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h1>
 <a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a>
 <h1>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h1>
