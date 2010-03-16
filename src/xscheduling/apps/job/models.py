@@ -10,6 +10,8 @@ from workflowmax.client.models import Client as WorkflowmaxClient
 from workflowmax.exceptions import ResponseStatusError
 from workflowmax.job.models import Job as WorkflowmaxJob, Note as WorkflowmaxNote
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
+from django.conf import settings
+from google_cal import client_login, insert_single_event
 
 class JobState(models.Model):
   order = models.PositiveSmallIntegerField(_('order'), default=10)
@@ -195,3 +197,18 @@ class Job(WorkflowmaxBase):
             pass
         wm_job.save()
 
+  def gcal_sync(self):
+    #post to admin cal
+    admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
+    srv = client_login(admin_email, settings.GAPPS_PASSWORD)
+    feed = srv.GetAllCalendarsFeed()
+    cals = feed.entry
+    for cal in cals:
+      if cal.title.text == admin_email: href = cal.content.src
+    event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
+
+    #post to staff cals
+    for staff in self.staff.all():      
+      for cal in cals:
+        if cal.title.text == staff.email: href = cal.content.src
+      event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)

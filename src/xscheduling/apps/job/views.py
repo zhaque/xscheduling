@@ -57,6 +57,7 @@ def add_job(request):
       job = job_form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         job.wm_sync()
+      job.gcal_sync()
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = job_form
@@ -83,6 +84,7 @@ def edit_job(request, object_id):
       job = job_form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         job.wm_sync()
+#      job.gcal_sync()
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = job_form

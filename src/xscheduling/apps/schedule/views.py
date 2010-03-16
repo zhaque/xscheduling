@@ -1,4 +1,5 @@
-from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.text import capfirst
@@ -15,8 +16,11 @@ from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
 from workflowmax.supplier.forms import SupplierForm
 
+@login_required
 def root(request):
-  return direct_to_template(request, template='schedule/root.html')
+  context_vars = dict()
+  context_vars['user'] = request.user
+  return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
 # Client views
 
 def list_clients(request):
