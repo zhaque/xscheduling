@@ -84,7 +84,7 @@ class Task(WorkflowmaxBase):
       self.due_date = wm_object.due_date
     self.save()
     for wm_staff in wm_object.assigned:
-      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, name=wm_staff.name)
+      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, username=wm_staff.name)
       self.staff.add(staff)
 
 class Milestone(models.Model):
@@ -148,7 +148,7 @@ class Job(WorkflowmaxBase):
       self.client, is_new = Client.objects.get_or_create(wm_id=wm_client.id, name=wm_client.name)
     self.save()
     for wm_staff in wm_object.assigned:
-      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, name=wm_staff.name)
+      staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, username=wm_staff.name)
       self.staff.add(staff)
     for wm_task in wm_object.tasks:
       task = Task()

@@ -25,7 +25,6 @@ class GoogleAppsBackend:
          gdocs.password = password
          gdocs.ProgrammaticLogin()
          # Get the user object
-         print 1
 
          logging.debug('GoogleAppsBackend.authenticate: gapps')
          gapps = AppsService(email=admin_email, password=settings.GAPPS_PASSWORD, domain=settings.GAPPS_DOMAIN)
