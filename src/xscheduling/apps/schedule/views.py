@@ -16,13 +16,41 @@ from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
 from workflowmax.supplier.forms import SupplierForm
 
-@login_required
+try:
+  from xml.etree import ElementTree # for Python 2.5 users
+except ImportError:
+  from elementtree import ElementTree
+import gdata.calendar.service
+import gdata.service
+import atom.service
+import gdata.calendar
+import atom
+import atom.token_store
+import atom.http_interface
+import getopt
+import sys
+import string
+import time
+from datetime import datetime
+
 def root(request):
+  return direct_to_template(request, template='schedule/root.html')
+
+@login_required
+def calendar(request):
+#  token = request.GET.get('token', '')
+#  if not token:
+#    url = 'https://www.google.com/accounts/AuthSubRequest?next=http%3A%2F%2F127.0.0.1:8000%2Fschedule%2F&scope=http%3A%2F%2Fwww.google.com%2Fcalendar%2Ffeeds%2F&session=1&secure=0&hd=cooperativegardeners.com'
+#    return HttpResponseRedirect(url)
+#
+#  calendar_service = gdata.calendar.service.CalendarService(server='cooperativegardeners.com', token_store=(token,))
+#  calendar_service.UpgradeToSessionToken()
+
   context_vars = dict()
   context_vars['user'] = request.user
-  return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
-# Client views
+  return direct_to_template(request, template='schedule/cal.html', extra_context=context_vars)
 
+# Client views
 def list_clients(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('client list'))
