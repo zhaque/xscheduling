@@ -20,6 +20,7 @@ class NoteForm(forms.ModelForm):
 class AddressForm(forms.ModelForm):
   class Meta:
     model = Address
+    exclude = ('latitude', 'longitude')
 
 ContactFormSet = forms.formsets.formset_factory(ContactForm)
 

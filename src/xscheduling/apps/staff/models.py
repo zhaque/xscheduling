@@ -7,8 +7,8 @@ from workflowmax.staff.models import Staff as WorkflowmaxStaff
 class Staff(WorkflowmaxBase, User):
 #  name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='staff_address', verbose_name=_('address'), blank=True, null=True)
-  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)
-  mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
+  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
+  mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
 #  email = models.EmailField(_('email'), null=True, blank=True)
   payrollcode = models.CharField(_('payrollcode'), max_length=255, null=True, blank=True)
 

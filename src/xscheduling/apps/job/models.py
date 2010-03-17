@@ -53,14 +53,14 @@ class Note(NoteBase):
       wm_note.save()
 
 class Task(WorkflowmaxBase):
-  name = models.CharField(_('name'), max_length=255)
+  name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. Clean the parking)'))
   description = models.TextField(_('description'), null=True, blank=True)
   estimated_minutes = models.PositiveIntegerField(_('estimated minutes'), default=0)
   actual_minutes = models.PositiveIntegerField(_('actual minutes'), default=0)
   completed = models.BooleanField(_('completed'), default=False)
   billable = models.BooleanField(_('billable'), default=True)
-  start_date = models.DateTimeField(_('start date'), default=datetime.now(), null=True, blank=True)
-  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), null=True, blank=True)
+  start_date = models.DateTimeField(_('start date'), default=datetime.now(), null=True, blank=True, help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), null=True, blank=True, help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='tasks')
   job = models.ForeignKey('Job', verbose_name = _('job'), related_name='tasks')
 
@@ -90,8 +90,8 @@ class Task(WorkflowmaxBase):
       self.staff.add(staff)
 
 class Milestone(models.Model):
-  date = models.DateTimeField(_('date'), default=datetime.now()+timedelta(days=7))
-  description = models.TextField(_('description'))
+  date = models.DateTimeField(_('date'), default=datetime.now()+timedelta(days=7), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  description = models.TextField(_('description'), help_text=_('(Ex. Beta version)'))
   completed = models.BooleanField(_('completed'), default=False)
   job = models.ForeignKey('Job', verbose_name = _('job'), related_name='milestones')
 
@@ -109,12 +109,12 @@ class Milestone(models.Model):
     self.completed = wm_object.completed
 
 class Job(WorkflowmaxBase):
-  name = models.CharField(_('name'), max_length=255)
+  name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. Clean the pool)'))
   description = models.TextField(_('description'))
   state = models.ForeignKey(JobState, verbose_name = _('state'), related_name='jobs')
   type = models.ForeignKey(JobType, verbose_name = _('type'), related_name='jobs')
-  start_date = models.DateTimeField(_('start date'), default=datetime.now())
-  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1))
+  start_date = models.DateTimeField(_('start date'), default=datetime.now(), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   client = models.ForeignKey(Client, verbose_name = _('client'), related_name='jobs')
   staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='jobs', null=True, blank=True)
   suppliers = models.ManyToManyField(Supplier, verbose_name = _('suppliers'), related_name='jobs', null=True, blank=True)

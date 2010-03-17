@@ -23,11 +23,11 @@ class WorkflowmaxBase(models.Model):
     raise NotImplementedException()
 
 class ContactBase(WorkflowmaxBase):
-  name = models.CharField(_('name'), max_length=255)
-  mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True)
+  name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. John Smith)'))
+  mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
   email = models.EmailField(_('email'), null=True, blank=True)
-  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)
-  position = models.CharField(_('position'), max_length=255, null=True, blank=True)
+  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
+  position = models.CharField(_('position'), max_length=255, null=True, blank=True, help_text=_('(Ex. HR manager)'))
 
   class Meta:
     abstract = True
@@ -67,10 +67,10 @@ class Contact(ContactBase):
         self.save()
 
 class NoteBase(models.Model):
-  title = models.CharField(_('title'), max_length=255)
+  title = models.CharField(_('title'), max_length=255, help_text=_('(Ex. Angry dog)'))
   text = models.TextField(_('text'))
   folder = models.CharField(_('folder'), max_length=255, null=True, blank=True)
-  date = models.DateTimeField(_('date'), null=True, blank=True, default=datetime.now())
+  date = models.DateTimeField(_('date'), null=True, blank=True, default=datetime.now(), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   created_by = models.CharField(_('created by'), max_length=255, null=True, blank=True)
   public = models.BooleanField(_('public'), default=True)
 
@@ -97,11 +97,11 @@ class Note(NoteBase):
   client = models.ForeignKey('Client', verbose_name="client", related_name='notes')
 
 class Address(models.Model):
-  postcode = models.CharField(max_length=10)
-  address = models.CharField(max_length=100)
-  city = models.CharField(max_length=20)
-  county = models.CharField(max_length=20, default='Greater London')
-  country = models.CharField(max_length=10, default='UK')
+  postcode = models.CharField(max_length=10, help_text=_('(Ex. TW8 8EL)'))
+  address = models.CharField(max_length=100, help_text=_('(Ex. 11 Moorings House Tallow Road)'))
+  city = models.CharField(max_length=20, help_text=_('(Ex. Brentford)'))
+  county = models.CharField(max_length=20, default='Greater London', help_text=_('(Ex. Greater London)'))
+  country = models.CharField(max_length=10, default='UK', help_text=_('(Ex. UK)'))
   latitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True)
   longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True)
   
@@ -131,13 +131,13 @@ class Address(models.Model):
         pass
 
 class ClientBase(WorkflowmaxBase):
-  name = models.CharField(_('name'), max_length=255)
+  name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. John Smith or Destroyer inc.)'))
   email = models.EmailField(_('email'), null=True, blank=True)
   address = models.OneToOneField(Address, related_name='%(class)s_address', verbose_name=_('address'), blank=True, null=True)
   postal_address = models.OneToOneField(Address, related_name='%(class)s_postal_address', verbose_name=_('postal address'), blank=True, null=True)
-  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True)
-  fax = models.CharField(_('fax'), max_length=255, null=True, blank=True)
-  website = models.URLField(_('website'), null=True, blank=True)
+  phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
+  fax = models.CharField(_('fax'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
+  website = models.URLField(_('website'), null=True, blank=True, help_text=_('(Ex. www.xsdf.com)'))
   referral_source = models.CharField(_('referral source'), max_length=255, null=True, blank=True)
 
   class Meta:
