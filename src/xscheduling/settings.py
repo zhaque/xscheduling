@@ -104,8 +104,10 @@ WORKFLOWMAX_APIKEY = '14C10292983D48CE86E1AA1FE0F8DDFE'
 WORKFLOWMAX_ACCOUNTKEY = 'F44B9DB0ED704D7AB0A6AA2AC09CB3EA'
 
 # Google Apps Settings
-GAPPS_DOMAIN = 'your_domain.com'
-GAPPS_USERNAME = 'name_of_an_admin_user'
-GAPPS_PASSWORD = 'admin_users_password'
+GAPPS_DOMAIN = 'cooperativegardeners.com'
+GAPPS_USERNAME = 'systemadmin'
+GAPPS_PASSWORD = 'fredbetts1'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'google_auth.auth.GoogleAppsBackend', )
+
+GOOGLE_APIKEY = 'HJFGHFHFJHJGJHG3927382JHHHI48VY458TY4'

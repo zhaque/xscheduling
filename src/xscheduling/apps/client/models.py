@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from geocoders.google import geocoder
 from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
 
 class NotImplementedException(Exception):
@@ -110,6 +111,17 @@ class Address(models.Model):
 
   def __unicode__(self):
     return '%s, %s, %s, %s, %s' % (self.postcode, self.address, self.city, self.county, self.country)
+
+  def save(self, *args, **kwargs):
+    geocode = geocoder('ABQIAAAAjE7l2Vf2rzqYeiBc2Km2WhRi_j0U6kJrkFvY4-OX2XYmEAa76BSDtIb-83PiGbAaTOGX2zEorW8V5w')
+    location_data = geocode(str(self))
+    try:
+      coords = location_data[1]
+      self.latitude = str(coords[0])
+      self.longitude = str(coords[1])
+    except IndexError:
+      pass
+    super(Address, self).save(*args, **kwargs)
 
   def wm_import(self, wm_address):
     if wm_address:
