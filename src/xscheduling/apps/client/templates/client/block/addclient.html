@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load uni_form_tags %}
+<form action="" method="post" class="uniForm">
+<h3>{% filter capfirst %}{% trans 'client' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ client_form|as_uni_form }}
+</fieldset>
+<h3>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ address_form|as_uni_form }}
+</fieldset>
+<h3>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ postal_address_form|as_uni_form }}
+</fieldset>
+{% if contact_form %}
+<h3>{% filter capfirst %}{% trans 'contact' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ contact_form|as_uni_form }}
+</fieldset>
+{% endif %}
+<div class="buttonHolder">
+<input type="submit" value="{% trans 'save' %}" class="submitButton"/>
+</div>
+</form>

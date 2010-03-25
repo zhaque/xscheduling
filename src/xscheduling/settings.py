@@ -101,7 +101,7 @@ INSTALLED_APPS = (
 
 LOGIN_URL = '/login/'
 WORKFLOWMAX_APIKEY = '14C10292983D48CE86E1AA1FE0F8DDFE'
-WORKFLOWMAX_ACCOUNTKEY = 'F44B9DB0ED704D7AB0A6AA2AC09CB3EA'
+WORKFLOWMAX_ACCOUNTKEY = '0E954F0B52234841BBC64A677C52A77E'
 
 # Google Apps Settings
 GAPPS_DOMAIN = 'cooperativegardeners.com'
@@ -111,3 +111,12 @@ GAPPS_PASSWORD = 'fredbetts1'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'google_auth.auth.GoogleAppsBackend', )
 
 GOOGLE_APIKEY = 'HJFGHFHFJHJGJHG3927382JHHHI48VY458TY4'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.request",
+    "django.core.context_processors.media",
+)
+

@@ -2,13 +2,22 @@
 {% load i18n %}
 
 {% block content %}
-<h1>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h1>
-<a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a>
-<h1>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h1>
-<a href="{% url staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a>
-<h1>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h1>
-<a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a>
-<h1>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h1>
-<a href="{% url job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a>
-<h1><a href="{% url schedule-calendar %}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></h1>
+                    <div class="block">
+                        <div class="hd">
+                            <h2>Scheduling</h2>
+                        </div>
+                        <div class="bd">
+<h2>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h2>
+<p><a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h2>
+<p><a href="{% url staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h2>
+<p><a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h2>
+<p><a href="{% url job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a></p>
+<h2><a href="{% url schedule-calendar %}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></h2>
+                        </div>
+                    </div>
+
+
 {% endblock %}

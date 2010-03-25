@@ -1,6 +1,7 @@
 {% load i18n %}
 {% if client %}
-  <dl>
+  <h2>Client info</h2>
+  <dl class="list">
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ client.email }}</dd>
     <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ client.phone }}</dd>
@@ -29,9 +30,9 @@
       {% include 'client/block/note.html' %}
     {% endfor %}
   </dl>
-  <a href="{% url client-contact-add client.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
-  <a href="{% url client-edit client.id %}">{% filter capfirst %}{% trans 'edit client' %}{% endfilter %}</a>
-  <a href="{% url client-delete client.id %}">{% filter capfirst %}{% trans 'delete client' %}{% endfilter %}</a>
+  <p><a href="{% url client-contact-add client.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a></p>
+  <p><a href="{% url client-edit client.id %}">{% filter capfirst %}{% trans 'edit client' %}{% endfilter %}</a></p>
+  <p><a href="{% url client-delete client.id %}">{% filter capfirst %}{% trans 'delete client' %}{% endfilter %}</a></p>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

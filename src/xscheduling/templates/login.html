@@ -1,29 +1,34 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load uni_form_tags %}
 
 {% block title %}{% filter capfirst %}{% trans 'login' %}{% endfilter %}{% endblock %}
 {% block stylefiles %}
-  <link href="{{ MEDIA_URL }}login.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form-generic.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form.css" type="text/css" />
+{% endblock %}
+{% block scriptfiles %}
+    <script src="{{ MEDIA_URL }}uni_form/uni_form/uni-form.jquery.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block lang %}{% endblock %}
-{% block nav %}{% endblock %}
 {% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{% filter capfirst %}{% trans 'login' %}{% endfilter %}</h2>
+                        </div>
+                        <div class="bd">
 
-<h1>{% filter capfirst %}{% trans 'login' %}{% endfilter %}</h1>
+<h2>{% filter capfirst %}{% trans 'login' %}{% endfilter %}</h2>
 
-<form method="post" action="?next={{ next|default:"/" }}">
-{% if form.errors %}
-<p class="error">{% trans 'Please correct the errors below' %}:</p>
-{% endif %}
-<dl>
-<dt><label for="id_username">{{ form.username.label_tag }}:</label>{% if form.username.errors %} <span class="error">{{ form.username.errors|join:", " }}</span>{% endif %}</dt>
-<dd>{{ form.username }}</dd>
-<dt><label for="id_password">{{ form.password.label_tag }}:</label>{% if form.password.errors %} <span class="error">{{ form.password.errors|join:", " }}</span>{% endif %}</dt>
-<dd>{{ form.password }}</dd>
-<dt><input type="submit" value="{% filter capfirst %}{% trans 'login' %}{% endfilter %}" /></dt>
-</dl>
-<p class="comment">{% url auth_password_reset as resetpass_url %}{% blocktrans %}If you forgot password, and know email, you can <a href="{{ resetpass_url }}">reset password</a>.{% endblocktrans %}</p>
+<form method="post" action="?next={{ next|default:"/" }}" class="uniForm">
+<fieldset class="inlineLabels">
+{{ form|as_uni_form }}
+<div class="buttonHolder">
+<input type="submit" value="{% trans 'login' %}" class="submitButton"/>
+</div>
+</fieldset>
 </form>
+                        </div>
+                    </div>
 
 {% endblock %}

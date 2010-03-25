@@ -169,7 +169,7 @@ class XmlClient(xml_models.Model):
 
 
 class ClientManager(object):
-  def all(self, detailed=False):
+  def all(self, detailed=True):
     cl = XmlClient.client_objects.all(detailed)
     res = list()
     for xml_client in cl:

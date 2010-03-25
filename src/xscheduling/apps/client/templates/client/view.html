@@ -3,6 +3,13 @@
 
 {% block content %}
 {% if client %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
   {% include 'client/block/client.html' %}
+                        </div>
+                    </div>
 {% endif %}
 {% endblock %}

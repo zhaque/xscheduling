@@ -2,8 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
 {% if clients %}
-<ul>
+                            <h3>Client list</h3>
+                            <ul class="list">
   {% for client in clients %}
   <li><a href="{% url client-view client.id %}">{{ client }}</a>
   {% if client.wm_id %}
@@ -11,11 +17,16 @@
   {% endif %}
   </li>
   {% endfor %}
-</ul>
+                            </ul>
 <a href="{% url client-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
 {% else %}
-You don't have any clients, you can <a href="{% url client-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url client-add %}">{% trans 'create new' %}</a>.
+<p>You don't have any clients, you can <a href="{% url client-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url client-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
 
 {% endif %}
+
+                        </div>
+                    </div>
+<ul>
+</ul>
 {% endblock %}

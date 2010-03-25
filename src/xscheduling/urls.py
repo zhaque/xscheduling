@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -15,3 +16,9 @@ urlpatterns = patterns('',
     url(r'^job/', include('job.urls')),
     url(r'^$', 'django.views.generic.simple.redirect_to', { 'url': '/schedule/'}),
 )
+
+# serve static files in debug mode
+if settings.SERVE_MEDIA:
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )

@@ -1,16 +1,62 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  
-  {% block stylefiles %}{% endblock %}
   <title>{% block title %}{% if header %}{{ header }}{% endif %}{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+  <link rel="stylesheet" href="{{ MEDIA_URL }}yui/css/yuiapp.css" type="text/css">
+  <link id="theme" rel="stylesheet" href="{{ MEDIA_URL }}yui/css/tan_blue.css" type="text/css">
+  <script src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js" type="text/javascript"></script>
+  <script src="{{ MEDIA_URL }}yui/js/yuiapp.js" type="text/javascript"></script>  
+  {% block stylefiles %}{% endblock %}
   {% block scriptfiles %}{% endblock %}
-
 </head>
 {% load i18n %}
+<body>
+
+
+</body>
 <body {% block bodyparam %}{% endblock %}>
-{% block contentheader %}{% if header %}<h1>{{ header }}</h1>{% endif %}{% endblock %}
+    <div id="doc3" class="yui-t6">
+
+        <div id="hd">
+            {% block contentheader %}{% if header %}<h1>{{ header }}</h1>{% endif %}{% endblock %}
+            <div id="navigation">
+                <ul id="primary-navigation">
+                    {% url client-list as client_url %}<li {% ifequal client_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ client_url }}">{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</a></li>
+                    {% url staff-list as staff_url %}<li {% ifequal staff_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ staff_url }}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</a></li>
+                    {% url supplier-list as supplier_url %}<li {% ifequal supplier_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ supplier_url }}">{% filter capfirst %}{% trans 'suppliers' %}{% endfilter %}</a></li>
+                    {% url job-list as job_url %}<li {% ifequal job_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ job_url }}">{% filter capfirst %}{% trans 'jobs' %}{% endfilter %}</a></li>
+                    {% url schedule-calendar as calendar_url %}<li {% ifequal calendar_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ calendar_url }}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></li>
+                </ul>
+
+                <ul id="user-navigation">
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url logout %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url login %}">Login</a></li>
+                {% endif %}
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <div id="bd">
+            <div id="yui-main">
+                <div class="yui-b"><div class="yui-g">
 {% block content %}{% endblock %}
+                </div></div>
+            </div>
+            <div id="sidebar" class="yui-b">
+{% block sidebar %}{% endblock %}
+            </div>
+        </div>
+
+        <div id="ft">
+            <p class="inner">Copyright &copy; 2010 xScheduling</p>
+        </div>
+
+    </div>
 </body>
 </html>

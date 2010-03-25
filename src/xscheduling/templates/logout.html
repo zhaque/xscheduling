@@ -3,8 +3,14 @@
 
 {% block title %}{% trans 'Logged out' %}{% endblock %}
 
-{% block nav %}{% endblock %}
 {% block content %}
-<h1>{% trans "You've been logged out" %}.</h1>
-<p>{% url login as login_url %}{% blocktrans %}Thanks for stopping by; when you come back, don't forget to <a href="{{ login_url }}">login</a> again{% endblocktrans %}.</p>
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{% trans "You've been logged out" %}.</h2>
+                        </div>
+                        <div class="bd">
+                            <h2>{% trans "You've been logged out" %}.</h2>
+                            <p>{% url login as login_url %}{% blocktrans %}Thanks for stopping by; when you come back, don't forget to <a href="{{ login_url }}">login</a> again{% endblocktrans %}.</p>
+                        </div>
+                    </div>
 {% endblock %}

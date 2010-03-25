@@ -165,6 +165,9 @@ class ClientBase(WorkflowmaxBase):
   def wm_import_contacts(self, wm_client):
     raise NotImplementedException()
 
+  def wm_import_notes(self, wm_client):
+    raise NotImplementedException()
+
   # we have to include save() here, because of OneToOne field behaviour
   def wm_import(self, wm_object):
     address = Address()
@@ -183,6 +186,7 @@ class ClientBase(WorkflowmaxBase):
     self.referral_source = wm_object.referral_source
     self.save()
     self.wm_import_contacts(wm_object)
+    self.wm_import_notes(wm_object)
 
 class Client(ClientBase):
   class Meta:
@@ -220,5 +224,12 @@ class Client(ClientBase):
       contact.client = self
       contact.wm_import(wm_contact)
       contact.save()
+
+  def wm_import_notes(self, wm_client):
+    for wm_note in wm_client.notes:
+      note = Note()
+      note.client = self
+      note.wm_import(wm_note)
+      note.save()
 
 
