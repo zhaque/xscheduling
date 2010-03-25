@@ -11,6 +11,7 @@ install_requires = [
         'Django==1.1.1',
         'South==0.6.2',
         'django-extensions==0.4.1',
+        'geopy==0.94',
 
         'Fabric',
 
