@@ -116,7 +116,6 @@ def add_contact(request, object_id):
 
   form = ContactForm()
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -132,7 +131,7 @@ def add_contact(request, object_id):
   
   context_vars['form'] = form
   context_vars['helper'] = helper
-  return direct_to_template(request, template='supplier/uniform.html', extra_context=context_vars)
+  return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
 def edit_contact(request, owner_id, object_id):
   context_vars = dict()
@@ -149,7 +148,6 @@ def edit_contact(request, owner_id, object_id):
 
   form = ContactForm(instance=contact)
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -163,7 +161,7 @@ def edit_contact(request, owner_id, object_id):
   
   context_vars['form'] = form
   context_vars['helper'] = helper
-  return direct_to_template(request, template='supplier/uniform.html', extra_context=context_vars)
+  return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
 def import_suppliers(request):
   context_vars = dict()

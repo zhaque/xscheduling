@@ -2,8 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
 {% if suppliers %}
-<ul>
+                            <h3>Supplier list</h3>
+                            <ul class="list">
   {% for supplier in suppliers %}
   <li><a href="{% url supplier-view supplier.id %}">{{ supplier }}</a>
   {% if supplier.wm_id %}
@@ -11,11 +17,13 @@
   {% endif %}
   </li>
   {% endfor %}
-</ul>
+                            </ul>
 <a href="{% url supplier-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
 {% else %}
-You don't have any suppliers, you can <a href="{% url supplier-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url supplier-add %}">{% trans 'create new' %}</a>.
+<p>You don't have any suppliers, you can <a href="{% url supplier-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url supplier-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
 
+                        </div>
+                    </div>
 {% endif %}
 {% endblock %}
