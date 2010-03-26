@@ -13,7 +13,7 @@
   {% for client in clients %}
   <li><a href="{% url client-view client.id %}">{{ client }}</a>
   {% if client.wm_id %}
-  (<a href="{% url schedule-client client.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ client.wm_id }}</a>)
+<!--  (<a href="{% url schedule-client client.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ client.wm_id }}</a>) -->
   {% endif %}
   </li>
   {% endfor %}

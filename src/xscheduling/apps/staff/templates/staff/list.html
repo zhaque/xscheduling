@@ -13,7 +13,7 @@
   {% for staff in staff_list %}
   <li><a href="{% url staff-view staff.id %}">{{ staff }}</a>
   {% if staff.wm_id %}
-  (<a href="{% url schedule-staff staff.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ staff.wm_id }}</a>)
+<!--  (<a href="{% url schedule-staff staff.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ staff.wm_id }}</a>) -->
   {% endif %}
   </li>
   {% endfor %}

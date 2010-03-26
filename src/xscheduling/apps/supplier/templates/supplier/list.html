@@ -13,7 +13,7 @@
   {% for supplier in suppliers %}
   <li><a href="{% url supplier-view supplier.id %}">{{ supplier }}</a>
   {% if supplier.wm_id %}
-  (<a href="{% url schedule-supplier supplier.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ supplier.wm_id }}</a>)
+<!--  (<a href="{% url schedule-supplier supplier.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ supplier.wm_id }}</a>) -->
   {% endif %}
   </li>
   {% endfor %}
