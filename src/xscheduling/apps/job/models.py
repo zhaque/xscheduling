@@ -8,7 +8,7 @@ from staff.models import Staff
 from supplier.models import Supplier
 from workflowmax.client.models import Client as WorkflowmaxClient
 from workflowmax.exceptions import ResponseStatusError
-from workflowmax.job.models import Job as WorkflowmaxJob, Note as WorkflowmaxNote
+from workflowmax.job.models import Job as WorkflowmaxJob, Note as WorkflowmaxNote, Task as WorkflowmaxTask
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 from django.conf import settings
 from google_cal import client_login, insert_single_event
@@ -88,6 +88,16 @@ class Task(WorkflowmaxBase):
     for wm_staff in wm_object.assigned:
       staff, is_new = Staff.objects.get_or_create(wm_id=wm_staff.id, username=wm_staff.name)
       self.staff.add(staff)
+
+  def wm_sync(self):
+    if self.wm_id and self.job.wm_id and self.name:
+      wm_task = WorkflowmaxTask()
+      wm_task.id = int(self.wm_id)
+      wm_task.owner_id = self.job.wm_id    
+      wm_task.name = self.name
+      wm_task.description = self.description
+      wm_task.estimated_minutes = self.estimated_minutes
+      wm_task.save()
 
 class Milestone(models.Model):
   date = models.DateTimeField(_('date'), default=datetime.now()+timedelta(days=7), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))

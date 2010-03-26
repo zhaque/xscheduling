@@ -172,8 +172,8 @@ def edit_task(request, owner_id, object_id):
     form = TaskForm(request.POST, request.FILES, instance=task)
     if form.is_valid():
       form.save()
-#      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
-#        task.wm_sync()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        task.wm_sync()
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form

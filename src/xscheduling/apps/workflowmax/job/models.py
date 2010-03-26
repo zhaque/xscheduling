@@ -98,6 +98,7 @@ class Task(object):
     except AttributeError:
       pass
     
+    print soup
     response = rest_client.Client("").POST(self.post, str(soup))
     return Task(xml=response.content)
 
