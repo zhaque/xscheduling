@@ -38,7 +38,6 @@ def add_job(request):
   context_vars['header'] = capfirst(_('add new job'))
   job_form = AddJobForm()
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   layout = Layout('name', 
@@ -47,8 +46,9 @@ def add_job(request):
     'type', 
     'start_date', 
     'due_date', 
-    Row('client', HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('add new')))),
-    Row('staff', HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new')))),
+    Row(HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('add new'))), 'client'),
+    Row(HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new'))), 'staff'),
+    Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('add new'))), 'suppliers'),
     )
   helper.add_layout(layout)
   if request.method == "POST":
@@ -75,7 +75,6 @@ def edit_job(request, object_id):
   context_vars['header'] = capfirst(_('edit job %s') % job.name)
   job_form = EditJobForm(instance=job)
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   if request.method == "POST":
@@ -133,7 +132,6 @@ def add_task(request, object_id):
 
   form = TaskForm()
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -167,7 +165,6 @@ def edit_task(request, owner_id, object_id):
 
   form = TaskForm(instance=task)
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -212,7 +209,6 @@ def add_milestone(request, object_id):
 
   form = MilestoneForm()
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -245,7 +241,6 @@ def edit_milestone(request, owner_id, object_id):
 
   form = MilestoneForm(instance=milestone)
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -289,7 +284,6 @@ def add_note(request, object_id):
 
   form = NoteForm()
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   
@@ -322,7 +316,6 @@ def edit_note(request, owner_id, object_id):
 
   form = NoteForm(instance=note)
   helper = FormHelper()
-  helper.form_class = 'uniform'
   submit = Submit('save',_('save'))
   helper.add_input(submit)
   

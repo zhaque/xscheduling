@@ -1,6 +1,6 @@
 {% load i18n %}
 {% if supplier %}
-  <h2>Supplier info</h2>
+  <h2>{% filter capfirst %}{% trans 'supplier info' %}{% endfilter %}</h2>
   <dl class="list">
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ supplier.name }}</dd>
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ supplier.email }}</dd>

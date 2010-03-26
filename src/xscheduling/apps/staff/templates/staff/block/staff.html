@@ -1,6 +1,7 @@
 {% load i18n %}
 {% if staff %}
-  <dl>
+  <h2>{% filter capfirst %}{% trans 'staff info' %}{% endfilter %}</h2>
+  <dl class="list">
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.username }}</dd>
     <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ staff.phone }}</dd>
     <dt>{% filter capfirst %}{% trans 'mobile' %}{% endfilter %}</dt><dd>{{ staff.mobile }}</dd>
@@ -13,8 +14,8 @@
       {% endwith %}
     {% endif %}
   </dl>
-  <a href="{% url staff-edit staff.id %}">{% filter capfirst %}{% trans 'edit staff' %}{% endfilter %}</a>
-  <a href="{% url staff-delete staff.id %}">{% filter capfirst %}{% trans 'delete staff' %}{% endfilter %}</a>
+  <p><a href="{% url staff-edit staff.id %}">{% filter capfirst %}{% trans 'edit staff' %}{% endfilter %}</a></p>
+  <p><a href="{% url staff-delete staff.id %}">{% filter capfirst %}{% trans 'delete staff' %}{% endfilter %}</a></p>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

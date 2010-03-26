@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load uni_form_tags %}
+<form action="" method="post" class="uniForm">
+<h3>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ staff_form|as_uni_form }}
+</fieldset>
+<h3>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h3>
+<fieldset class="inlineLabels">
+{{ address_form|as_uni_form }}
+</fieldset>
+<div class="buttonHolder">
+<input type="submit" value="{% trans 'save' %}" class="submitButton"/>
+</div>
+</form>

@@ -1,6 +1,6 @@
 {% load i18n %}
 {% if client %}
-  <h2>Client info</h2>
+  <h2>{% filter capfirst %}{% trans 'client info' %}{% endfilter %}</h2>
   <dl class="list">
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ client.email }}</dd>

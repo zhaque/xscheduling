@@ -2,8 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
 {% if jobs %}
-<ul>
+                            <h3>{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</h3>
+                            <ul class="list">
   {% for job in jobs %}
   <li><a href="{% url job-view job.id %}">{{ job }}</a>
   {% if job.wm_id %}
@@ -11,10 +17,14 @@
   {% endif %}
   </li>
   {% endfor %}
-</ul>
+                            </ul>
 <a href="{% url job-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
 {% else %}
-You don't have any jobs, you can <a href="{% url job-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url job-add %}">{% trans 'create new' %}</a>.
+<p>You don't have any jobs, you can <a href="{% url job-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url job-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
+
 {% endif %}
+
+                        </div>
+                    </div>
 {% endblock %}

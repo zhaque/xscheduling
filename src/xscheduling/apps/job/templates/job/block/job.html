@@ -1,6 +1,7 @@
 {% load i18n %}
 {% if job %}
-  <dl>
+  <h2>{% filter capfirst %}{% trans 'job info' %}{% endfilter %}</h2>
+  <dl class="list">
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ job.name }}</dd>
     <dt>{% filter capfirst %}{% trans 'description' %}{% endfilter %}</dt><dd>{{ job.description }}</dd>
     <dt>{% filter capfirst %}{% trans 'state' %}{% endfilter %}</dt><dd>{{ job.state }}</dd>
@@ -39,11 +40,11 @@
       <a href="{% url job-note-delete job.id note.id %}">{% filter capfirst %}{% trans 'delete note' %}{% endfilter %}</a>
     {% endfor %}
   </dl>
-  <a href="{% url job-task-add job.id %}">{% filter capfirst %}{% trans 'add task' %}{% endfilter %}</a>
-  <a href="{% url job-milestone-add job.id %}">{% filter capfirst %}{% trans 'add milestone' %}{% endfilter %}</a>
-  <a href="{% url job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a>
-  <a href="{% url job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
-  <a href="{% url job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
+  <p><a href="{% url job-task-add job.id %}">{% filter capfirst %}{% trans 'add task' %}{% endfilter %}</a></p>
+  <p><a href="{% url job-milestone-add job.id %}">{% filter capfirst %}{% trans 'add milestone' %}{% endfilter %}</a></p>
+  <p><a href="{% url job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a></p>
+  <p><a href="{% url job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a></p>
+  <p><a href="{% url job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a></p>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

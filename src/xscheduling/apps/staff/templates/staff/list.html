@@ -2,8 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
 {% if staff_list %}
-<ul>
+                            <h3>Staff list</h3>
+                            <ul class="list">
   {% for staff in staff_list %}
   <li><a href="{% url staff-view staff.id %}">{{ staff }}</a>
   {% if staff.wm_id %}
@@ -11,11 +17,14 @@
   {% endif %}
   </li>
   {% endfor %}
-</ul>
+                            </ul>
 <a href="{% url staff-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
 {% else %}
-You don't have any staff, you can <a href="{% url staff-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url staff-add %}">{% trans 'create new' %}</a>.
+<p>You don't have any staff, you can <a href="{% url staff-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url staff-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
 
 {% endif %}
+
+                        </div>
+                    </div>
 {% endblock %}

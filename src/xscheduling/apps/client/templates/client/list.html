@@ -8,7 +8,7 @@
                         </div>
                         <div class="bd">
 {% if clients %}
-                            <h3>Client list</h3>
+                            <h3>{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</h3>
                             <ul class="list">
   {% for client in clients %}
   <li><a href="{% url client-view client.id %}">{{ client }}</a>

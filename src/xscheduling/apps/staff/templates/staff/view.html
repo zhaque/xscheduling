@@ -3,6 +3,13 @@
 
 {% block content %}
 {% if staff %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{{ header }}</h2>
+                        </div>
+                        <div class="bd">
   {% include 'staff/block/staff.html' %}
+                        </div>
+                    </div>
 {% endif %}
 {% endblock %}
