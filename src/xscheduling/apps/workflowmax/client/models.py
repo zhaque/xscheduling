@@ -125,12 +125,21 @@ class Contact(object):
     d['position'] = self.position
     return d
 
-class Note(xml_models.Model):
+class XmlNote(xml_models.Model):
   title = xml_models.CharField(xpath="/note/title")
-  text = xml_models.CharField(xpath="/note/text")
+  text = xml_models.CharField(xpath="")
   folder = xml_models.CharField(xpath="/note/folder")
   date = xml_models.DateField(xpath="/note/date", date_format="%Y-%m-%dT%H:%M:%S")
   created_by = xml_models.CharField(xpath="/note/createdBy")
+
+  def get_text_field(self):
+    soup = BeautifulStoneSoup(self._xml)
+    return soup.note.text.contents[0]  
+  
+  def __getattribute__(self, name):
+    if name == 'text':
+      return self.get_text_field()
+    return super(XmlNote, self).__getattribute__(name)
 
 class XmlClientManager(object):
   list_url = "http://api.workflowmax.com/client.api/list?detailed=%s&apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
@@ -154,8 +163,8 @@ class XmlClient(xml_models.Model):
   fax = xml_models.CharField(xpath="/client/fax")
   website = xml_models.CharField(xpath="/client/website")
   referral_source = xml_models.CharField(xpath="/client/referralsource")
-  contacts = xml_models.Collection(Contact, order_by="name", xpath="/client/contacts/contact")
-  notes = xml_models.Collection(Note, order_by="title", xpath="/client/notes/note")
+  contacts = xml_models.Collection(XmlContact, order_by="name", xpath="/client/contacts/contact")
+  notes = xml_models.Collection(XmlNote, order_by="title", xpath="/client/notes/note")
 
   finders = { (id,): "http://api.workflowmax.com/client.api/get/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)}
   

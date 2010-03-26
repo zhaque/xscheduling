@@ -5,7 +5,7 @@ from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableStrin
 from django.conf import settings
 from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
-#from workflowmax.client.models import Note as XmlNote
+from workflowmax.client.models import XmlNote
 
 class XmlContact(xml_models.Model):
   id = xml_models.IntField(xpath="/contact/id")
@@ -35,22 +35,6 @@ class XmlMilestone(xml_models.Model):
   date = xml_models.DateField(xpath="/milestone/date")
   description = xml_models.CharField(xpath="/milestone/description")
   completed = xml_models.BoolField(xpath="/milestone/completed")
-
-class XmlNote(xml_models.Model):
-  title = xml_models.CharField(xpath="/note/title")
-  text = xml_models.CharField(xpath="")
-  folder = xml_models.CharField(xpath="/note/folder")
-  date = xml_models.DateField(xpath="/note/date", date_format="%Y-%m-%dT%H:%M:%S")
-  created_by = xml_models.CharField(xpath="/note/createdBy")
-
-  def get_text_field(self):
-    soup = BeautifulStoneSoup(self._xml)
-    return soup.note.text.contents[0]  
-  
-  def __getattribute__(self, name):
-    if name == 'text':
-      return self.get_text_field()
-    return super(XmlNote, self).__getattribute__(name)
 
 class Note(object):
   post = "http://api.workflowmax.com/job.api/note?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)

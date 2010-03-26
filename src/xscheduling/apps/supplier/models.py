@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from client.models import WorkflowmaxBase, ContactBase, ClientBase
+from client.models import WorkflowmaxBase, ContactBase, ClientBase, NoteBase
 from workflowmax.supplier.models import Supplier as WorkflowmaxSupplier, Contact as WorkflowmaxContact
 
 class Contact(ContactBase):
@@ -22,6 +22,9 @@ class Contact(ContactBase):
       if not self.wm_id:
         self.wm_id = wm_contact.id
         self.save()
+
+class Note(NoteBase):
+  supplier = models.ForeignKey('Supplier', verbose_name="supplier", related_name='notes')
 
 class Supplier(ClientBase):
   class Meta:
@@ -60,3 +63,9 @@ class Supplier(ClientBase):
       contact.wm_import(wm_contact)
       contact.save()
 
+  def wm_import_notes(self, wm_supplier):
+    for wm_note in wm_supplier.notes:
+      note = Note()
+      note.supplier = self
+      note.wm_import(wm_note)
+      note.save()

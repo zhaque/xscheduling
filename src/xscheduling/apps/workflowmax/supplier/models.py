@@ -5,7 +5,7 @@ from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, NavigableStrin
 from django.conf import settings
 from workflowmax.exceptions import ResponseStatusError, InvalidObjectType
 
-from workflowmax.client.models import Note
+from workflowmax.client.models import XmlNote
 
 # I had to copy client's contact models becasue of inheritance problems of xml_models.Model manager
 class XmlContact(xml_models.Model):
@@ -129,10 +129,10 @@ class Contact(object):
     return d
 
 class XmlSupplierManager(object):
-  list_url = "http://api.workflowmax.com/supplier.api/list?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+  list_url = "http://api.workflowmax.com/supplier.api/list?detailed=%s&apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 
-  def all(self):
-    response = rest_client.Client("").GET(self.list_url)
+  def all(self, detailed=False):
+    response = rest_client.Client("").GET(self.list_url % str(detailed).lower())
     soup = BeautifulStoneSoup(response.content)
     if soup.status and soup.status.contents[0].lower() == 'error':
       raise ResponseStatusError(soup.errordescription.contents[0])
@@ -150,8 +150,8 @@ class XmlSupplier(xml_models.Model):
   fax = xml_models.CharField(xpath="/supplier/fax")
   website = xml_models.CharField(xpath="/supplier/website")
   referral_source = xml_models.CharField(xpath="/supplier/referralsource")
-  contacts = xml_models.Collection(Contact, order_by="name", xpath="/supplier/contacts/contact")
-  notes = xml_models.Collection(Note, order_by="title", xpath="/supplier/notes/note")
+  contacts = xml_models.Collection(XmlContact, order_by="name", xpath="/supplier/contacts/contact")
+  notes = xml_models.Collection(XmlNote, order_by="title", xpath="/supplier/notes/note")
 
   finders = { (id,): "http://api.workflowmax.com/supplier.api/get/%s?apiKey=%s&accountKey=%s" % ('%s', settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)}
   
@@ -165,8 +165,8 @@ class XmlSupplier(xml_models.Model):
 
 
 class SupplierManager(object):
-  def all(self):
-    xml_objects = XmlSupplier.supplier_objects.all()
+  def all(self, detailed=True):
+    xml_objects = XmlSupplier.supplier_objects.all(detailed)
     res = list()
     for xml_object in xml_objects:
       res.append(Supplier(xml_object))
