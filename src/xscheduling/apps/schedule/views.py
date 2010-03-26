@@ -9,8 +9,8 @@ from uni_form.helpers import FormHelper, Submit, Reset
 from workflowmax.client.models import Client, Contact
 from workflowmax.client.forms import ClientForm, ContactForm
 from workflowmax.exceptions import ResponseStatusError
-from workflowmax.job.models import Job, Note
-from workflowmax.job.forms import AddJobForm, EditJobForm, NoteForm
+from workflowmax.job.models import Job, Note, Task
+from workflowmax.job.forms import AddJobForm, EditJobForm, NoteForm, TaskForm
 from workflowmax.staff.models import Staff
 from workflowmax.staff.forms import StaffForm
 from workflowmax.supplier.models import Supplier, Contact as SupplierContact
@@ -552,6 +552,53 @@ def add_job_note(request, object_id):
   context_vars['form'] = form
   context_vars['helper'] = helper
   
+  return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
+
+def edit_job_task(request, owner_id, object_id):
+  try:
+    object_id = int(object_id)
+  except ValueError:
+    return HttpResponseRedirect(reverse('schedule-job', args=[owner_id]))
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('edit task %d') % object_id)
+#  task = Task.objects.get(id=object_id)
+  job = Job.objects.get(id=owner_id)
+  for task_obj in job.tasks:
+    if task_obj.id == object_id:
+      task = task_obj
+  if not task:
+    return HttpResponseRedirect(reverse('schedule-job', args=[owner_id]))
+
+  task = Task(xml_object=task)
+  form = TaskForm(task.to_dict())
+  helper = FormHelper()
+  submit = Submit('save',_('save'))
+  helper.add_input(submit)
+  if request.method == "POST":
+    form = TaskForm(request.POST, request.FILES)
+    if form.is_valid():
+      task.owner_id = job.id
+      task.name = form.cleaned_data['name']
+      task.description = form.cleaned_data['description']
+      task.estimated_minutes = form.cleaned_data['estimated_minutes']
+#      task.actual_minutes = form.cleaned_data['actual_minutes']
+#      task.completed = form.cleaned_data['completed']
+#      task.billable = form.cleaned_data['billable']
+#      task.start_date = form.cleaned_data['start_date']
+#      task.due_date = form.cleaned_data['due_date']
+#      task.completed = form.cleaned_data['completed']
+#      if form.cleaned_data['assigned']:
+#        task.assigned = []
+#        for assigned_id in form.cleaned_data['assigned']:
+#          try:
+#            task.assigned.append(Staff.objects.get(id=assigned_id))
+#          except ResponseStatusError:
+#            pass
+      task.save()
+      return HttpResponseRedirect(reverse('schedule-job', args=[owner_id]))
+  
+  context_vars['form'] = form
+  context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 

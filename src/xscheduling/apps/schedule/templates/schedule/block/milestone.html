@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if milestone %}
+  <dl>
+    <dt>{% filter capfirst %}{% trans 'date' %}{% endfilter %}</dt><dd>{{ milestone.date }}</dd>
+    <dt>{% filter capfirst %}{% trans 'description' %}{% endfilter %}</dt><dd>{{ milestone.description }}</dd>
+    <dt>{% filter capfirst %}{% trans 'completed' %}{% endfilter %}</dt><dd>{{ milestone.completed }}</dd>
+  </dl>
+{% else %}
+  <p>Smth went wrong</p>
+{% endif %}

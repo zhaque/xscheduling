@@ -36,6 +36,78 @@ class XmlMilestone(xml_models.Model):
   description = xml_models.CharField(xpath="/milestone/description")
   completed = xml_models.BoolField(xpath="/milestone/completed")
 
+class Task(object):
+  post = "http://api.workflowmax.com/job.api/task?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
+
+  def __init__(self, xml_object=None, xml=None):
+    if xml_object and not isinstance(xml_object, xml_models.Model):
+      raise InvalidObjectType('object is not child of xml_models.Model')
+    self.xml_object = xml_object
+    if xml:
+      self.xml_object = XmlTask(xml=xml)
+
+  def __getattr__(self, name):
+    return getattr(self.xml_object, name)
+
+  def save(self):
+    soup = BeautifulSoup()
+    root_tag = Tag(soup, 'Task')
+    soup.insert(0, root_tag)
+    i = 0
+
+    try:
+      job_tag = Tag(soup, 'Job')
+      job_tag.insert(0, NavigableString('%s' % self.owner_id))
+      root_tag.insert(i, job_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide job id.")  
+    
+    try:
+      id_tag = Tag(soup, 'TaskID')
+      id_tag.insert(0, NavigableString('%d' % self.id))
+      root_tag.insert(i, id_tag)
+      i = i+1
+    except AttributeError:
+      raise ValueError("You must provide task id.")
+    
+    try:
+      if self.name:
+        label_tag = Tag(soup, 'Label')
+        label_tag.insert(0, NavigableString(self.name))
+        root_tag.insert(i, label_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    try:
+      if self.description:
+        description_tag = Tag(soup, 'Description')
+        description_tag.insert(0, NavigableString(self.description))
+        root_tag.insert(i, description_tag)
+        i = i+1
+    except AttributeError:
+      pass
+
+    try:
+      if self.estimated_minutes:
+        estimated_minutes_tag = Tag(soup, 'EstimatedMinutes')
+        estimated_minutes_tag.insert(0, NavigableString('%d' % self.estimated_minutes))
+        root_tag.insert(i, estimated_minutes_tag)
+        i = i+1
+    except AttributeError:
+      pass
+    
+    response = rest_client.Client("").POST(self.post, str(soup))
+    return Task(xml=response.content)
+
+  def to_dict(self):
+    d = dict()
+    d['name'] = self.name
+    d['description'] = self.description
+    d['estimated_minutes'] = self.estimated_minutes
+    return d
+
 class Note(object):
   post = "http://api.workflowmax.com/job.api/note?apiKey=%s&accountKey=%s" % (settings.WORKFLOWMAX_APIKEY, settings.WORKFLOWMAX_ACCOUNTKEY)
 

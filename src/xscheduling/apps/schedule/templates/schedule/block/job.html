@@ -20,6 +20,15 @@
       <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
       <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ contact.name }}</dd>
     {% endfor %}
+    {% for task in job.tasks %}
+      <h2>{% filter capfirst %}{% trans 'task' %}{% endfilter %} {{ task.id }}</h2>
+      {% include 'schedule/block/task.html' %}
+      <a href="{% url schedule-job-task-edit job.id task.id %}">{% filter capfirst %}{% trans 'edit task' %}{% endfilter %}</a>
+    {% endfor %}
+    {% for milestone in job.milestones %}
+      <h2>{% filter capfirst %}{% trans 'milestone' %}{% endfilter %} {{ milestone.id }}</h2>
+      {% include 'schedule/block/milestone.html' %}
+    {% endfor %}
     {% for note in job.notes %}
       <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
       {% include 'schedule/block/note.html' %}

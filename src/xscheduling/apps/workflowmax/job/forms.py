@@ -43,3 +43,12 @@ class NoteForm(forms.Form):
   text = forms.CharField(label = capfirst(_('text')))
   folder = forms.CharField(label = capfirst(_('folder')), required=False)
   public = forms.BooleanField(label = capfirst(_('public')), required=False)
+
+class TaskForm(forms.Form):
+  name = forms.CharField(label = capfirst(_('name')))
+  description = forms.CharField(label = capfirst(_('description')), widget=Textarea(), required=False)
+  estimated_minutes = forms.IntegerField(label = capfirst(_('estimated minutes')), required=False)
+
+
+
+
