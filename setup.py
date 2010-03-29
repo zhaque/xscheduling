@@ -13,6 +13,7 @@ install_requires = [
         'django-extensions==0.4.1',
         'geopy==0.94',
         'gdata==2.0.6',
+        'pyyaml==3.09',
         'Fabric',
 
         'django-uni-form',
