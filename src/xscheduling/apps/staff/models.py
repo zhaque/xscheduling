@@ -4,6 +4,20 @@ from django.utils.translation import ugettext_lazy as _
 from client.models import WorkflowmaxBase, Address
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 
+class Skill(models.Model):
+# I think we don't need order for types, maybe we need something like short name or abbreviations. 
+#  order = models.SmallPositiveIntegerField(_('order'))
+  name = models.CharField(_('name'), max_length=255)
+  rate = models.DecimalField(_('rate'), max_digits=6, decimal_places=2, default='10.00', help_text=_('hourly rate, ex: 15.99'))
+
+  class Meta:
+    ordering = ['name']
+    verbose_name = _('skill')
+    verbose_name_plural = _('skills')
+
+  def __unicode__(self):
+    return self.name
+
 class Staff(WorkflowmaxBase, User):
 #  name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='staff_address', verbose_name=_('address'), blank=True, null=True)
@@ -11,6 +25,7 @@ class Staff(WorkflowmaxBase, User):
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
 #  email = models.EmailField(_('email'), null=True, blank=True)
   payrollcode = models.CharField(_('payrollcode'), max_length=255, null=True, blank=True)
+  skills = models.ManyToManyField(Skill, related_name='staff', verbose_name=_('skills'))
 
   class Meta:
     verbose_name = _('staff')

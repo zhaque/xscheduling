@@ -1,0 +1,4 @@
+- model: staff.Skill
+  pk: 1
+  fields:
+    name: Software Development

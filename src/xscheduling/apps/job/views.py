@@ -13,7 +13,7 @@ from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row
 from client.models import Client, Address
 from job.exceptions import NoInitialData
 from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
-from job.models import Job, Task, Milestone, JobState, JobType, Note
+from job.models import Job, Task, Milestone, JobState, Note
 from workflowmax.job.models import Job as WorkflowmaxJob
 
 def list_jobs(request):

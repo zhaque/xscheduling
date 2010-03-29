@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from client.models import WorkflowmaxBase, Client, NoteBase
 from job.exceptions import NoInitialData
-from staff.models import Staff
+from staff.models import Staff, Skill
 from supplier.models import Supplier
 from workflowmax.client.models import Client as WorkflowmaxClient
 from workflowmax.exceptions import ResponseStatusError
@@ -21,19 +21,6 @@ class JobState(models.Model):
     ordering = ['order']
     verbose_name = _('state')
     verbose_name_plural = _('states')
-
-  def __unicode__(self):
-    return self.name
-
-class JobType(models.Model):
-# I think we don't need order for types, maybe we need something like short name or abbreviations. 
-#  order = models.SmallPositiveIntegerField(_('order'))
-  name = models.CharField(_('name'), max_length=255)
-
-  class Meta:
-    ordering = ['name']
-    verbose_name = _('type')
-    verbose_name_plural = _('types')
 
   def __unicode__(self):
     return self.name
@@ -122,7 +109,7 @@ class Job(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. Clean the pool)'))
   description = models.TextField(_('description'))
   state = models.ForeignKey(JobState, verbose_name = _('state'), related_name='jobs')
-  type = models.ForeignKey(JobType, verbose_name = _('type'), related_name='jobs')
+  type = models.ForeignKey(Skill, verbose_name = _('type'), related_name='jobs')
   start_date = models.DateTimeField(_('start date'), default=datetime.now(), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   client = models.ForeignKey(Client, verbose_name = _('client'), related_name='jobs')
@@ -149,11 +136,11 @@ class Job(WorkflowmaxBase):
       # it's impossible that wm job has no state, but if we get here we MUST have at least one state in db
       self.state = JobState.objects.all()[0]
     if wm_object.type:
-      self.type, is_new = JobType.objects.get_or_create(name=wm_object.type)
+      self.type, is_new = Skill.objects.get_or_create(name=wm_object.type)
     else:
       # we MUST have at least one type in db
       try:
-        self.type = JobType.objects.all()[0]
+        self.type = Skill.objects.all()[0]
       except IndexError:
         raise NoInitialData('data fixtures were not loaded')
     for wm_client in wm_object.clients:

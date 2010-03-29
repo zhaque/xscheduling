@@ -1,4 +1,25 @@
-- model: job.JobType
+- model: job.JobState
   pk: 1
   fields:
-    name: Software Development
+    order: 10
+    name: Planned
+- model: job.JobState
+  pk: 2
+  fields:
+    order: 20
+    name: In Progress
+- model: job.JobState
+  pk: 3
+  fields:
+    order: 30
+    name: On Hold
+- model: job.JobState
+  pk: 4
+  fields:
+    order: 40
+    name: Completed
+- model: job.JobState
+  pk: 5
+  fields:
+    order: 50
+    name: Cancelled
