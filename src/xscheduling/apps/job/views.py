@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -16,12 +17,14 @@ from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
 from job.models import Job, Task, Milestone, JobState, Note
 from workflowmax.job.models import Job as WorkflowmaxJob
 
+@login_required
 def list_jobs(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('jobs'))
   context_vars['jobs'] = Job.objects.all()
   return direct_to_template(request, template='job/list.html', extra_context=context_vars)
 
+@login_required
 def get_job(request, object_id):
   context_vars = dict()
   try:
@@ -33,6 +36,7 @@ def get_job(request, object_id):
   context_vars['job'] = job
   return direct_to_template(request, template='job/view.html', extra_context=context_vars)
 
+@login_required
 def add_job(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new job'))
@@ -64,6 +68,7 @@ def add_job(request):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
+@login_required
 def edit_job(request, object_id):
   context_vars = dict()
   try:
@@ -90,6 +95,7 @@ def edit_job(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
+@login_required
 def delete_job(request, object_id):
   context_vars = dict()
   try:
@@ -103,6 +109,7 @@ def delete_job(request, object_id):
   
   return delete_object(request, object_id=job.id, model=Job, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete job')), 'comment': capfirst(_('you are trying to delete job "%s". Sure?') % job.name)})
 
+@login_required
 def import_jobs(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('import jobs from workflowmax'))
@@ -122,6 +129,7 @@ def import_jobs(request):
   
   return direct_to_template(request, template='job/import.html', extra_context=context_vars)
   
+@login_required
 def add_task(request, object_id):
   context_vars = dict()
   try:
@@ -150,6 +158,7 @@ def add_task(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
 
+@login_required
 def edit_task(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -180,6 +189,7 @@ def edit_task(request, owner_id, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
+@login_required
 def delete_task(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -199,6 +209,7 @@ def delete_task(request, owner_id, object_id):
   return delete_object(request, object_id=task.id, model=Task, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete task')), 'comment': capfirst(_('you are trying to delete task "%s". Sure?') % task.name)})
 
 
+@login_required
 def add_milestone(request, object_id):
   context_vars = dict()
   try:
@@ -226,6 +237,7 @@ def add_milestone(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
 
+@login_required
 def edit_milestone(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -256,6 +268,7 @@ def edit_milestone(request, owner_id, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
+@login_required
 def delete_milestone(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
@@ -274,6 +287,7 @@ def delete_milestone(request, owner_id, object_id):
   return delete_object(request, object_id=milestone.id, model=Milestone, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete milestone')), 'comment': capfirst(_('you are trying to delete milestone "%s". Sure?') % milestone)})
 
 
+@login_required
 def add_note(request, object_id):
   context_vars = dict()
   try:
@@ -301,6 +315,7 @@ def add_note(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)  
 
+@login_required
 def edit_note(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -331,6 +346,7 @@ def edit_note(request, owner_id, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='job/uniform.html', extra_context=context_vars)
 
+@login_required
 def delete_note(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)

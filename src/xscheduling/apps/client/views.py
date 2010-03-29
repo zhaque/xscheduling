@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -13,12 +14,14 @@ from client.forms import ClientForm, ContactForm, AddressForm, InvalidForm
 from client.models import Client, Note, Contact, Address
 from workflowmax.client.models import Client as WorkflowmaxClient
 
+@login_required
 def list_clients(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('clients'))
   context_vars['clients'] = Client.objects.all()
   return direct_to_template(request, template='client/list.html', extra_context=context_vars)
 
+@login_required
 def get_client(request, object_id):
   context_vars = dict()
   try:
@@ -30,6 +33,7 @@ def get_client(request, object_id):
   context_vars['client'] = client
   return direct_to_template(request, template='client/view.html', extra_context=context_vars)
 
+@login_required
 def add_client(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new client'))
@@ -63,6 +67,7 @@ def add_client(request):
   context_vars['postal_address_form'] = postal_address_form
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)
 
+@login_required
 def edit_client(request, object_id):
   context_vars = dict()
   try:
@@ -92,6 +97,7 @@ def edit_client(request, object_id):
   context_vars['postal_address_form'] = postal_address_form
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)
 
+@login_required
 def delete_client(request, object_id):
   context_vars = dict()
   try:
@@ -105,6 +111,7 @@ def delete_client(request, object_id):
   
   return delete_object(request, object_id=client.id, model=Client, login_required=True, template_name='client/delete.html', post_delete_redirect=reverse('client-list'), extra_context={'header': capfirst(_('delete client')), 'comment': capfirst(_('you are trying to delete client "%s". Sure?') % client.name)})
 
+@login_required
 def add_contact(request, object_id):
   context_vars = dict()
   try:
@@ -132,6 +139,7 @@ def add_contact(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)  
 
+@login_required
 def edit_contact(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -162,13 +170,17 @@ def edit_contact(request, owner_id, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='client/form.html', extra_context=context_vars)
 
+@login_required
 def add_note(request, object_id):
   pass
+@login_required
 def get_note(request, owner_id, object_id):
   pass
+@login_required
 def edit_note(request, owner_id, object_id):
   pass
 
+@login_required
 def import_clients(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('import clients from workflowmax'))

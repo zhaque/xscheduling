@@ -51,12 +51,14 @@ def calendar(request):
   return direct_to_template(request, template='schedule/cal.html', extra_context=context_vars)
 
 # Client views
+@login_required
 def list_clients(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('client list'))
   context_vars['clients'] = Client.objects.all()
   return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
 
+@login_required
 def get_client(request, object_id):
   try:
     object_id = int(object_id)
@@ -67,6 +69,7 @@ def get_client(request, object_id):
   context_vars['client'] = Client.objects.get(id=object_id)
   return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
 
+@login_required
 def edit_client(request, object_id):
   try:
     object_id = int(object_id)
@@ -97,6 +100,7 @@ def edit_client(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def add_client(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new client'))
@@ -123,6 +127,7 @@ def add_client(request):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def delete_client(request, object_id):
   try:
     object_id = int(object_id)
@@ -139,6 +144,7 @@ def delete_client(request, object_id):
 
   return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
 
+@login_required
 def add_client_contact(request, object_id):
   try:
     object_id = int(object_id)
@@ -168,6 +174,7 @@ def add_client_contact(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def edit_client_contact(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
@@ -202,12 +209,14 @@ def edit_client_contact(request, owner_id, object_id):
 
 # Staff views
 
+@login_required
 def list_staff(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('staff list'))
   context_vars['staff_list'] = Staff.objects.all()
   return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
 
+@login_required
 def get_staff(request, object_id):
   try:
     object_id = int(object_id)
@@ -218,6 +227,7 @@ def get_staff(request, object_id):
   context_vars['staff'] = Staff.objects.get(id=object_id)
   return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
 
+@login_required
 def edit_staff(request, object_id):
   try:
     object_id = int(object_id)
@@ -247,6 +257,7 @@ def edit_staff(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def add_staff(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new staff'))
@@ -272,6 +283,7 @@ def add_staff(request):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def delete_staff(request, object_id):
   try:
     object_id = int(object_id)
@@ -288,6 +300,7 @@ def delete_staff(request, object_id):
 
   return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
 
+@login_required
 def get_staff_jobs(request, object_id):
   try:
     object_id = int(object_id)
@@ -302,12 +315,14 @@ def get_staff_jobs(request, object_id):
 
 
 # Supplier views
+@login_required
 def list_suppliers(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('suppliers list'))
   context_vars['suppliers'] = Supplier.objects.all()
   return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
 
+@login_required
 def get_supplier(request, object_id):
   try:
     object_id = int(object_id)
@@ -318,6 +333,7 @@ def get_supplier(request, object_id):
   context_vars['supplier'] = Supplier.objects.get(id=object_id)
   return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
 
+@login_required
 def edit_supplier(request, object_id):
   try:
     object_id = int(object_id)
@@ -348,6 +364,7 @@ def edit_supplier(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def add_supplier(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new supplier'))
@@ -374,6 +391,7 @@ def add_supplier(request):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def delete_supplier(request, object_id):
   try:
     object_id = int(object_id)
@@ -390,6 +408,7 @@ def delete_supplier(request, object_id):
 
   return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
 
+@login_required
 def add_supplier_contact(request, object_id):
   try:
     object_id = int(object_id)
@@ -419,6 +438,7 @@ def add_supplier_contact(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def edit_supplier_contact(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
@@ -452,18 +472,21 @@ def edit_supplier_contact(request, owner_id, object_id):
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
 #Job views
+@login_required
 def list_jobs(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('current job list'))
   context_vars['jobs'] = Job.objects.current()
   return direct_to_template(request, template='schedule/list.html', extra_context=context_vars)
 
+@login_required
 def get_job(request, object_id):
   context_vars = dict()
   context_vars['header'] = '%s %s' % (capfirst(_('job')), object_id)
   context_vars['job'] = Job.objects.get(id=object_id)
   return direct_to_template(request, template='schedule/view.html', extra_context=context_vars)
   
+@login_required
 def add_job(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new job'))
@@ -490,6 +513,7 @@ def add_job(request):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def edit_job(request, object_id):
   context_vars = dict()
   context_vars['header'] = '%s %s' % (capfirst(_('job')), object_id)
@@ -517,6 +541,7 @@ def edit_job(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def delete_job(request, object_id):
   context_vars = dict()
   context_vars['header'] = '%s %s' % (capfirst(_('delete job')), object_id)
@@ -529,6 +554,7 @@ def delete_job(request, object_id):
 
   return direct_to_template(request, template='schedule/delete.html', extra_context=context_vars)
 
+@login_required
 def add_job_note(request, object_id):
   job = Job.objects.get(id=object_id)
   context_vars = dict()
@@ -554,6 +580,7 @@ def add_job_note(request, object_id):
   
   return direct_to_template(request, template='schedule/form.html', extra_context=context_vars)
 
+@login_required
 def edit_job_task(request, owner_id, object_id):
   try:
     object_id = int(object_id)

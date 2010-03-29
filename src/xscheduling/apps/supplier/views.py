@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -15,12 +16,14 @@ from supplier.forms import SupplierForm, ContactForm
 from supplier.models import Supplier, Contact
 from workflowmax.supplier.models import Supplier as WorkflowmaxSupplier
 
+@login_required
 def list_suppliers(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('suppliers'))
   context_vars['suppliers'] = Supplier.objects.all()
   return direct_to_template(request, template='supplier/list.html', extra_context=context_vars)
 
+@login_required
 def get_supplier(request, object_id):
   context_vars = dict()
   try:
@@ -32,6 +35,7 @@ def get_supplier(request, object_id):
   context_vars['supplier'] = supplier
   return direct_to_template(request, template='supplier/view.html', extra_context=context_vars)
 
+@login_required
 def add_supplier(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new supplier'))
@@ -64,6 +68,7 @@ def add_supplier(request):
   context_vars['postal_address_form'] = postal_address_form
   return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
+@login_required
 def edit_supplier(request, object_id):
   context_vars = dict()
   try:
@@ -93,6 +98,7 @@ def edit_supplier(request, object_id):
   context_vars['postal_address_form'] = postal_address_form
   return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
+@login_required
 def delete_supplier(request, object_id):
   context_vars = dict()
   try:
@@ -106,6 +112,7 @@ def delete_supplier(request, object_id):
   
   return delete_object(request, object_id=supplier.id, model=Supplier, login_required=True, template_name='supplier/delete.html', post_delete_redirect=reverse('supplier-list'), extra_context={'header': capfirst(_('delete supplier')), 'comment': capfirst(_('you are trying to delete supplier "%s". Sure?') % supplier.name)})
 
+@login_required
 def add_contact(request, object_id):
   context_vars = dict()
   try:
@@ -133,6 +140,7 @@ def add_contact(request, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
+@login_required
 def edit_contact(request, owner_id, object_id):
   context_vars = dict()
   try:
@@ -163,6 +171,7 @@ def edit_contact(request, owner_id, object_id):
   context_vars['helper'] = helper
   return direct_to_template(request, template='supplier/form.html', extra_context=context_vars)
 
+@login_required
 def import_suppliers(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('import suppliers from workflowmax'))

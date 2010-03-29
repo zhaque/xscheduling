@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -15,12 +16,14 @@ from staff.forms import StaffForm
 from staff.models import Staff
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 
+@login_required
 def list_staff(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('staff'))
   context_vars['staff_list'] = Staff.objects.all()
   return direct_to_template(request, template='staff/list.html', extra_context=context_vars)
 
+@login_required
 def import_staff(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('import staff from workflowmax'))
@@ -36,6 +39,7 @@ def import_staff(request):
   
   return direct_to_template(request, template='staff/import.html', extra_context=context_vars)
 
+@login_required
 def get_staff(request, object_id):
   context_vars = dict()
   try:
@@ -47,6 +51,7 @@ def get_staff(request, object_id):
   context_vars['staff'] = staff
   return direct_to_template(request, template='staff/view.html', extra_context=context_vars)
 
+@login_required
 def add_staff(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new staff'))
@@ -72,6 +77,7 @@ def add_staff(request):
   context_vars['address_form'] = address_form
   return direct_to_template(request, template='staff/form.html', extra_context=context_vars)
 
+@login_required
 def edit_staff(request, object_id):
   context_vars = dict()
   try:
@@ -97,6 +103,7 @@ def edit_staff(request, object_id):
   context_vars['address_form'] = address_form
   return direct_to_template(request, template='staff/form.html', extra_context=context_vars)
 
+@login_required
 def delete_staff(request, object_id):
   context_vars = dict()
   try:
@@ -110,6 +117,7 @@ def delete_staff(request, object_id):
   
   return delete_object(request, object_id=staff.id, model=Staff, login_required=True, template_name='staff/delete.html', post_delete_redirect=reverse('staff-list'), extra_context={'header': capfirst(_('delete staff')), 'comment': capfirst(_('you are trying to delete staff "%s". Sure?') % staff.username)})
 
+@login_required
 def get_staff_jobs(request, object_id):
   pass
 
