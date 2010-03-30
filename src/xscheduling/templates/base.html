@@ -28,7 +28,7 @@
                     {% url staff-list as staff_url %}<li {% ifequal staff_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ staff_url }}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</a></li>
                     {% url supplier-list as supplier_url %}<li {% ifequal supplier_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ supplier_url }}">{% filter capfirst %}{% trans 'suppliers' %}{% endfilter %}</a></li>
                     {% url job-list as job_url %}<li {% ifequal job_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ job_url }}">{% filter capfirst %}{% trans 'jobs' %}{% endfilter %}</a></li>
-                    {% url schedule-calendar as calendar_url %}<li {% ifequal calendar_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ calendar_url }}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></li>
+                    {% url fullcalendar-calendar as calendar_url %}<li {% ifequal calendar_url request.get_full_path %}class="active"{% endifequal %}><a href="{{ calendar_url }}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></li>
                 </ul>
 
                 <ul id="user-navigation">

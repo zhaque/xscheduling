@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^staff/', include('staff.urls')),
     url(r'^supplier/', include('supplier.urls')),
     url(r'^job/', include('job.urls')),
+    url(r'^calendar/', include('fullcalendar.urls')),
     url(r'^$', 'django.views.generic.simple.redirect_to', { 'url': '/schedule/'}),
 )
 

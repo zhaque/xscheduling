@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'staff',
     'supplier',
     'job',
+    'fullcalendar',
 )
 
 LOGIN_URL = '/login/'

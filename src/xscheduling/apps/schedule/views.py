@@ -36,21 +36,6 @@ from datetime import datetime
 def root(request):
   return direct_to_template(request, template='schedule/root.html')
 
-@login_required
-def calendar(request):
-#  token = request.GET.get('token', '')
-#  if not token:
-#    url = 'https://www.google.com/accounts/AuthSubRequest?next=http%3A%2F%2F127.0.0.1:8000%2Fschedule%2F&scope=http%3A%2F%2Fwww.google.com%2Fcalendar%2Ffeeds%2F&session=1&secure=0&hd=cooperativegardeners.com'
-#    return HttpResponseRedirect(url)
-#
-#  calendar_service = gdata.calendar.service.CalendarService(server='cooperativegardeners.com', token_store=(token,))
-#  calendar_service.UpgradeToSessionToken()
-
-  context_vars = dict()
-  context_vars['user'] = request.user
-  context_vars['header'] = capfirst(_('calendar'))
-  return direct_to_template(request, template='schedule/fullcal.html', extra_context=context_vars)
-
 # Client views
 @login_required
 def list_clients(request):

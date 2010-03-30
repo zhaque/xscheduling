@@ -20,6 +20,9 @@
 </style>
 {% endblock %}
 {% block scriptfiles %}
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.core.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.draggable.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.resizable.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/fullcalendar.min.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/gcal.js'></script>
@@ -28,16 +31,14 @@
 	$(document).ready(function() {
 	
 		$('#calendar').fullCalendar({
-		
-			// US Holidays
-			events: $.fullCalendar.gcalFeed('http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic'),
-			
-			eventClick: function(event) {
-				// opens events in a popup window
-				window.open(event.url, 'gcalevent', 'width=700,height=600');
-				return false;
+			header: {
+				left: 'month,agendaWeek,agendaDay',
+				center: 'title',
+				right: 'prev,next today'
 			},
-			
+		
+			events: "{% url fullcalendar-events %}",
+
 			loading: function(bool) {
 				if (bool) {
 					$('#loading').show();
