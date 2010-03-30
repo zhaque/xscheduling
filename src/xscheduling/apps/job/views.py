@@ -15,13 +15,19 @@ from client.models import Client, Address
 from job.exceptions import NoInitialData
 from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
 from job.models import Job, Task, Milestone, JobState, Note
+from staff.models import Staff
 from workflowmax.job.models import Job as WorkflowmaxJob
 
 @login_required
 def list_jobs(request):
   context_vars = dict()
   context_vars['header'] = capfirst(_('jobs'))
-  context_vars['jobs'] = Job.objects.all()
+  try:
+    staff = Staff.objects.get(user_ptr=request.user)
+    context_vars['jobs'] = staff.jobs.all()
+  except ObjectDoesNotExist:
+    context_vars['jobs'] = Job.objects.all()
+    
   return direct_to_template(request, template='job/list.html', extra_context=context_vars)
 
 @login_required
@@ -32,6 +38,13 @@ def get_job(request, object_id):
   except ValueError:
     return HttpResponseRedirect(reverse('job-list'))
   job = Job.objects.get(id=object_id)
+  try:
+    staff = Staff.objects.get(user_ptr=request.user)
+    if not job in staff.jobs.all():
+      return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
+    pass
+  
   context_vars['header'] = capfirst(_('job %s') % job.name)
   context_vars['job'] = job
   return direct_to_template(request, template='job/view.html', extra_context=context_vars)
@@ -76,6 +89,13 @@ def edit_job(request, object_id):
     job = Job.objects.get(id=object_id)
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
+
+  try:
+    staff = Staff.objects.get(user_ptr=request.user)
+    if not job in staff.jobs.all():
+      return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
+    pass
   
   context_vars['header'] = capfirst(_('edit job %s') % job.name)
   job_form = EditJobForm(instance=job)
@@ -103,6 +123,13 @@ def delete_job(request, object_id):
     job = Job.objects.get(id=object_id)
   except ValueError, ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
+
+  try:
+    staff = Staff.objects.get(user_ptr=request.user)
+    if not job in staff.jobs.all():
+      return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
+    pass
 
   if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
     job.wm_delete()
