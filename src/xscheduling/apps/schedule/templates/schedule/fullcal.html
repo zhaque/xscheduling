@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block stylefiles %}
+<link rel='stylesheet' type='text/css' href='{{ MEDIA_URL }}fullcalendar/fullcalendar.css' />
+<style type='text/css'>
+
+	#loading {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		color:#fff;
+		}
+
+	#calendar {
+		width: 900px;
+		margin: 0 auto;
+		}
+
+</style>
+{% endblock %}
+{% block scriptfiles %}
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/fullcalendar.min.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/gcal.js'></script>
+<script type='text/javascript'>
+
+	$(document).ready(function() {
+	
+		$('#calendar').fullCalendar({
+		
+			// US Holidays
+			events: $.fullCalendar.gcalFeed('http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic'),
+			
+			eventClick: function(event) {
+				// opens events in a popup window
+				window.open(event.url, 'gcalevent', 'width=700,height=600');
+				return false;
+			},
+			
+			loading: function(bool) {
+				if (bool) {
+					$('#loading').show();
+				}else{
+					$('#loading').hide();
+				}
+			}
+			
+		});
+		
+	});
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div id='loading' style='display:none'>loading...</div>
+<div id='calendar'></div>
+{% endblock %}

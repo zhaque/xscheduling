@@ -48,7 +48,8 @@ def calendar(request):
 
   context_vars = dict()
   context_vars['user'] = request.user
-  return direct_to_template(request, template='schedule/cal.html', extra_context=context_vars)
+  context_vars['header'] = capfirst(_('calendar'))
+  return direct_to_template(request, template='schedule/fullcal.html', extra_context=context_vars)
 
 # Client views
 @login_required
