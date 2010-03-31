@@ -20,11 +20,12 @@
 </style>
 {% endblock %}
 {% block scriptfiles %}
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.core.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.draggable.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.resizable.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
 <script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/fullcalendar.min.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery-periodic.js'></script>
 <script type='text/javascript'>
 
 	$(document).ready(function() {
@@ -46,9 +47,10 @@
 				}
 			}
 			
-		});
-		
+		});		
+
 	});
+	$.periodic(function(){$('#calendar').fullCalendar( 'refetchEvents' ); return True;}, {frequency: 15});
 
 </script>
 {% endblock %}
