@@ -29,3 +29,6 @@ tempfile
 src/xscheduling/local_settings.py
 #media
 src/xscheduling/site_media/*
+
+#macos specific
+.DS_Store
