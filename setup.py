@@ -14,6 +14,7 @@ install_requires = [
         'geopy==0.94',
         'gdata==2.0.6',
         'pyyaml==3.09',
+        'simplejson==2.1.0',
         'Fabric',
 
         'django-uni-form',
