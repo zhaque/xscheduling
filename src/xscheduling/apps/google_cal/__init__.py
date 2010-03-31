@@ -45,8 +45,33 @@ def insert_single_event(calendar_service, title='Sample Title',
     else:
       new_event = calendar_service.InsertEvent(event, '/calendar/feeds/default/private/full')
     
-#    print 'New single event inserted: %s' % (new_event.id.text,)
-#    print '\tEvent edit URL: %s' % (new_event.GetEditLink().href,)
-#    print '\tEvent HTML URL: %s' % (new_event.GetHtmlLink().href,)
-#    
     return new_event
+
+
+def get_all_events(calendar_service):
+  feed = calendar_service.GetCalendarEventFeed()
+  events = []
+  for an_event in feed.entry:
+    title = an_event.title.text
+    content =  an_event.content.text
+    all_day = False
+    event = dict(id=an_event.id.text, title=title)
+    for a_when in an_event.when:
+      start = a_when.start_time
+      end = a_when.end_time
+      if start.find('T') < 0:
+        start = datetime.strptime(start, '%Y-%m-%d')
+#        end = datetime.strptime(end, '%Y-%m-%d')
+        all_day = True
+      else:
+        start = datetime.strptime(start[:19], '%Y-%m-%dT%H:%M:%S')
+        end = datetime.strptime(end[:19], '%Y-%m-%dT%H:%M:%S')
+        event['end'] = end.ctime()
+      event['start'] = start.ctime()
+    event['allDay'] = all_day
+    events.append(event)
+  return events
+
+
+
+
