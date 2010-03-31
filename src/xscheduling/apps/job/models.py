@@ -12,6 +12,7 @@ from workflowmax.job.models import Job as WorkflowmaxJob, Note as WorkflowmaxNot
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 from django.conf import settings
 from google_cal import client_login, insert_single_event
+import urllib
 
 class JobState(models.Model):
   order = models.PositiveSmallIntegerField(_('order'), default=10)
@@ -201,11 +202,15 @@ class Job(WorkflowmaxBase):
     feed = srv.GetAllCalendarsFeed()
     cals = feed.entry
     for cal in cals:
-      if cal.title.text == admin_email: href = cal.content.src
+      if cal.content.src.find(urllib.quote(admin_email)) != -1: 
+        href = cal.content.src
     event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
 
     #post to staff cals
     for staff in self.staff.all():      
+      href = ''
       for cal in cals:
-        if cal.title.text == staff.email: href = cal.content.src
-      event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
+        if cal.content.src.find(urllib.quote(staff.email)) != -1:
+          href = cal.content.src
+      if href:
+        event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)

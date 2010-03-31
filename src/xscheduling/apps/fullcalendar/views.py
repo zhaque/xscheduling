@@ -23,7 +23,7 @@ def events(request):
   try:
     staff = Staff.objects.get(user_ptr=request.user)
   except ObjectDoesNotExist:
-    pass
+    staff = None
 
   start = request.GET.get('start', None)
   end = request.GET.get('end', None)
@@ -33,9 +33,14 @@ def events(request):
   except ValueError:
     raise
   
+  start = start.strftime('%Y-%m-%d')
+  end = end.strftime('%Y-%m-%d')
   admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
   srv = client_login(admin_email, settings.GAPPS_PASSWORD)
-  events = get_events(srv, start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d'))
+  if staff:
+    events = get_events(srv, start, end, staff.email)
+  else:
+    events = get_events(srv, start, end)
   
   json = simplejson.dumps(events)
   return HttpResponse(json, mimetype="application/json")
