@@ -8,17 +8,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic.simple import direct_to_template
 from datetime import datetime, timedelta
 import simplejson
-from google_cal import client_login, get_all_events
+from google_cal import client_login, get_events
 from staff.models import Staff
-
-
-class CalendarEvent(object):
-  id = ''
-  title = ''
-  allDay = ''
-  start = None
-  end = None
-  url = ''
 
 @login_required
 def calendar(request):
@@ -44,7 +35,7 @@ def events(request):
   
   admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
   srv = client_login(admin_email, settings.GAPPS_PASSWORD)
-  events = get_all_events(srv)
+  events = get_events(srv, start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d'))
   
   json = simplejson.dumps(events)
   return HttpResponse(json, mimetype="application/json")

@@ -48,8 +48,15 @@ def insert_single_event(calendar_service, title='Sample Title',
     return new_event
 
 
-def get_all_events(calendar_service):
-  feed = calendar_service.GetCalendarEventFeed()
+def get_events(calendar_service, start_date=None, end_date=None):
+  if start_date and end_date:
+    query = gdata.calendar.service.CalendarEventQuery('default', 'private', 'full')
+    query.start_min = start_date
+    query.start_max = end_date 
+    feed = calendar_service.CalendarQuery(query)
+  else:
+    feed = calendar_service.GetCalendarEventFeed()
+
   events = []
   for an_event in feed.entry:
     title = an_event.title.text
