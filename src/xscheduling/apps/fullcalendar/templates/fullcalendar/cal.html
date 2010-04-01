@@ -2,60 +2,12 @@
 {% load i18n %}
 
 {% block stylefiles %}
-<link rel='stylesheet' type='text/css' href='{{ MEDIA_URL }}fullcalendar/fullcalendar.css' />
-<style type='text/css'>
-
-	#loading {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-		color:#fff;
-		}
-
-	#calendar {
-		width: 900px;
-		margin: 0 auto;
-		}
-
-</style>
+  {% include 'fullcalendar/block/calstyle.html' %}
 {% endblock %}
 {% block scriptfiles %}
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.core.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.draggable.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.resizable.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/fullcalendar.min.js'></script>
-<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery-periodic.js'></script>
-<script type='text/javascript'>
-
-	$(document).ready(function() {
-	
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'month,agendaWeek,agendaDay',
-				center: 'title',
-				right: 'prev,next today'
-			},
-		
-			events: "{% url fullcalendar-events %}",
-      defaultView : 'agendaWeek',
-			loading: function(bool) {
-				if (bool) {
-					$('#loading').show();
-				}else{
-					$('#loading').hide();
-				}
-			}
-			
-		});		
-
-	});
-	$.periodic(function(){$('#calendar').fullCalendar( 'refetchEvents' ); return True;}, {frequency: 15});
-
-</script>
+  {% include 'fullcalendar/block/calscript.html' %}
 {% endblock %}
 
 {% block content %}
-<div id='loading' style='display:none'>loading...</div>
-<div id='calendar'></div>
+  {% include 'fullcalendar/block/calbody.html' %}
 {% endblock %}

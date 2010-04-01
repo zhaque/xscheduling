@@ -1,0 +1,34 @@
+{% load i18n %}
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.core.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.draggable.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/ui.resizable.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/fullcalendar.min.js'></script>
+<script type='text/javascript' src='{{ MEDIA_URL }}fullcalendar/jquery/jquery-periodic.js'></script>
+<script type='text/javascript'>
+
+	$(document).ready(function() {
+	
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'month,agendaWeek,agendaDay',
+				center: 'title',
+				right: 'prev,next today'
+			},
+		
+			events: "{% url fullcalendar-events %}",
+      defaultView : 'agendaWeek',
+			loading: function(bool) {
+				if (bool) {
+					$('#loading').show();
+				}else{
+					$('#loading').hide();
+				}
+			}
+			
+		});		
+
+	});
+	$.periodic(function(){$('#calendar').fullCalendar( 'refetchEvents' ); return true;}, {frequency: 15});
+
+</script>
