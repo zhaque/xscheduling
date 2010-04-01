@@ -6,7 +6,9 @@
                         <div class="hd">
                             <h2>Scheduling</h2>
                         </div>
-                        <div class="bd">
+                        <div class="bd">                        
+<h2><a href="{% url schedule-contacts %}">{% filter capfirst %}{% trans 'contacts' %}{% endfilter %}</a></h2>
+<h2><a href="{% url fullcalendar-calendar %}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></h2>
 <h2>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h2>
 <p><a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a></p>
 <h2>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h2>
@@ -15,7 +17,6 @@
 <p><a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a></p>
 <h2>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h2>
 <p><a href="{% url job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a></p>
-<h2><a href="{% url fullcalendar-calendar %}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></h2>
                         </div>
                     </div>
 

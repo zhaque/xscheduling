@@ -10,17 +10,17 @@
     <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ supplier.referral_source }}</dd>
     {% for contact in supplier.contacts %}
       <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
-      {% include 'schedule/block/contact.html' %}
-      <a href="{% url schedule-supplier-contact-edit supplier.id contact.id %}">{% filter capfirst %}{% trans 'edit contact' %}{% endfilter %}</a>
+      {% include 'workflowmax/block/contact.html' %}
+      <a href="{% url workflowmax-supplier-contact-edit supplier.id contact.id %}">{% filter capfirst %}{% trans 'edit contact' %}{% endfilter %}</a>
     {% endfor %}
     {% for note in client.notes %}
       <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
-      {% include 'schedule/block/note.html' %}
+      {% include 'workflowmax/block/note.html' %}
     {% endfor %}
   </dl>
-  <a href="{% url schedule-supplier-contact-add supplier.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
-  <a href="{% url schedule-supplier-edit supplier.id %}">{% filter capfirst %}{% trans 'edit supplier' %}{% endfilter %}</a>
-  <a href="{% url schedule-supplier-delete supplier.id %}">{% filter capfirst %}{% trans 'delete supplier' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-supplier-contact-add supplier.id %}">{% filter capfirst %}{% trans 'add contact' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-supplier-edit supplier.id %}">{% filter capfirst %}{% trans 'edit supplier' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-supplier-delete supplier.id %}">{% filter capfirst %}{% trans 'delete supplier' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

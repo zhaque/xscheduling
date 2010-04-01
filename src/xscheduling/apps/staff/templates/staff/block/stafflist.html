@@ -1,0 +1,34 @@
+{% load i18n %}
+{% if staff_list %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Mobile</td>
+                                        <td>Email</td>
+                                        <td>Address</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+  </li>
+  {% for staff in staff_list %}
+                                    <tr>
+                                        <td>{{ staff.username }}</td>
+                                        <td>{{ staff.mobile }}</td>
+                                        <td>{{ staff.email }}</td>
+                                        <td>{{ staff.address }}</td>
+                                        <td class="text-right"><a href="{% url staff-view staff.id %}">view</a> | <a href="{% url staff-edit staff.id %}">edit</a> | <a href="{% url staff-delete staff.id %}">delete</a></td>
+                                    </tr>
+  {% endfor %}
+                                    <tr>
+                                        <td><a href="{% url staff-add %}">{% trans 'add new' %}</a></a></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+{% endif %}

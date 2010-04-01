@@ -12,7 +12,7 @@
     <dt>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</dt>
       <dd>
       {% for staff in task.assigned %}
-        <h3><a href="{% url schedule-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></h3>
+        <h3><a href="{% url workflowmax-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></h3>
         <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.name }}</dd>
       {% endfor %}
       </dd>

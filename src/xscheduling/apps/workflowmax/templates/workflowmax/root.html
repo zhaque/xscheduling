@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>Workflowmax</h2>
+                        </div>
+                        <div class="bd">
+<h2>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h2>
+<p><a href="{% url workflowmax-client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h2>
+<p><a href="{% url workflowmax-staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h2>
+<p><a href="{% url workflowmax-supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a></p>
+<h2>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h2>
+<p><a href="{% url workflowmax-job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a></p>
+                        </div>
+                    </div>
+
+
+{% endblock %}

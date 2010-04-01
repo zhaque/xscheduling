@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if client %}
+  {% include 'workflowmax/block/client.html' %}
+{% endif %}
+{% if contact %}
+  {% include 'workflowmax/block/contact.html' %}
+{% endif %}
+{% if staff %}
+  {% include 'workflowmax/block/staff.html' %}
+{% endif %}
+{% if supplier %}
+  {% include 'workflowmax/block/supplier.html' %}
+{% endif %}
+{% if job %}
+  {% include 'workflowmax/block/job.html' %}
+{% endif %}
+{% endblock %}

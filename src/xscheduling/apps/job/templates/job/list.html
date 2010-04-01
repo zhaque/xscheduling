@@ -13,7 +13,7 @@
   {% for job in jobs %}
   <li><a href="{% url job-view job.id %}">{{ job }}</a>
   {% if job.wm_id %}
-<!--  (<a href="{% url schedule-job job.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ job.wm_id }}</a>) -->
+<!--  (<a href="{% url workflowmax-job job.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ job.wm_id }}</a>) -->
   {% endif %}
   </li>
   {% endfor %}

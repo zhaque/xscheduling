@@ -9,11 +9,11 @@
     <dt>{% filter capfirst %}{% trans 'due_date' %}{% endfilter %}</dt><dd>{{ job.due_date }}</dd>
 
     {% for client in job.clients %}
-      <h2><a href="{% url schedule-client client.id %}">{% filter capfirst %}{% trans 'client' %}{% endfilter %} {{ client.id }}</a></h2>
+      <h2><a href="{% url workflowmax-client client.id %}">{% filter capfirst %}{% trans 'client' %}{% endfilter %} {{ client.id }}</a></h2>
       <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
     {% endfor %}
     {% for staff in job.assigned %}
-      <h2><a href="{% url schedule-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></h2>
+      <h2><a href="{% url workflowmax-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></h2>
       <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ staff.name }}</dd>
     {% endfor %}
     {% for contact in job.contacts %}
@@ -22,21 +22,21 @@
     {% endfor %}
     {% for task in job.tasks %}
       <h2>{% filter capfirst %}{% trans 'task' %}{% endfilter %} {{ task.id }}</h2>
-      {% include 'schedule/block/task.html' %}
-      <a href="{% url schedule-job-task-edit job.id task.id %}">{% filter capfirst %}{% trans 'edit task' %}{% endfilter %}</a>
+      {% include 'workflowmax/block/task.html' %}
+      <a href="{% url workflowmax-job-task-edit job.id task.id %}">{% filter capfirst %}{% trans 'edit task' %}{% endfilter %}</a>
     {% endfor %}
     {% for milestone in job.milestones %}
       <h2>{% filter capfirst %}{% trans 'milestone' %}{% endfilter %} {{ milestone.id }}</h2>
-      {% include 'schedule/block/milestone.html' %}
+      {% include 'workflowmax/block/milestone.html' %}
     {% endfor %}
     {% for note in job.notes %}
       <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
-      {% include 'schedule/block/note.html' %}
+      {% include 'workflowmax/block/note.html' %}
     {% endfor %}
   </dl>
-  <a href="{% url schedule-job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a>
-  <a href="{% url schedule-job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
-  <a href="{% url schedule-job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-job-note-add job.id %}">{% filter capfirst %}{% trans 'add note' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-job-edit job.id %}">{% filter capfirst %}{% trans 'edit job' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-job-delete job.id %}">{% filter capfirst %}{% trans 'delete job' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

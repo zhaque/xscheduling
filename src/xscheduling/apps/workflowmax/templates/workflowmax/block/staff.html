@@ -8,9 +8,9 @@
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ staff.email }}</dd>
     <dt>{% filter capfirst %}{% trans 'payroll code' %}{% endfilter %}</dt><dd>{{ staff.payrollcode }}</dd>
   </dl>
-  <a href="{% url schedule-staff-edit staff.id %}">{% filter capfirst %}{% trans 'edit staff' %}{% endfilter %}</a>
-  <a href="{% url schedule-staff-delete staff.id %}">{% filter capfirst %}{% trans 'delete staff' %}{% endfilter %}</a>
-  <a href="{% url schedule-staff-jobs staff.id %}">{% filter capfirst %}{% trans 'assigned jobs' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-staff-edit staff.id %}">{% filter capfirst %}{% trans 'edit staff' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-staff-delete staff.id %}">{% filter capfirst %}{% trans 'delete staff' %}{% endfilter %}</a>
+  <a href="{% url workflowmax-staff-jobs staff.id %}">{% filter capfirst %}{% trans 'assigned jobs' %}{% endfilter %}</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}

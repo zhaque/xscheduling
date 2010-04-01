@@ -7,13 +7,22 @@
                             <h2>{{ header }}</h2>
                         </div>
                         <div class="bd">
+                            <h3>{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</h3>
+{% if clients %}
+  {% include 'client/block/clientlist.html' %}
+{% endif %}
+                        </div>
+                        <div class="bd">
+                            <h3>{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</h3>
+{% if staff_list %}
+  {% include 'staff/block/stafflist.html' %}
+{% endif %}
+
+                        </div>
+                        <div class="bd">
                             <h3>{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</h3>
 {% if suppliers %}
   {% include 'supplier/block/supplierlist.html' %}
-{% else %}
-<p>You don't have any suppliers, you can <a href="{% url supplier-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url supplier-add %}">{% trans 'create new' %}</a>.</p>
-<h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
-
 {% endif %}
                         </div>
                     </div>

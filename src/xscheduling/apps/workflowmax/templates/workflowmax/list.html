@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if clients %}
+<ul>
+  {% for client in clients %}
+  <li><a href="{% url workflowmax-client client.id %}">{% filter capfirst %}{% trans 'client' %}{% endfilter %} {{ client.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url workflowmax-client-add %}">{% filter capfirst %}{% trans 'add new client' %}{% endfilter %}</a>
+{% endif %}
+{% if staff_list %}
+<ul>
+  {% for staff in staff_list %}
+  <li><a href="{% url workflowmax-staff staff.id %}">{% filter capfirst %}{% trans 'staff' %}{% endfilter %} {{ staff.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url workflowmax-staff-add %}">{% filter capfirst %}{% trans 'add new staff' %}{% endfilter %}</a>
+{% endif %}
+{% if suppliers %}
+<ul>
+  {% for supplier in suppliers %}
+  <li><a href="{% url workflowmax-supplier supplier.id %}">{% filter capfirst %}{% trans 'supplier' %}{% endfilter %} {{ supplier.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url workflowmax-supplier-add %}">{% filter capfirst %}{% trans 'add new supplier' %}{% endfilter %}</a>
+{% endif %}
+{% if jobs %}
+<ul>
+  {% for job in jobs %}
+  <li><a href="{% url workflowmax-job job.id %}">{% filter capfirst %}{% trans 'job' %}{% endfilter %} {{ job.id }}</a></li>
+  {% endfor %}
+</ul>
+<a href="{% url workflowmax-job-add %}">{% filter capfirst %}{% trans 'add new job' %}{% endfilter %}</a>
+{% endif %}
+{% endblock %}
