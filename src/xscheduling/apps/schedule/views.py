@@ -36,7 +36,7 @@ def root(request):
   context_vars['form'] = job_form
   context_vars['helper'] = helper
 
-  return direct_to_template(request, template='schedule/cal.html', extra_context=context_vars)
+  return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
 
 @login_required
 def contacts(request):

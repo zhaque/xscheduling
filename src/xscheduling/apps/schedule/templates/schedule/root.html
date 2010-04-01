@@ -1,24 +1,44 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load uni_form_tags %}
+
+{% block stylefiles %}
+  {% include 'fullcalendar/block/calstyle.html' %}
+    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form-generic.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form.css" type="text/css" />
+{% endblock %}
+{% block scriptfiles %}
+  {% include 'fullcalendar/block/calscript.html' %}
+    <script src="{{ MEDIA_URL }}uni_form/uni_form/uni-form.jquery.js" type="text/javascript"></script>
+{% endblock %}
 
 {% block content %}
                     <div class="block">
                         <div class="hd">
-                            <h2>Scheduling</h2>
+                            <h2>{{ header }}</h2>
                         </div>
-                        <div class="bd">                        
-<h2><a href="{% url schedule-contacts %}">{% filter capfirst %}{% trans 'contacts' %}{% endfilter %}</a></h2>
-<h2><a href="{% url fullcalendar-calendar %}">{% filter capfirst %}{% trans 'calendar' %}{% endfilter %}</a></h2>
-<h2>{% filter capfirst %}{% trans 'clients' %}{% endfilter %}</h2>
-<p><a href="{% url client-list %}">{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</a></p>
-<h2>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h2>
-<p><a href="{% url staff-list %}">{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</a></p>
-<h2>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h2>
-<p><a href="{% url supplier-list %}">{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</a></p>
-<h2>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h2>
-<p><a href="{% url job-list %}">{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</a></p>
+                        <div class="bd">
+  {% include 'fullcalendar/block/calbody.html' %}
                         </div>
                     </div>
-
-
+{% endblock %}
+{% block sidebar %}
+                <div class="block">
+                    <div class="hd">
+                        <h2>{% filter capfirst %}{% trans 'new' %}{% endfilter %}</h2>
+                    </div>
+                    <div class="bd">
+                        <p><a href="{% url client-add %}">client</a>
+                        <p><a href="{% url staff-add %}">staff</a>
+                        <p><a href="{% url supplier-add %}">supplier</a>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="hd">
+                        <h2>{% filter capfirst %}{% trans 'new job' %}{% endfilter %}</h2>
+                    </div>
+                    <div class="bd">
+  {% uni_form form helper %}
+                    </div>
+                </div>
 {% endblock %}
