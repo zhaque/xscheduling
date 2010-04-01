@@ -16,7 +16,7 @@
 				right: 'prev,next today'
 			},
 		
-			events: "{% url fullcalendar-events %}",
+			events: "{% if staff %}{% url fullcalendar-staff-events staff.id %}{% else %}{% url fullcalendar-events %}{% endif %}",
       defaultView : 'agendaWeek',
 			loading: function(bool) {
 				if (bool) {

@@ -121,3 +121,14 @@ def delete_staff(request, object_id):
 def get_staff_jobs(request, object_id):
   pass
 
+@login_required
+def staff_calendar(request, object_id):
+  context_vars = dict()
+#  context_vars['user'] = request.user
+  context_vars['header'] = capfirst(_('calendar'))
+  try:
+    staff = Staff.objects.get(id=object_id)
+    context_vars['staff'] = staff
+  except ObjectDoesNotExist, ValueError:
+    return HttpResponseRedirect(reverse('staff-list'))
+  return direct_to_template(request, template='fullcalendar/cal.html', extra_context=context_vars)

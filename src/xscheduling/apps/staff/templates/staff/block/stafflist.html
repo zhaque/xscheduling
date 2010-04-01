@@ -18,7 +18,7 @@
                                         <td>{{ staff.mobile }}</td>
                                         <td>{{ staff.email }}</td>
                                         <td>{{ staff.address }}</td>
-                                        <td class="text-right"><a href="{% url staff-view staff.id %}">view</a> | <a href="{% url staff-edit staff.id %}">edit</a> | <a href="{% url staff-delete staff.id %}">delete</a></td>
+                                        <td class="text-right"><a href="{% url staff-calendar staff.id %}">calendar</a> | <a href="{% url staff-view staff.id %}">view</a> | <a href="{% url staff-edit staff.id %}">edit</a> | <a href="{% url staff-delete staff.id %}">delete</a></td>
                                     </tr>
   {% endfor %}
                                     <tr>

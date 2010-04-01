@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^(?P<object_id>\d+)/edit/$', 'staff.views.edit_staff', name='staff-edit'),
     url(r'^(?P<object_id>\d+)/delete/$', 'staff.views.delete_staff', name='staff-delete'),
     url(r'^(?P<object_id>\d+)/jobs/$', 'staff.views.get_staff_jobs', name='staff-jobs'),
+    url(r'^(?P<object_id>\d+)/calendar/$', 'staff.views.staff_calendar', name='staff-calendar'),
     url(r'^import/$', 'staff.views.import_staff', name='staff-import'),
 )

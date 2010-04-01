@@ -19,11 +19,17 @@ def calendar(request):
   return direct_to_template(request, template='fullcalendar/cal.html', extra_context=context_vars)
 
 @login_required
-def events(request):
+def events(request, object_id=None):
   try:
     staff = Staff.objects.get(user_ptr=request.user)
   except ObjectDoesNotExist:
     staff = None
+
+  if not staff and object_id:
+    try:
+      staff = Staff.objects.get(id=object_id)
+    except ObjectDoesNotExist:
+      pass
 
   start = request.GET.get('start', None)
   end = request.GET.get('end', None)
