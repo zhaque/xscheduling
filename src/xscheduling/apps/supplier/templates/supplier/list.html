@@ -8,7 +8,7 @@
                         </div>
                         <div class="bd">
 {% if suppliers %}
-                            <h3>Supplier list</h3>
+                            <h3>{% filter capfirst %}{% trans 'supplier list' %}{% endfilter %}</h3>
                             <ul class="list">
   {% for supplier in suppliers %}
   <li><a href="{% url supplier-view supplier.id %}">{{ supplier }}</a>
@@ -18,7 +18,57 @@
   </li>
   {% endfor %}
                             </ul>
-<a href="{% url supplier-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Contact</td>
+                                        <td>Phone</td>
+                                        <td>Email</td>
+                                        <td>Website</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+  </li>
+  {% for supplier in suppliers %}
+                                    <tr>
+                                        <td>{{ supplier.name }}</td>
+                                        <td>&nbsp;</td>
+                                        <td>{{ supplier.phone }}</td>
+                                        <td>{{ supplier.email }}</td>
+                                        <td>{{ supplier.website }}</td>
+                                        <td class="text-right"><a href="{% url supplier-view supplier.id %}">view</a> | <a href="{% url supplier-edit supplier.id %}">edit</a> | <a href="{% url supplier-delete supplier.id %}">delete</a></td>
+                                    </tr>
+    {% for contact in supplier.contacts.all %}
+                                    <tr>
+                                        <td>&nbsp</td>
+                                        <td>{{ contact.name }}</td>
+                                        <td>{{ contact.phone }}</td>
+                                        <td>{{ contact.email }}</td>
+                                        <td>&nbsp</td>
+                                        <td class="text-right"><a href="{% url supplier-contact-edit supplier.id contact.id %}">edit</a></td>
+                                    </tr>
+    {% endfor %}
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><a href="{% url supplier-contact-add supplier.id %}">{% trans 'add new' %}</a></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+  {% endfor %}
+                                    <tr>
+                                        <td><a href="{% url supplier-add %}">{% trans 'add new' %}</a></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 {% else %}
 <p>You don't have any suppliers, you can <a href="{% url supplier-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url supplier-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>

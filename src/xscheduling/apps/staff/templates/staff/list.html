@@ -8,17 +8,38 @@
                         </div>
                         <div class="bd">
 {% if staff_list %}
-                            <h3>Staff list</h3>
-                            <ul class="list">
-  {% for staff in staff_list %}
-  <li><a href="{% url staff-view staff.id %}">{{ staff }}</a>
-  {% if staff.wm_id %}
-<!--  (<a href="{% url schedule-staff staff.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ staff.wm_id }}</a>) -->
-  {% endif %}
+                            <h3>{% filter capfirst %}{% trans 'staff list' %}{% endfilter %}</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Mobile</td>
+                                        <td>Email</td>
+                                        <td>Address</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
   </li>
+  {% for staff in staff_list %}
+                                    <tr>
+                                        <td>{{ staff.username }}</td>
+                                        <td>{{ staff.mobile }}</td>
+                                        <td>{{ staff.email }}</td>
+                                        <td>{{ staff.address }}</td>
+                                        <td class="text-right"><a href="{% url staff-view staff.id %}">view</a> | <a href="{% url staff-edit staff.id %}">edit</a> | <a href="{% url staff-delete staff.id %}">delete</a></td>
+                                    </tr>
   {% endfor %}
-                            </ul>
-<a href="{% url staff-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
+                                    <tr>
+                                        <td><a href="{% url staff-add %}">{% trans 'add new' %}</a></a></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 {% else %}
 <p>You don't have any staff, you can <a href="{% url staff-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url staff-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>
