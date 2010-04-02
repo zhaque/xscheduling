@@ -9,7 +9,7 @@
 <fieldset class="inlineLabels">
 {{ address_form|as_uni_form }}
 </fieldset>
-<h3>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %}</h3>
+<h3>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %} ({% trans 'enter only if different from above' %})</h3>
 <fieldset class="inlineLabels">
 {{ postal_address_form|as_uni_form }}
 </fieldset>

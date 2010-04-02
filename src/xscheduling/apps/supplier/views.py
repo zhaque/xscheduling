@@ -54,9 +54,17 @@ def add_supplier(request):
           raise InvalidForm()
         address_form.save()
         postal_address_form = AddressForm(request.POST, request.FILES, prefix='post_address', instance=supplier.postal_address)
-        if not postal_address_form.is_valid():
-          raise InvalidForm()
-        postal_address_form.save()
+        if postal_address_form.is_valid():
+          postal_address_form.save()
+        else:
+          supplier.postal_address.postcode = supplier.address.postcode
+          supplier.postal_address.address = supplier.address.address
+          supplier.postal_address.city = supplier.address.city
+          supplier.postal_address.county = supplier.address.county
+          supplier.postal_address.country = supplier.address.country
+          supplier.postal_address.latitude = supplier.address.latitude
+          supplier.postal_address.longitude = supplier.address.longitude
+          supplier.postal_address.save()
         if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
           supplier.wm_sync()
         return HttpResponseRedirect(reverse('supplier-view', args=[supplier.id]))

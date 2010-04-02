@@ -46,16 +46,24 @@ def add_client(request):
     address_form = AddressForm(request.POST, request.FILES, prefix='address')
     postal_address_form = AddressForm(request.POST, request.FILES, prefix='post_address')
     try:
-      if client_form.is_valid() and address_form.is_valid() and postal_address_form.is_valid():
+      if client_form.is_valid() and address_form.is_valid():
         client = client_form.save()
         address_form = AddressForm(request.POST, request.FILES, prefix='address', instance=client.address)
         if not address_form.is_valid():
           raise InvalidForm()
         address_form.save()
         postal_address_form = AddressForm(request.POST, request.FILES, prefix='post_address', instance=client.postal_address)
-        if not postal_address_form.is_valid():
-          raise InvalidForm()
-        postal_address_form.save()
+        if postal_address_form.is_valid():
+          postal_address_form.save()
+        else:
+          client.postal_address.postcode = client.address.postcode
+          client.postal_address.address = client.address.address
+          client.postal_address.city = client.address.city
+          client.postal_address.county = client.address.county
+          client.postal_address.country = client.address.country
+          client.postal_address.latitude = client.address.latitude
+          client.postal_address.longitude = client.address.longitude
+          client.postal_address.save()
         if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
           client.wm_sync()
         return HttpResponseRedirect(reverse('client-view', args=[client.id]))
