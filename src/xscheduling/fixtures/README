@@ -1,1 +1,5 @@
 Place your fixtures here!
+
+if you want to do a fixture from current db, you can use something like this (fix names as your needs)
+
+./bin/site dumpdata client --indent=2 --format=yaml > src/xscheduling/fixtures/sample_data.yaml

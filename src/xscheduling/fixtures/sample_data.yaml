@@ -1,0 +1,161 @@
+- fields: {address: 12 Sherwood Street Piccadilly Circus, city: London, country: UK,
+    county: Greater London, latitude: '51.5001524', longitude: '-0.1262362', postcode: W1F
+      7BR}
+  model: client.address
+  pk: 1
+- fields: {address: 12 Sherwood Street Piccadilly Circus, city: London, country: UK,
+    county: Greater London, latitude: '51.5001524', longitude: '-0.1262362', postcode: W1F
+      7BR}
+  model: client.address
+  pk: 2
+- fields: {address: 37 Tavistock Place Russell Square, city: London, country: UK,
+    county: Greater London, latitude: '51.521134', longitude: '-0.127492', postcode: WC1H
+      9SE}
+  model: client.address
+  pk: 3
+- fields: {address: 37 Tavistock Place Russell Square, city: London, country: UK,
+    county: Greater London, latitude: '51.521134', longitude: '-0.127492', postcode: WC1H
+      9SE}
+  model: client.address
+  pk: 4
+- fields: {address: 229 Great Portland Street, city: London, country: UK, county: Greater
+      London, latitude: '51.5215547', longitude: '-0.1433641', postcode: W1W 5PN}
+  model: client.address
+  pk: 5
+- fields: {address: 229 Great Portland Street, city: London, country: UK, county: Greater
+      London, latitude: '51.5215547', longitude: '-0.1433641', postcode: W1W 5PN}
+  model: client.address
+  pk: 6
+- fields: {address: 8 Upper St Martin's Lane, city: London, country: UK, county: Greater
+      London, latitude: '51.5126055', longitude: '-0.1271041', postcode: WC2h 9DL}
+  model: client.address
+  pk: 7
+- fields: {address: 8 Upper St Martin's Lane, city: London, country: UK, county: Greater
+      London, latitude: '51.5126055', longitude: '-0.1271041', postcode: WC2h 9DL}
+  model: client.address
+  pk: 8
+- fields: {address: 14 Villiers Street, city: London, country: UK, county: Greater
+      London, latitude: '51.5082118', longitude: '-0.1240491', postcode: WC2N 6NQ}
+  model: client.address
+  pk: 9
+- fields: {address: Belvedere Road, city: London, country: UK, county: Greater London,
+    latitude: '51.505301', longitude: '-0.114712', postcode: SE1 7GQ}
+  model: client.address
+  pk: 10
+- fields: {address: 50 Shaftsbury Avenue, city: London, country: UK, county: Greater
+      London, latitude: '51.5115021', longitude: '-0.1330091', postcode: W1D 7LW}
+  model: client.address
+  pk: 11
+- fields: {address: 1, email: client1@sample.com, fax: '', name: Piccadilly Hotel,
+    phone: '', postal_address: 2, referral_source: '', website: '', wm_id: '155480'}
+  model: client.client
+  pk: 1
+- fields: {address: 3, email: client2@sample.com, fax: '', name: Generator Hostel
+      London, phone: '', postal_address: 4, referral_source: '', website: '', wm_id: '155481'}
+  model: client.client
+  pk: 2
+- fields: {address: 5, email: client3@sample.com, fax: '', name: INTERNATIONAL STUDENTS
+      HOUSE, phone: '', postal_address: 6, referral_source: '', website: '', wm_id: '155482'}
+  model: client.client
+  pk: 3
+- fields: {address: 7, email: client4@sample.com, fax: '', name: 'Digivate, Wellington
+      House', phone: '', postal_address: 8, referral_source: '', website: '', wm_id: '155483'}
+  model: client.client
+  pk: 4
+- fields: {name: Software Development, rate: '10'}
+  model: staff.skill
+  pk: 1
+- fields:
+    address: 9
+    groups: []
+    mobile: ''
+    payrollcode: ''
+    phone: ''
+    skills: [1]
+    user_permissions: []
+    wm_id: '8502'
+  model: staff.staff
+  pk: 2
+- fields:
+    address: 10
+    groups: []
+    mobile: ''
+    payrollcode: ''
+    phone: ''
+    skills: [1]
+    user_permissions: []
+    wm_id: ''
+  model: staff.staff
+  pk: 3
+- fields:
+    address: 11
+    groups: []
+    mobile: ''
+    payrollcode: ''
+    phone: ''
+    skills: [1]
+    user_permissions: []
+    wm_id: ''
+  model: staff.staff
+  pk: 4
+- fields:
+    date_joined: 2010-02-12 10:01:09
+    email: ss@ss.ss
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: true
+    last_login: 2010-04-02 01:50:31
+    last_name: ''
+    password: sha1$3fd57$3bc3563746763165d6ffdfb7ef55a985cd196dcf
+    user_permissions: []
+    username: admin
+  model: auth.user
+  pk: 1
+- fields:
+    date_joined: 2010-04-02 05:06:58.965224
+    email: staff1@cooperativegardeners.com
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2010-04-02 05:06:58.965215
+    last_name: ''
+    password: sha1$bcfd3$e13351424e55860fa952d09601baf2e2454097e8
+    user_permissions: []
+    username: staff1
+  model: auth.user
+  pk: 2
+- fields:
+    date_joined: 2010-04-02 05:07:42.874582
+    email: staff2@cooperativegardeners.com
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2010-04-02 05:07:42.874573
+    last_name: ''
+    password: sha1$06742$9185d65e40d78bcd3b6c75fda566b7587c7cd520
+    user_permissions: []
+    username: staff2
+  model: auth.user
+  pk: 3
+- fields:
+    date_joined: 2010-04-02 05:08:36.125957
+    email: staff3@cooperativegardeners.com
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2010-04-02 05:08:36.125950
+    last_name: ''
+    password: sha1$d6e16$7fb53514adb7315d15a8c0a200426b2d6abccad7
+    user_permissions: []
+    username: staff3
+  model: auth.user
+  pk: 4
+
