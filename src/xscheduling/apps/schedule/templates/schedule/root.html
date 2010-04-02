@@ -25,16 +25,6 @@
 {% block sidebar %}
                 <div class="block">
                     <div class="hd">
-                        <h2>{% filter capfirst %}{% trans 'new' %}{% endfilter %}</h2>
-                    </div>
-                    <div class="bd">
-                        <p><a href="{% url client-add %}">client</a>
-                        <p><a href="{% url staff-add %}">staff</a>
-                        <p><a href="{% url supplier-add %}">supplier</a>
-                    </div>
-                </div>
-                <div class="block">
-                    <div class="hd">
                         <h2>{% filter capfirst %}{% trans 'new job' %}{% endfilter %}</h2>
                     </div>
                     <div class="bd">
