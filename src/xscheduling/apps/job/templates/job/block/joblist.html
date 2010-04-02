@@ -1,0 +1,38 @@
+{% load i18n %}
+{% if jobs %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Client</td>
+                                        <td>Name</td>
+                                        <td>State</td>
+                                        <td>Type</td>
+                                        <td>Start date</td>
+                                        <td>Due date</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+  {% for job in jobs %}
+                                    <tr>
+                                        <td>{{ job.client }}</td>
+                                        <td>{{ job.name }}</td>
+                                        <td>{{ job.state }}</td>
+                                        <td>{{ job.type }}</td>
+                                        <td>{{ job.start_date }}</td>
+                                        <td>{{ job.due_date }}</td>
+                                        <td class="text-right"><a href="{% url job-view job.id %}">view</a> | <a href="{% url job-edit job.id %}">edit</a> | <a href="{% url job-delete job.id %}">delete</a></td>
+                                    </tr>
+  {% endfor %}
+                                    <tr>
+                                        <td><a href="{% url job-add %}">{% trans 'add new' %}</a></td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+{% endif %}

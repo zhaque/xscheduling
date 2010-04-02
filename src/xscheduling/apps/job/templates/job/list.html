@@ -7,18 +7,9 @@
                             <h2>{{ header }}</h2>
                         </div>
                         <div class="bd">
-{% if jobs %}
                             <h3>{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</h3>
-                            <ul class="list">
-  {% for job in jobs %}
-  <li><a href="{% url job-view job.id %}">{{ job }}</a>
-  {% if job.wm_id %}
-<!--  (<a href="{% url workflowmax-job job.wm_id %}">{% filter capfirst %}{% trans 'workflomax id' %}{% endfilter %}: {{ job.wm_id }}</a>) -->
-  {% endif %}
-  </li>
-  {% endfor %}
-                            </ul>
-<a href="{% url job-add %}">{% filter capfirst %}{% trans 'add new' %}{% endfilter %}</a>
+{% if jobs %}
+  {% include 'job/block/joblist.html' %}
 {% else %}
 <p>You don't have any jobs, you can <a href="{% url job-import %}">{% trans 'import' %}</a> them from Workflowmax or <a href="{% url job-add %}">{% trans 'create new' %}</a>.</p>
 <h4>But the most convenient way is to run 'manage.py wm_import' command.</h4>

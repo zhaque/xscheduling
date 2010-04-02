@@ -118,7 +118,7 @@ class Job(WorkflowmaxBase):
   suppliers = models.ManyToManyField(Supplier, verbose_name = _('suppliers'), related_name='jobs', null=True, blank=True)
 
   class Meta:
-    ordering = ['name']
+    ordering = ['due_date']
     verbose_name = _('job')
     verbose_name_plural = _('jobs')
 
