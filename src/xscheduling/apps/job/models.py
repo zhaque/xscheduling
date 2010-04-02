@@ -109,7 +109,7 @@ class Milestone(models.Model):
 class Job(WorkflowmaxBase):
   name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. Clean the pool)'))
   description = models.TextField(_('description'))
-  state = models.ForeignKey(JobState, verbose_name = _('state'), related_name='jobs')
+  state = models.ForeignKey(JobState, verbose_name = _('state'), related_name='jobs', default=1) #default=1 means Planned state here, so initial_data.jaml must be loaded
   type = models.ForeignKey(Skill, verbose_name = _('type'), related_name='jobs')
   start_date = models.DateTimeField(_('start date'), default=datetime.now(), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
   due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))

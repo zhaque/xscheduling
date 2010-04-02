@@ -5,7 +5,7 @@ from job.models import Job, Task, Milestone, Note
 class AddJobForm(forms.ModelForm):
   class Meta:
     model = Job
-    exclude = ('wm_id')
+    exclude = ('wm_id', 'state')
 
 class EditJobForm(forms.ModelForm):
   class Meta:
@@ -27,3 +27,8 @@ class NoteForm(forms.ModelForm):
   class Meta:
     model = Note
     exclude = ('job')
+
+class RootPageAddJobForm(forms.ModelForm):
+  class Meta:
+    model = Job
+    exclude = ('wm_id', 'state', 'suppliers')

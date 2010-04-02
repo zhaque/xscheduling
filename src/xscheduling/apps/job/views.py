@@ -59,7 +59,7 @@ def add_job(request):
   helper.add_input(submit)
   layout = Layout('name', 
     'description', 
-    'state', 
+#    'state', 
     'type', 
     'start_date', 
     'due_date', 
