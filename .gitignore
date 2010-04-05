@@ -2,6 +2,7 @@
 .project
 .pydevproject
 .pydevproject.bak
+src/xscheduling/sites.json
 
 #buildout's specific
 .installed.cfg
