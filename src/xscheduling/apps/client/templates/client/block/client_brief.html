@@ -5,15 +5,9 @@
     <dt>{% filter capfirst %}{% trans 'name' %}{% endfilter %}</dt><dd>{{ client.name }}</dd>
     <dt>{% filter capfirst %}{% trans 'email' %}{% endfilter %}</dt><dd>{{ client.email }}</dd>
     <dt>{% filter capfirst %}{% trans 'phone' %}{% endfilter %}</dt><dd>{{ client.phone }}</dd>
-    <dt>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</dt><dd>{{ client.address }}</dd>
-    {% for contact in client.contacts.all %}
-    <h2>{% filter capfirst %}{% trans 'contact' %}{% endfilter %} {{ contact.id }}</h2>
-      {% include 'client/block/contact.html' %}
-    {% endfor %}
-    {% for note in client.notes.all %}
-    <h2>{% filter capfirst %}{% trans 'note' %}{% endfilter %}</h2>
-      {% include 'client/block/note.html' %}
-    {% endfor %}
+    <dt>{% filter capfirst %}{% trans 'fax' %}{% endfilter %}</dt><dd>{{ client.fax }}</dd>
+    <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ client.website }}</dd>
+    <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ client.referral_source }}</dd>
   </dl>
 {% else %}
   <p>Smth went wrong</p>

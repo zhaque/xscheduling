@@ -23,27 +23,28 @@ def root(request):
     if clients:
       if len(clients) == 1:
         context_vars['client'] = clients[0]
-        job_form = RootPageAddJobForm()
-        helper = FormHelper()
-        helper.set_form_action(reverse('job-add'))
-        submit = Submit('save',_('save'))
-        helper.add_input(submit)
-        layout = Layout(
-#          Row(HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('new client'))), 'client'),
-          'type', 
-          'name', 
-          'description', 
-      #    'state', 
-          'start_date', 
-          'due_date', 
-          'staff',
-      #    Row(HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('new staff'))), 'staff'),
-      #    Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('new supplier'))), 'suppliers'),
-          )
-        helper.add_layout(layout)
-      
-        context_vars['job_form'] = job_form
-        context_vars['helper'] = helper
+        if not clients[0].jobs.all():
+          job_form = RootPageAddJobForm()
+          helper = FormHelper()
+          helper.set_form_action(reverse('job-add'))
+          submit = Submit('save',_('save'))
+          helper.add_input(submit)
+          layout = Layout(
+  #          Row(HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('new client'))), 'client'),
+            'type', 
+            'name', 
+            'description', 
+        #    'state', 
+            'start_date', 
+            'due_date', 
+            'staff',
+        #    Row(HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('new staff'))), 'staff'),
+        #    Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('new supplier'))), 'suppliers'),
+            )
+          helper.add_layout(layout)
+        
+          context_vars['job_form'] = job_form
+          context_vars['helper'] = helper
       else:
         context_vars['clients'] = clients
     else:
