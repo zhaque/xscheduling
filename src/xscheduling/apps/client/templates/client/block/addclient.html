@@ -1,18 +1,23 @@
 {% load i18n %}
 {% load uni_form_tags %}
+{% if client_form %}
 <form action="" method="post" class="uniForm">
 <h3>{% filter capfirst %}{% trans 'client' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ client_form|as_uni_form }}
 </fieldset>
+{% if address_form %}
 <h3>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ address_form|as_uni_form }}
 </fieldset>
+{% endif %}
+{% if postal_address_form %}
 <h3>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %} ({% trans 'enter only if different from above' %})</h3>
 <fieldset class="inlineLabels">
 {{ postal_address_form|as_uni_form }}
 </fieldset>
+{% endif %}
 {% if contact_form %}
 <h3>{% filter capfirst %}{% trans 'contact' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
@@ -23,3 +28,4 @@
 <input type="submit" value="{% trans 'save' %}" class="submitButton"/>
 </div>
 </form>
+{% endif %}

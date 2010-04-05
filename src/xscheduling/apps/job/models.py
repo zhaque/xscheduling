@@ -14,6 +14,9 @@ from django.conf import settings
 from google_cal import client_login, insert_single_event
 import urllib
 
+class InvalidStaff(Exception):
+  pass
+
 class JobState(models.Model):
   order = models.PositiveSmallIntegerField(_('order'), default=10)
   name = models.CharField(_('name'), max_length=255)
@@ -214,3 +217,40 @@ class Job(WorkflowmaxBase):
           href = cal.content.src
       if href:
         event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
+
+  def is_staff_skillful(self, staff):
+    staff_skills = staff.skills.all()
+    for skill in staff_skills:
+      if self.type.name == skill.name:
+        return
+    raise InvalidStaff()
+
+  def is_staff_available(self, staff):
+    staff_jobs = staff.jobs.all()
+    for job in staff_jobs:
+      if self.start_date < job.start_date and self.due_date > job.start_date:
+        raise InvalidStaff()
+      elif self.start_date < job.due_date and self.due_date > job.due_date:
+        raise InvalidStaff()
+
+  def get_valid_staff(self, staff_list=None):
+    if not staff_list:
+      staff_list = Staff.objects.all()
+    available_staff = list()
+    for staff in staff_list:
+      try:
+        self.is_staff_skillful(staff)
+        self.is_staff_available(staff)
+        available_staff.append(staff)
+      except InvalidStaff:
+        pass
+    return available_staff
+
+
+from django.db.models.signals import post_save
+
+def check_staff(sender, instance, **kwargs):
+  staff_list = instance.staff.all()
+  instance.staff = instance.get_valid_staff(staff_list)
+
+#post_save.connect(check_staff, sender=Job)

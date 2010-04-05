@@ -79,4 +79,3 @@ class Staff(WorkflowmaxBase, User):
     self.email = wm_staff.email
     self.payrollcode = wm_staff.payrollcode
     self.save()
-

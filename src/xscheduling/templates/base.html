@@ -39,6 +39,12 @@
         </div>
 
         <div id="bd">
+            <div>
+{% block leftcol %}{% endblock %}
+            </div>
+            <div>
+{% block rightcol %}{% endblock %}
+            </div>
             <div id="yui-main">
                 <div class="yui-b"><div class="yui-g">
 {% block content %}{% endblock %}

@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<form action="" method="GET">
+  <input type="text" name="q"/>
+  <input type="submit" />
+</form>
+{% if client %}
+  {% include 'client/block/client_brief.html' %}
+{% endif %}
+{% if clients %}
+                            <h3>{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</h3>
+  {% include 'client/block/clientlist.html' %}
+{% endif %}
+{% if client_form %}
+  {% include 'client/block/addclient.html' %}
+{% endif %}

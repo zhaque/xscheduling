@@ -87,7 +87,9 @@ def edit_job(request, object_id):
   try:
     object_id = int(object_id)
     job = Job.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
 
   try:
@@ -121,7 +123,9 @@ def delete_job(request, object_id):
   try:
     object_id = int(object_id)
     job = Job.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
 
   try:
@@ -162,7 +166,9 @@ def add_task(request, object_id):
   try:
     object_id = int(object_id)
     job = Job.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
 
   form = TaskForm()
@@ -191,12 +197,16 @@ def edit_task(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
     task = Task.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-view', args=[job.id]))
 
   form = TaskForm(instance=task)
@@ -222,7 +232,9 @@ def delete_task(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
@@ -242,7 +254,9 @@ def add_milestone(request, object_id):
   try:
     object_id = int(object_id)
     job = Job.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
 
   form = MilestoneForm()
@@ -270,7 +284,9 @@ def edit_milestone(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
@@ -300,12 +316,16 @@ def delete_milestone(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
     milestone = Milestone.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-view', args=[job.id]))
 
 #  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
@@ -320,7 +340,9 @@ def add_note(request, object_id):
   try:
     object_id = int(object_id)
     job = Job.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
 
   form = NoteForm()
@@ -348,12 +370,16 @@ def edit_note(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
     note = Note.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-view', args=[job.id]))
 
   form = NoteForm(instance=note)
@@ -378,12 +404,16 @@ def delete_note(request, owner_id, object_id):
   try:
     owner_id = int(owner_id)
     job = Job.objects.get(id=owner_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-list'))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-list'))
   try:
     object_id = int(object_id)
     note = Note.objects.get(id=object_id)
-  except ValueError, ObjectDoesNotExist:
+  except ValueError:
+    return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+  except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('job-view', args=[job.id]))
 
 #  if request.method == 'POST' and settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:

@@ -31,4 +31,4 @@ class NoteForm(forms.ModelForm):
 class RootPageAddJobForm(forms.ModelForm):
   class Meta:
     model = Job
-    exclude = ('wm_id', 'state', 'suppliers')
+    exclude = ('wm_id', 'state', 'suppliers', 'client')
