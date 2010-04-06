@@ -19,7 +19,7 @@ def root(request):
   
   client_query = request.GET.get('q', '')
   if client_query:
-    clients = Client.objects.filter(name__icontains=client_query) #TODO fix search
+    clients = Client.objects.search(client_query)
     if clients:
       if len(clients) == 1:
         context_vars['client'] = clients[0]

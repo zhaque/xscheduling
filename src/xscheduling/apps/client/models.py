@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from geocoders.google import geocoder
 from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
@@ -188,7 +189,32 @@ class ClientBase(WorkflowmaxBase):
     self.wm_import_contacts(wm_object)
     self.wm_import_notes(wm_object)
 
-class Client(ClientBase):
+class ClientManager(models.Manager):
+  def search(self, string):
+    clients = Client.objects.filter(
+      Q(name__icontains=string) | 
+      Q(email__icontains=string) |
+      Q(phone__icontains=string)
+      )
+    unique_clients = dict()
+    for c in clients:
+      unique_clients[c.id] = c
+    addresses = Address.objects.filter(
+      Q(postcode__icontains=string) | 
+      Q(address__icontains=string) | 
+      Q(city__icontains=string)
+    )
+    for addr in addresses:
+      if hasattr(addr, 'client_address'):
+        unique_clients[addr.client_address.id] = addr.client_address
+      if hasattr(addr, 'client_postal_address'):
+        unique_clients[addr.client_postal_address.id] = addr.client_postal_address
+    clients = unique_clients.values()
+    return clients
+
+class Client(ClientBase): 
+  objects = ClientManager()
+
   class Meta:
     verbose_name = _('client')
     verbose_name_plural = _('clients')
