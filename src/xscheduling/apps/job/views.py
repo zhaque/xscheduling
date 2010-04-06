@@ -98,12 +98,21 @@ def edit_job(request, object_id):
       return HttpResponseRedirect(reverse('job-list'))
   except ObjectDoesNotExist:
     pass
-  
+
   context_vars['header'] = capfirst(_('edit job %s') % job.name)
   job_form = EditJobForm(instance=job)
   helper = FormHelper()
   submit = Submit('save',_('save'))
   helper.add_input(submit)
+  recomended_staff_html = ''
+  for s in ['%s, ' % staff for staff in job.get_valid_staff()]: recomended_staff_html +=s
+  layout = Layout( 
+    'state', 
+    Row(HTML('<span style="color:red">Recommended: %s</span>' % recomended_staff_html), HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new'))), 'staff'),
+    Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('add new'))), 'suppliers'),
+    )
+  helper.add_layout(layout)
+
   if request.method == "POST":
     job_form = EditJobForm(request.POST, request.FILES, instance=job)
     if job_form.is_valid():
