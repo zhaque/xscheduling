@@ -9,7 +9,7 @@
 {% endif %}
 {% if clients %}
                             <h3>{% filter capfirst %}{% trans 'client list' %}{% endfilter %}</h3>
-  {% include 'client/block/clientlist.html' %}
+  {% include 'client/block/clientlist_brief.html' %}
 {% endif %}
 {% if client_form %}
   {% include 'client/block/addclient.html' %}
