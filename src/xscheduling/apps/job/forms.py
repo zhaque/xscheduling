@@ -11,7 +11,7 @@ class EditJobForm(forms.ModelForm):
   class Meta:
     model = Job
 #    exclude = ('wm_id')
-    fields = ('state', 'staff')
+    fields = ('state', 'staff', 'suppliers')
 
 class TaskForm(forms.ModelForm):
   class Meta:
