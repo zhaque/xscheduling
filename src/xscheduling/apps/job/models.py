@@ -124,6 +124,7 @@ class Job(WorkflowmaxBase):
     ordering = ['due_date']
     verbose_name = _('job')
     verbose_name_plural = _('jobs')
+    get_latest_by = 'due_date'
 
   def __unicode__(self):
     return self.name

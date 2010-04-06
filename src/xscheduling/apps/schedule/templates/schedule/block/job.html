@@ -2,12 +2,11 @@
 {% load uni_form_tags %}
 
 {% if client %}
-{% if client.jobs.all %}
-                            <h3>{% filter capfirst %}{% trans 'job list' %}{% endfilter %}</h3>
-{% with client.jobs.all as jobs %}
-  {% include 'job/block/joblist.html' %}
-{% endwith %}
-{% else %}
-  {% uni_form job_form helper %}
+{% if job_edit_form %}
+                            <h3>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h3>
+  {% uni_form job_edit_form edit_job_helper %}
 {% endif %}
+{% endif %}
+{% if job_form %}
+  {% uni_form job_form helper %}
 {% endif %}
