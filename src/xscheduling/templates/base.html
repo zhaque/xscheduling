@@ -39,12 +39,17 @@
         </div>
 
         <div id="bd">
-            <div>
-{% block leftcol %}{% endblock %}
-            </div>
-            <div>
+            <div style="float:right; width:50%">
+              <div style="margin-left:0.55em">
 {% block rightcol %}{% endblock %}
+              </div>
             </div>
+            <div style="float:left; width:50%">
+              <div style="margin-right:0.55em">
+{% block leftcol %}{% endblock %}
+              </div>
+            </div>
+            <div style="clear:both"></div>
             <div id="yui-main">
                 <div class="yui-b"><div class="yui-g">
 {% block content %}{% endblock %}
