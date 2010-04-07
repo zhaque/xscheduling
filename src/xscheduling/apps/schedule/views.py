@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic.simple import direct_to_template
 from client.forms import ClientForm, AddressForm
 from client.models import Client
-from job.forms import RootPageAddJobForm, EditJobForm
+from job.forms import RootPageAddJobForm, EditJobForm, RootPageAddJobForm2
 from staff.models import Staff
 from supplier.models import Supplier
 from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row, Hidden
@@ -23,15 +23,7 @@ def root(request):
   helper.set_form_action(reverse('job-add'))
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  layout = Layout(
-    'type', 
-    'name', 
-    'description', 
-    'start_date', 
-    'due_date', 
-    'staff',
-    )
-  helper.add_layout(layout)
+  job_form2 = RootPageAddJobForm2()
 
   client_query = request.GET.get('q', '')
   if client_query:
@@ -49,6 +41,7 @@ def root(request):
           context_vars['edit_job_helper'] = editjob_helper
         except ObjectDoesNotExist:
           context_vars['job_form'] = job_form
+          context_vars['job_form2'] = job_form2
           client_input = Hidden('client', clients[0].id)
           helper.add_input(client_input)
           context_vars['helper'] = helper
@@ -58,6 +51,7 @@ def root(request):
       context_vars['client_form'] = ClientForm()
       context_vars['address_form'] = AddressForm()
       context_vars['job_form'] = job_form
+      context_vars['job_form2'] = job_form2
       context_vars['helper'] = helper
   
 

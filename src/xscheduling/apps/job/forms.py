@@ -5,7 +5,7 @@ from job.models import Job, Task, Milestone, Note
 class AddJobForm(forms.ModelForm):
   class Meta:
     model = Job
-    exclude = ('wm_id', 'state')
+    exclude = ('wm_id', 'state', 'name')
 
 class EditJobForm(forms.ModelForm):
   class Meta:
@@ -31,4 +31,10 @@ class NoteForm(forms.ModelForm):
 class RootPageAddJobForm(forms.ModelForm):
   class Meta:
     model = Job
-    exclude = ('wm_id', 'state', 'suppliers', 'client')
+    fields = ('type', 'description')
+#    exclude = ('wm_id', 'state', 'suppliers', 'client')
+
+class RootPageAddJobForm2(forms.ModelForm):
+  class Meta:
+    model = Job
+    fields = ('start_date', 'due_date', 'staff')

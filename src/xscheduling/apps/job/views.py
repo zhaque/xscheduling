@@ -57,7 +57,8 @@ def add_job(request):
   helper = FormHelper()
   submit = Submit('save',_('save'))
   helper.add_input(submit)
-  layout = Layout('name', 
+  layout = Layout(
+#    'name', 
     'description', 
 #    'state', 
     'type', 

@@ -57,9 +57,12 @@
 {% block sidebar %}
                 <div class="block">
                     <div class="hd">
-                        <h2>{% filter capfirst %}{% trans 'new job' %}{% endfilter %}</h2>
+                        <h2>{% filter capfirst %}{% trans 'time and staff' %}{% endfilter %}</h2>
                     </div>
                     <div class="bd">
+{% if job_form2 %}
+  {% uni_form job_form2 helper %}
+{% endif %}
                     </div>
                 </div>
 {% endblock %}
