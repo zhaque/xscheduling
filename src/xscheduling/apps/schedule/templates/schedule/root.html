@@ -13,6 +13,17 @@
 {% endblock %}
 
 
+{% block centerblock %}
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{% filter capfirst %}{% trans 'search' %}{% endfilter %}</h2>
+                        </div>
+                        <div class="bd">
+  {% include 'schedule/block/search.html' %}
+                        </div>
+                    </div>
+{% endblock %}
+
 {% block leftcol %}
                     <div class="block">
                         <div class="hd">
