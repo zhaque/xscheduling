@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.text import capfirst
@@ -42,16 +43,17 @@ def root(request):
     if clients:
       if len(clients) == 1:
         context_vars['client'] = clients[0]
-        if not clients[0].jobs.latest():
-          context_vars['job_form'] = job_form
-          context_vars['helper'] = helper
-        else:
-          context_vars['job_edit_form'] = EditJobForm(instance=clients[0].jobs.latest())
+        try:
+          job = clients[0].jobs.latest()
+          context_vars['job_edit_form'] = EditJobForm(instance=job)
           editjob_helper = FormHelper()
-          editjob_helper.set_form_action(reverse('job-edit', args=[clients[0].jobs.latest().id]))
+          editjob_helper.set_form_action(reverse('job-edit', args=[job.id]))
           submit = Submit('save',_('save'))
           editjob_helper.add_input(submit)
           context_vars['edit_job_helper'] = editjob_helper
+        except ObjectDoesNotExist:
+          context_vars['job_form'] = job_form
+          context_vars['helper'] = helper
       else:
         context_vars['clients'] = clients
     else:
