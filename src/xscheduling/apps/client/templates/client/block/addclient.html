@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load uni_form_tags %}
 {% if client_form %}
-<form action="" method="post" class="uniForm">
+<form action="{% url client-add %}" method="post" class="uniForm">
 <h3>{% filter capfirst %}{% trans 'client' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ client_form|as_uni_form }}
@@ -28,4 +28,15 @@
 <input type="submit" value="{% trans 'save' %}" class="submitButton"/>
 </div>
 </form>
+<script>
+$(document).ready(function() {
+$('a').click(function(event) {
+  if ($('#id_name').attr('value')) {
+    if (!confirm('You really want to leave? You will loose your changes.')) {
+      event.preventDefault();
+    }
+  }
+});
+});
+</script>
 {% endif %}

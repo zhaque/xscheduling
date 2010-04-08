@@ -3,10 +3,13 @@
 
 {% if client %}
 {% if job_edit_form %}
-                            <h3>{% filter capfirst %}{% trans 'job' %}{% endfilter %}</h3>
+                            <h3>{% filter capfirst %}{% trans 'latest job' %}{% endfilter %}</h3>
   {% uni_form job_edit_form edit_job_helper %}
 {% endif %}
-{% endif %}
 {% if job_form %}
+                            <h3>{% filter capfirst %}{% trans 'new job' %}{% endfilter %}</h3>
   {% uni_form job_form helper %}
+{% endif %}
+{% else %}
+  <p>{% filter capfirst %}{% trans 'no client selected' %}{% endfilter %}</p>
 {% endif %}

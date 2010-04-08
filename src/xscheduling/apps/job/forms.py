@@ -31,10 +31,5 @@ class NoteForm(forms.ModelForm):
 class RootPageAddJobForm(forms.ModelForm):
   class Meta:
     model = Job
-    fields = ('type', 'description')
-#    exclude = ('wm_id', 'state', 'suppliers', 'client')
-
-class RootPageAddJobForm2(forms.ModelForm):
-  class Meta:
-    model = Job
-    fields = ('start_date', 'due_date', 'staff')
+#    fields = ('type', 'description')
+    exclude = ('wm_id', 'state', 'suppliers', 'client', 'name')
