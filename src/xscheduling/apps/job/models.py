@@ -256,10 +256,9 @@ def check_staff(sender, instance, **kwargs):
 
 #post_save.connect(check_staff, sender=Job)
 
-from django.db.models.signals import pre_save
-
 def set_name(sender, instance, **kwargs):
   if not instance.name:
     instance.name = 'job_%06d' % instance.id
-
-pre_save.connect(set_name, sender=Job)
+    instance.save()
+  
+post_save.connect(set_name, sender=Job)
