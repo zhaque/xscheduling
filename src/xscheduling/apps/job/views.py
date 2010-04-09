@@ -51,6 +51,8 @@ def get_job(request, object_id):
 
 @login_required
 def add_job(request):
+  return_to = request.GET.get('return_to', '')
+
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new job'))
   job_form = AddJobForm()
@@ -76,7 +78,9 @@ def add_job(request):
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         job.wm_sync()
       job.gcal_sync()
-      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+      if not return_to:
+        return_to = reverse('job-view', args=[job.id])
+      return HttpResponseRedirect(return_to)
   
   context_vars['form'] = job_form
   context_vars['helper'] = helper
@@ -84,6 +88,8 @@ def add_job(request):
 
 @login_required
 def edit_job(request, object_id):
+  return_to = request.GET.get('return_to', '')
+
   context_vars = dict()
   try:
     object_id = int(object_id)
@@ -121,7 +127,9 @@ def edit_job(request, object_id):
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         job.wm_sync()
 #      job.gcal_sync()
-      return HttpResponseRedirect(reverse('job-view', args=[job.id]))
+      if not return_to:
+        return_to = reverse('job-view', args=[job.id])
+      return HttpResponseRedirect(return_to)
   
   context_vars['form'] = job_form
   context_vars['helper'] = helper

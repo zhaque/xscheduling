@@ -6,92 +6,108 @@ from django.http import HttpResponseRedirect
 from django.utils.text import capfirst
 from django.utils.translation import ugettext as _
 from django.views.generic.simple import direct_to_template
-from client.forms import ClientForm, AddressForm
 from client.models import Client
-from job.forms import RootPageAddJobForm, EditJobForm
+from schedule.forms import ClientForm as RootPageClientForm, AddressForm as RootPageAddressForm, AddJobForm as RootPageAddJobForm, EditJobForm as RootPageEditJobForm
 from staff.models import Staff
 from supplier.models import Supplier
 from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row, Hidden
 
 @login_required
-def root(request):
+def root(request, client_name=None, client_id=None, add_job=False):
+  client_query = request.GET.get('q', '')
+  if client_query:
+    return HttpResponseRedirect(reverse('schedule-client', args=[client_query,]))
+
   context_vars = dict()
   context_vars['header'] = capfirst(_('schedule'))
   
-  job_form = RootPageAddJobForm()
-  helper = FormHelper()
-  helper.set_form_action(reverse('job-add'))
-  submit = Submit('save',_('save'))
-  helper.add_input(submit)
-  layout = Layout( 
-    HTML('<h3>%s</h3>' % capfirst(_('job details'))),
-    'description', 'type',
-    HTML('<h3>%s</h3>' % capfirst(_('time and staff'))),
-    'start_date', 'due_date', 'staff'
-    )
-  helper.add_layout(layout)
-
-  client_query = request.GET.get('q', '')
-  if client_query:
-    clients = Client.objects.search(client_query)
+  client = None
+  if client_id:
+    try:
+      client = Client.objects.get(id=client_id)
+    except ObjectDoesNotExist:
+      return HttpResponseRedirect(reverse('schedule-root'))
+    
+  if client_name:
+    clients = Client.objects.search(client_name)
     if clients:
       if len(clients) == 1:
-        context_vars['client'] = clients[0]
-        try:
-          job = clients[0].jobs.latest()
-          context_vars['job_edit_form'] = EditJobForm(instance=job)
-          editjob_helper = FormHelper()
-          editjob_helper.set_form_action(reverse('job-edit', args=[job.id]))
-          submit = Submit('save',_('save'))
-          editjob_helper.add_input(submit)
-          recomended_staff_html = ''
-          for s in ['%s, ' % staff for staff in job.get_valid_staff()]: recomended_staff_html +=s
-          layout = Layout( 
-            'state', 
-            Row(HTML('<span style="color:red">Recommended: %s</span>' % recomended_staff_html), HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new'))), 'staff'),
-            Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('add new'))), 'suppliers'),
-            )
-          editjob_helper.add_layout(layout)
-          context_vars['edit_job_helper'] = editjob_helper
-
-        except ObjectDoesNotExist:
-          context_vars['job_form'] = job_form
-          client_input = Hidden('client', clients[0].id)
-          helper.add_input(client_input)
-          context_vars['helper'] = helper
+        client = clients[0]
       else:
         context_vars['clients'] = clients
     else:
-      context_vars['client_form'] = ClientForm(prefix='client')
-      context_vars['address_form'] = AddressForm(prefix='address')
+      context_vars['client_form'] = RootPageClientForm(prefix='client')
+      context_vars['address_form'] = RootPageAddressForm(prefix='address')
+
+  if client:
+    context_vars['client'] = client
+    try:
+      job = client.jobs.latest()
+    except ObjectDoesNotExist:
+      add_job = True
+    if add_job:
+      job_form = RootPageAddJobForm()
+      helper = FormHelper()
+      helper.set_form_action('%s?return_to=%s' % (reverse('job-add'), reverse('schedule-client-byid', args=[client.id,])))
+      submit = Submit('save',_('save'))
+      helper.add_input(submit)
+      layout = Layout( 
+        HTML('<h3>%s</h3>' % capfirst(_('job details'))),
+        'description', 'type',
+        HTML('<h3>%s</h3>' % capfirst(_('time and staff'))),
+        'start_date', 'due_date', 'staff'
+        )
+      helper.add_layout(layout)
+
       context_vars['job_form'] = job_form
+      client_input = Hidden('client', client.id)
+      helper.add_input(client_input)
       context_vars['helper'] = helper
+    else:                
+      context_vars['job_edit_form'] = RootPageEditJobForm(instance=job)
+      editjob_helper = FormHelper()
+      editjob_helper.set_form_action('%s?return_to=%s' % (reverse('job-edit', args=[job.id]), reverse('schedule-client-byid', args=[client.id,])))
+      submit = Submit('save',_('save'))
+      editjob_helper.add_input(submit)
+      recomended_staff_html = ''
+      for s in ['%s, ' % staff for staff in job.get_valid_staff()]: recomended_staff_html +=s
+      layout = Layout( 
+        'state', 
+        Row(HTML('<span style="color:red">Recommended: %s</span>' % recomended_staff_html), HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('add new'))), 'staff'),
+        )
+      editjob_helper.add_layout(layout)
+      context_vars['edit_job_helper'] = editjob_helper
+        
+  context_vars['staff_list'] = Staff.objects.all()
+  return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
+
+@login_required
+def client_edit(request, client_id):
+  client_query = request.GET.get('q', '')
+  if client_query:
+    return HttpResponseRedirect(reverse('schedule-client', args=[client_query,]))
+
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('schedule'))
+  
+  try:
+    client = Client.objects.get(id=client_id)
+    context_vars['client_form'] = RootPageClientForm(prefix='client', instance=client)
+    context_vars['address_form'] = RootPageAddressForm(prefix='address', instance=client.address)
+
+    if request.method == "POST":
+      client_form = RootPageClientForm(request.POST, prefix='client', instance=client)
+      address_form = RootPageAddressForm(request.POST, prefix='address', instance=client.address)
+      if client_form.is_valid() and address_form.is_valid():
+        client = client_form.save()
+        address_form.save()
+        if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+          client.wm_sync()
+        return HttpResponseRedirect(reverse('schedule-client-byid', args=[client.id]))
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('schedule-client', args=[client_name,]))      
 
   context_vars['staff_list'] = Staff.objects.all()
-  
-
-#  job_form = RootPageAddJobForm()
-#  helper = FormHelper()
-#  helper.set_form_action(reverse('job-add'))
-#  submit = Submit('save',_('save'))
-#  helper.add_input(submit)
-#  layout = Layout(
-#    Row(HTML('<a href="%s">%s</a>' % (reverse('client-add'), _('new client'))), 'client'),
-#    'type', 
-#    'name', 
-#    'description', 
-##    'state', 
-#    'start_date', 
-#    'due_date', 
-#    'staff',
-##    Row(HTML('<a href="%s">%s</a>' % (reverse('staff-add'), _('new staff'))), 'staff'),
-##    Row(HTML('<a href="%s">%s</a>' % (reverse('supplier-add'), _('new supplier'))), 'suppliers'),
-#    )
-#  helper.add_layout(layout)
-#
-#  context_vars['form'] = job_form
-#  context_vars['helper'] = helper
-
   return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
 
 @login_required

@@ -17,7 +17,7 @@
                                         <td>&nbsp;</td>
                                         <td>{{ client.phone }}</td>
                                         <td>{{ client.email }}</td>
-                                        <td class="text-right"><a href="{% url schedule-root %}?q={{ client.name }}">view</a>&nbsp;|&nbsp;<a href="{% url client-edit client.id %}">edit</a></td>
+                                        <td class="text-right"><a href="{% url schedule-client-byid client.id %}">view</a>&nbsp;|&nbsp;<a href="{% url schedule-client-edit client.id %}">edit</a></td>
                                     </tr>
     {% for contact in client.contacts.all %}
                                     <tr>

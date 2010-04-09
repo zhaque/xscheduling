@@ -9,6 +9,7 @@
     <dt>{% filter capfirst %}{% trans 'website' %}{% endfilter %}</dt><dd>{{ client.website }}</dd>
     <dt>{% filter capfirst %}{% trans 'referral source' %}{% endfilter %}</dt><dd>{{ client.referral_source }}</dd>
   </dl>
+  <a href="{% url schedule-client-edit client.id %}">edit</a>
 {% else %}
   <p>Smth went wrong</p>
 {% endif %}
