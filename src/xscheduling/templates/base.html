@@ -39,6 +39,22 @@
         </div>
 
         <div id="bd">
+{% if messages %}
+            <div>
+                    <div class="block">
+                        <div class="hd">
+                            <h2>{% filter capfirst %}{% trans 'messages' %}{% endfilter %}</h2>
+                        </div>
+                        <div class="bd">
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+                        </div>
+                    </div>
+            </div>
+{% endif %}
             <div>
 {% block centerblock %}{% endblock %}
             </div>
