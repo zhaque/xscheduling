@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -117,6 +118,7 @@ def client_add(request):
       client.postal_address.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         client.wm_sync()
+      messages.success(request, capfirst(_('client was created successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('schedule-client-byid', args=[client.id]))
 
   context_vars['staff_list'] = Staff.objects.all()
@@ -144,6 +146,7 @@ def client_edit(request, client_id):
         address_form.save()
         if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
           client.wm_sync()
+        messages.success(request, capfirst(_('client was modified successfully')), fail_silently=True)
         return HttpResponseRedirect(reverse('schedule-client-byid', args=[client.id]))
   except ObjectDoesNotExist:
     return HttpResponseRedirect(reverse('schedule-client', args=[client_name,]))      
