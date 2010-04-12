@@ -42,7 +42,8 @@ def root(request, client_name=None, client_id=None, add_job=False):
       else:
         context_vars['clients'] = clients
     else:
-      context_vars['client_form'] = RootPageClientForm(prefix='client')
+      context_vars['client_form'] = RootPageClientForm(prefix='client', instance=Client(name=client_name))
+      context_vars['client_form'].action = reverse('schedule-client-add')
       context_vars['address_form'] = RootPageAddressForm(prefix='address')
 
   if client:
@@ -84,6 +85,40 @@ def root(request, client_name=None, client_id=None, add_job=False):
       editjob_helper.add_layout(layout)
       context_vars['edit_job_helper'] = editjob_helper
         
+  context_vars['staff_list'] = Staff.objects.all()
+  return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
+
+@login_required
+def client_add(request):
+  client_query = request.GET.get('q', '')
+  if client_query:
+    return HttpResponseRedirect(reverse('schedule-client', args=[client_query,]))
+
+  context_vars = dict()
+  context_vars['header'] = capfirst(_('schedule'))
+  
+  context_vars['client_form'] = RootPageClientForm(prefix='client')
+  context_vars['address_form'] = RootPageAddressForm(prefix='address')
+
+  if request.method == "POST":
+    client_form = RootPageClientForm(request.POST, prefix='client')
+    address_form = RootPageAddressForm(request.POST, prefix='address')
+    if client_form.is_valid() and address_form.is_valid():
+      client = client_form.save()
+      address_form = RootPageAddressForm(request.POST, prefix='address', instance=client.address)
+      address_form.save()
+      client.postal_address.postcode = client.address.postcode
+      client.postal_address.address = client.address.address
+      client.postal_address.city = client.address.city
+      client.postal_address.county = client.address.county
+      client.postal_address.country = client.address.country
+      client.postal_address.latitude = client.address.latitude
+      client.postal_address.longitude = client.address.longitude
+      client.postal_address.save()
+      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
+        client.wm_sync()
+      return HttpResponseRedirect(reverse('schedule-client-byid', args=[client.id]))
+
   context_vars['staff_list'] = Staff.objects.all()
   return direct_to_template(request, template='schedule/root.html', extra_context=context_vars)
 

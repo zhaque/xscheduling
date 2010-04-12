@@ -35,6 +35,8 @@ def get_client(request, object_id):
 
 @login_required
 def add_client(request):
+  return_to = request.GET.get('return_to', '')
+
   context_vars = dict()
   context_vars['header'] = capfirst(_('add new client'))
   client_form = ClientForm(prefix='client')
@@ -66,7 +68,9 @@ def add_client(request):
           client.postal_address.save()
         if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
           client.wm_sync()
-        return HttpResponseRedirect(reverse('client-view', args=[client.id]))
+        if not return_to:
+          return_to = reverse('client-view', args=[client.id])
+        return HttpResponseRedirect(return_to)
     except InvalidForm:
       pass
   
@@ -77,6 +81,8 @@ def add_client(request):
 
 @login_required
 def edit_client(request, object_id):
+  return_to = request.GET.get('return_to', '')
+
   context_vars = dict()
   try:
     object_id = int(object_id)
@@ -98,7 +104,9 @@ def edit_client(request, object_id):
       postal_address_form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         client.wm_sync()
-      return HttpResponseRedirect(reverse('client-view', args=[client.id]))
+      if not return_to:
+        return_to = reverse('client-view', args=[client.id])
+      return HttpResponseRedirect(return_to)
   
   context_vars['client_form'] = client_form
   context_vars['address_form'] = address_form
