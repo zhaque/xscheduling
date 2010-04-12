@@ -67,6 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 ROOT_URLCONF = 'xscheduling.urls'
@@ -85,6 +86,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.messages',
 
     'app_media',
     'south',
@@ -101,8 +103,8 @@ INSTALLED_APPS = (
 )
 
 LOGIN_URL = '/login/'
-WORKFLOWMAX_APIKEY = '14C10292983D48CE86E1AA1FE0F8DDFE'
-WORKFLOWMAX_ACCOUNTKEY = '0E954F0B52234841BBC64A677C52A77E'
+WORKFLOWMAX_APIKEY = '' #'14C10292983D48CE86E1AA1FE0F8DDFE'
+WORKFLOWMAX_ACCOUNTKEY = '' #'0E954F0B52234841BBC64A677C52A77E'
 
 # Google Apps Settings
 GAPPS_DOMAIN = 'cooperativegardeners.com'
@@ -119,5 +121,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.debug",
     "django.core.context_processors.request",
     "django.core.context_processors.media",
+    "django.contrib.messages.context_processors.messages",
 )
 

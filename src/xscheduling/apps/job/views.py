@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -80,6 +81,7 @@ def add_job(request):
       job.gcal_sync()
       if not return_to:
         return_to = reverse('job-view', args=[job.id])
+      messages.success(request, capfirst(_('job was created successfully')), fail_silently=True)
       return HttpResponseRedirect(return_to)
   
   context_vars['form'] = job_form
@@ -129,6 +131,7 @@ def edit_job(request, object_id):
 #      job.gcal_sync()
       if not return_to:
         return_to = reverse('job-view', args=[job.id])
+      messages.success(request, capfirst(_('job was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(return_to)
   
   context_vars['form'] = job_form
@@ -172,6 +175,7 @@ def import_jobs(request):
       for wm_job in wm_jobs:
         job = Job()
         job.wm_import(wm_job)
+      messages.success(request, capfirst(_('jobs were imported successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-list'))
     except NoInitialData, e:
       context_vars['error'] = capfirst(e)
@@ -203,6 +207,7 @@ def add_task(request, object_id):
       form.save_m2m()
 #      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
 #        task.wm_sync()
+      messages.success(request, capfirst(_('task was added successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form
@@ -238,6 +243,7 @@ def edit_task(request, owner_id, object_id):
       form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         task.wm_sync()
+      messages.success(request, capfirst(_('task was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form
@@ -290,6 +296,7 @@ def add_milestone(request, object_id):
       milestone.save()
 #      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
 #        milestone.wm_sync()
+      messages.success(request, capfirst(_('milestone was added successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form
@@ -323,6 +330,7 @@ def edit_milestone(request, owner_id, object_id):
       form.save()
 #      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
 #        milestone.wm_sync()
+      messages.success(request, capfirst(_('milestone was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form
@@ -376,6 +384,7 @@ def add_note(request, object_id):
       note.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         note.wm_sync()
+      messages.success(request, capfirst(_('note was added successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form
@@ -411,6 +420,7 @@ def edit_note(request, owner_id, object_id):
       form.save()
 #      if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
 #        note.wm_sync()
+      messages.success(request, capfirst(_('note was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('job-view', args=[job.id]))
   
   context_vars['form'] = form

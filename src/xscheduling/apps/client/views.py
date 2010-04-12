@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -70,6 +71,7 @@ def add_client(request):
           client.wm_sync()
         if not return_to:
           return_to = reverse('client-view', args=[client.id])
+        messages.success(request, capfirst(_('client was created successfully')), fail_silently=True)
         return HttpResponseRedirect(return_to)
     except InvalidForm:
       pass
@@ -106,6 +108,7 @@ def edit_client(request, object_id):
         client.wm_sync()
       if not return_to:
         return_to = reverse('client-view', args=[client.id])
+      messages.success(request, capfirst(_('client was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(return_to)
   
   context_vars['client_form'] = client_form
@@ -149,6 +152,7 @@ def add_contact(request, object_id):
       contact.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         contact.wm_sync()
+      messages.success(request, capfirst(_('contact was added successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('client-view', args=[client.id]))
   
   context_vars['form'] = form
@@ -180,6 +184,7 @@ def edit_contact(request, owner_id, object_id):
       form.save()
       if settings.WORKFLOWMAX_APIKEY and settings.WORKFLOWMAX_ACCOUNTKEY:
         contact.wm_sync()
+      messages.success(request, capfirst(_('contact was modified successfully')), fail_silently=True)
       return HttpResponseRedirect(reverse('client-view', args=[client.id]))
   
   context_vars['form'] = form
@@ -208,6 +213,7 @@ def import_clients(request):
     for wm_client in wm_clients:
       client = Client()
       client.wm_import(wm_client)
+    messages.success(request, capfirst(_('clients were imported successfully')), fail_silently=True)
     return HttpResponseRedirect(reverse('client-list'))
   
   return direct_to_template(request, template='client/import.html', extra_context=context_vars)
