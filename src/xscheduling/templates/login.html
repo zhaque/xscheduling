@@ -20,7 +20,7 @@
 
 <h2>{% filter capfirst %}{% trans 'login' %}{% endfilter %}</h2>
 
-<form method="post" action="?next={{ next|default:"/" }}" class="uniForm">
+<form method="post" action="?next={{ next|default:"/" }}" class="uniForm">{% csrf_token %}
 <fieldset class="inlineLabels">
 {{ form|as_uni_form }}
 <div class="buttonHolder">
