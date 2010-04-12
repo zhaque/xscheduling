@@ -21,6 +21,12 @@ def root(request, client_name=None, client_id=None, add_job=False):
   context_vars = dict()
   context_vars['header'] = capfirst(_('schedule'))
   
+  try:
+    staff = Staff.objects.get(user_ptr=request.user)
+    context_vars['staff'] = staff
+  except ObjectDoesNotExist:
+    staff = None
+
   client = None
   if client_id:
     try:

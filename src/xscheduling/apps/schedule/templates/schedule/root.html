@@ -50,16 +50,41 @@
                             <h2>{{ header }}</h2>
                         </div>
                         <div class="bd">
+{% if not staff %}
                             <h2>{% filter capfirst %}{% trans 'staff calendars' %}{% endfilter %}</h2>
 <p>
+  <a href="{% url fullcalendar-events %}" id="switch_admin">admin</a> |
 {% for staff in staff_list %}
-  <a href="{% url staff-calendar staff.id %}">{{ staff }}</a> | 
+  <a href="{% url fullcalendar-staff-events staff.id %}" id="switch_staff_{{ staff.id }}">{{ staff }}</a> | 
 {% endfor %}
 </p>
-                            <h2>{% filter capfirst %}{% trans 'admin calendar' %}{% endfilter %}</h2>
+{% endif %}
+                            <h2>{% filter capfirst %}{% trans 'calendar for:' %}{% endfilter %}&nbsp;<span id="current_calendar_name">{% if staff %}{{ staff }}{% else %}admin{% endif %}</span></h2>
   {% include 'fullcalendar/block/calbody.html' %}
                         </div>
                     </div>
+<script>
+function removeCalSources() {
+  $('#calendar').fullCalendar( 'removeEventSource', '{% url fullcalendar-events %}');
+{% for staff in staff_list %}
+  $('#calendar').fullCalendar( 'removeEventSource', '{% url fullcalendar-staff-events staff.id %}');
+{% endfor %}
+}
+
+function addSwitchCalendarEvent(id) {
+  $(id).click(function(event){
+    event.preventDefault();
+    removeCalSources();
+    $('#calendar').fullCalendar( 'addEventSource', $(id).attr('href'));
+    $('#current_calendar_name').html($(id).html());
+  });
+}
+
+  addSwitchCalendarEvent('#switch_admin');
+{% for staff in staff_list %}
+  addSwitchCalendarEvent('#switch_staff_{{ staff.id }}');
+{% endfor %}
+</script>
 {% endblock %}
 {% block sidebar %}
                 <div class="block">
