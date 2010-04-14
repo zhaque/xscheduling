@@ -1,0 +1,144 @@
+@charset "utf-8";
+
+/* CALENDARS & CLOCKS */
+
+.calendarbox, .clockbox {
+    margin: 5px auto;
+    width: 16em;
+    text-align: center;
+    background: #fff;
+    position: relative;
+    z-index:100;
+}
+
+.clockbox {
+    width: auto;
+}
+
+.calendar {
+    margin: 0;
+    padding: 0;
+}
+
+.calendar table {
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+    background: #fff;
+    width: 99%;
+}
+
+.calendar caption, .calendarbox h2 {
+    margin: 0;
+    text-align: center;
+    border-top: none;
+}
+
+.calendar th {
+//    color: #666;
+    padding: 2px 3px;
+    text-align: center;
+    background: #e1e1e1 url(../img/admin/nav-bg.gif) 0 50% repeat-x;
+    border-bottom: 1px solid #ddd;
+}
+
+.calendar td {
+    text-align: center;
+    padding: 0;
+    border-top: 1px solid #eee;
+    border-bottom: none;
+}
+
+.calendar td.selected a {
+    background: #C9DBED;
+}
+
+.calendar td.nonday {
+    background: #efefef;
+}
+
+.calendar td.today a {
+    background: #ffc;
+}
+
+.calendar td a, .timelist a {
+    display: block;
+    font-weight: bold;
+    padding: 4px;
+    text-decoration: none;
+//    color: #444;
+}
+
+.calendar td a:hover, .timelist a:hover {
+    background: green;
+    color: white;
+}
+
+.calendar td a:active, .timelist a:active {
+    background: #036;
+    color: white;
+}
+
+.calendarnav {
+    text-align: center;
+    color: #ccc;
+    margin: 0;
+    padding: 1px 3px;
+}
+
+.calendarnav a:link, #calendarnav a:visited, #calendarnav a:hover {
+    color: #999;
+}
+
+.calendar-shortcuts {
+    background: white;
+    line-height: 11px;
+    border-top: 1px solid #eee;
+    padding: 3px 0 4px;
+    color: #ccc;
+}
+
+.calendarbox .calendarnav-previous, .calendarbox .calendarnav-next {
+    display: block;
+    position: absolute;
+    font-weight: bold;
+    background: green url(../img/admin/default-bg.gif) bottom left repeat-x;
+    padding: 1px 4px 2px 4px;
+    color: white;
+}
+
+.calendarnav-previous:hover, .calendarnav-next:hover {
+//    background: #036;
+}
+
+.calendarnav-previous {
+    top: 0;
+    left: 0;
+}
+
+.calendarnav-next {
+    top: 0;
+    right: 0;
+}
+
+.calendar-cancel {
+    margin: 0 !important;
+    padding: 0;
+    background: #e1e1e1 url(../img/admin/nav-bg.gif) 0 50% repeat-x;
+    border-top: 1px solid #ddd;
+}
+
+.calendar-cancel a {
+    padding: 2px;
+    color: #999;
+}
+
+ul.timelist, .timelist li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.timelist a {
+    padding: 2px;
+}

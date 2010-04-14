@@ -1,3 +1,4 @@
+from django.contrib.admin.widgets import AdminSplitDateTime
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
@@ -20,6 +21,11 @@ class AddJobForm(forms.ModelForm):
     model = Job
 #    fields = ('type', 'description')
     exclude = ('wm_id', 'state', 'suppliers', 'client', 'name')
+
+  def __init__(self, *args, **kwargs):
+    super(AddJobForm, self).__init__(*args, **kwargs)
+    self.fields['start_date'].widget = AdminSplitDateTime()
+    self.fields['due_date'].widget = AdminSplitDateTime()
 
 class EditJobForm(forms.ModelForm):
   class Meta:
