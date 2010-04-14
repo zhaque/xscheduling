@@ -5,9 +5,13 @@
 {% block stylefiles %}
     <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form-generic.css" type="text/css" />
     <link rel="stylesheet" href="{{ MEDIA_URL }}uni_form/uni_form/uni-form.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}widgets.css" type="text/css" media="screen"/>
 {% endblock %}
 {% block scriptfiles %}
     <script src="{{ MEDIA_URL }}uni_form/uni_form/uni-form.jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}admin/js/core.js"></script>
+    {{ form.media }}
 {% endblock %}
 {% block content %}
                     <div class="block">
