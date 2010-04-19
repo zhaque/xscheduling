@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
-from client.models import WorkflowmaxBase, Address
+from client.models import WorkflowmaxBase, Address, ContactBase
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 
 class Skill(models.Model):
@@ -19,6 +20,7 @@ class Skill(models.Model):
     return self.name
 
 class Staff(WorkflowmaxBase, User):
+  salutation = models.CharField(_('salutation'), max_length=3, choices = ContactBase.SALUTATION_LIST, default=ContactBase.MR)
 #  name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='staff_address', verbose_name=_('address'), blank=True, null=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))

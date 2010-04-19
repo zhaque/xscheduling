@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.db.models import Q
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 from geocoders.google import geocoder
 from workflowmax.client.models import Client as WorkflowmaxClient, Contact as WorkflowmaxContact
@@ -24,6 +25,15 @@ class WorkflowmaxBase(models.Model):
     raise NotImplementedException()
 
 class ContactBase(WorkflowmaxBase):
+  MR = 1
+  MS = 2
+  MRS = 3
+  SALUTATION_LIST = (
+    (MR, capfirst(_('mr'))),
+    (MS, capfirst(_('ms'))),
+    (MRS, capfirst(_('mrs'))),
+  )
+  salutation = models.CharField(_('salutation'), max_length=3, choices = SALUTATION_LIST, default=MR)
   name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. John Smith)'))
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
   email = models.EmailField(_('email'), null=True, blank=True)
@@ -132,6 +142,14 @@ class Address(models.Model):
         pass
 
 class ClientBase(WorkflowmaxBase):
+  COMPANY = 4
+  SALUTATION_LIST = (
+    (ContactBase.MR, capfirst(_('mr'))),
+    (ContactBase.MS, capfirst(_('ms'))),
+    (ContactBase.MRS, capfirst(_('mrs'))),
+    (COMPANY, capfirst(_('company'))),
+  )
+  salutation = models.CharField(_('salutation'), max_length=10, choices = SALUTATION_LIST, default=COMPANY)
   name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. John Smith or Destroyer inc.)'))
   email = models.EmailField(_('email'), null=True, blank=True)
   address = models.OneToOneField(Address, related_name='%(class)s_address', verbose_name=_('address'), blank=True, null=True)
