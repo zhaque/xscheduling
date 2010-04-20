@@ -10,6 +10,17 @@
 {% if job_form %}
                             <h3>{% filter capfirst %}{% trans 'new job for' %}{% endfilter %} {{ client }}</h3>
   {% uni_form job_form helper %}
+<script>
+$(document).ready(function() {
+$('a').click(function(event) {
+  if ($('#{{ job_form.description.auto_id }}').attr('value')) {
+    if (!confirm('You really want to leave? You will loose your changes.')) {
+      event.preventDefault();
+    }
+  }
+});
+});
+</script>
 {% endif %}
 {% else %}
   <p>{% filter capfirst %}{% trans 'no client selected' %}{% endfilter %}</p>

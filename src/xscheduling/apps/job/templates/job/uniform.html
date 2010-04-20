@@ -20,6 +20,17 @@
                         </div>
                         <div class="bd">
 {% uni_form form helper %}
+<script>
+$(document).ready(function() {
+$('a').click(function(event) {
+  if ($('#{{ form.description.auto_id }}').attr('value')) {
+    if (!confirm('You really want to leave? You will loose your changes.')) {
+      event.preventDefault();
+    }
+  }
+});
+});
+</script>
                         </div>
                     </div>
 {% endblock %}

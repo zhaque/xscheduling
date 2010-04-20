@@ -31,7 +31,7 @@
 <script>
 $(document).ready(function() {
 $('a').click(function(event) {
-  if ($('#id_name').attr('value')) {
+  if ($('#{{ client_form.name.auto_id }}').attr('value')) {
     if (!confirm('You really want to leave? You will loose your changes.')) {
       event.preventDefault();
     }

@@ -1,18 +1,23 @@
 {% load i18n %}
 {% load uni_form_tags %}
-<form action="" method="post" class="uniForm">
+{% if supplier_form %}
+<form action="{% if supplier_form.action %}{{ supplier_form.action }}{% endif %}" method="post" class="uniForm">
 <h3>{% filter capfirst %}{% trans 'supplier' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ supplier_form|as_uni_form }}
 </fieldset>
+{% if address_form %}
 <h3>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ address_form|as_uni_form }}
 </fieldset>
+{% endif %}
+{% if postal_address_form %}
 <h3>{% filter capfirst %}{% trans 'postal address' %}{% endfilter %} ({% trans 'enter only if different from above' %})</h3>
 <fieldset class="inlineLabels">
 {{ postal_address_form|as_uni_form }}
 </fieldset>
+{% endif %}
 {% if contact_form %}
 <h3>{% filter capfirst %}{% trans 'contact' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
@@ -23,3 +28,15 @@
 <input type="submit" value="{% trans 'save' %}" class="submitButton"/>
 </div>
 </form>
+<script>
+$(document).ready(function() {
+$('a').click(function(event) {
+  if ($('#{{ supplier_form.name.auto_id }}').attr('value')) {
+    if (!confirm('You really want to leave? You will loose your changes.')) {
+      event.preventDefault();
+    }
+  }
+});
+});
+</script>
+{% endif %}

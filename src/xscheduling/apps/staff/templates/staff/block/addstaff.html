@@ -1,15 +1,30 @@
 {% load i18n %}
 {% load uni_form_tags %}
-<form action="" method="post" class="uniForm">
+{% if staff_form %}
+<form action="{% if staff_form.action %}{{ staff_form.action }}{% endif %}" method="post" class="uniForm">
 <h3>{% filter capfirst %}{% trans 'staff' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ staff_form|as_uni_form }}
 </fieldset>
+{% if address_form %}
 <h3>{% filter capfirst %}{% trans 'address' %}{% endfilter %}</h3>
 <fieldset class="inlineLabels">
 {{ address_form|as_uni_form }}
 </fieldset>
+{% endif %}
 <div class="buttonHolder">
 <input type="submit" value="{% trans 'save' %}" class="submitButton"/>
 </div>
 </form>
+<script>
+$(document).ready(function() {
+$('a').click(function(event) {
+  if ($('#{{ staff_form.username.auto_id }}').attr('value')) {
+    if (!confirm('You really want to leave? You will loose your changes.')) {
+      event.preventDefault();
+    }
+  }
+});
+});
+</script>
+{% endif %}
