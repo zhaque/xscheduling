@@ -129,6 +129,12 @@ class Job(WorkflowmaxBase):
   def __unicode__(self):
     return self.name
 
+  def brief(self):
+    staff_text = ''
+    for staff in self.staff.all():
+      staff_text += '%s, ' % staff
+    return '%s, %s, %s, %s' % (self.name, self.client, self.type, staff_text)
+
   def wm_import(self, wm_object):
     self.wm_id = wm_object.id
     self.name = wm_object.name
@@ -208,7 +214,7 @@ class Job(WorkflowmaxBase):
     for cal in cals:
       if cal.content.src.find(urllib.quote(admin_email)) != -1: 
         href = cal.content.src
-    event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
+    event = insert_single_event(srv, self.brief(), self.description, str(self.client.address), self.start_date, self.due_date, href)
 
     #post to staff cals
     for staff in self.staff.all():      
@@ -217,7 +223,7 @@ class Job(WorkflowmaxBase):
         if cal.content.src.find(urllib.quote(staff.email)) != -1:
           href = cal.content.src
       if href:
-        event = insert_single_event(srv, self.name, self.description, str(self.client.address), self.start_date, self.due_date, href)
+        event = insert_single_event(srv, self.brief(), self.description, str(self.client.address), self.start_date, self.due_date, href)
 
   def is_staff_skillful(self, staff):
     staff_skills = staff.skills.all()
