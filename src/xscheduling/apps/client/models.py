@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.db.models import Q
+from django.conf import settings
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 from geocoders.google import geocoder
@@ -124,7 +125,7 @@ class Address(models.Model):
     return '%s, %s, %s, %s, %s' % (self.postcode, self.address, self.city, self.county, self.country)
 
   def save(self, *args, **kwargs):
-    geocode = geocoder('ABQIAAAAjE7l2Vf2rzqYeiBc2Km2WhRi_j0U6kJrkFvY4-OX2XYmEAa76BSDtIb-83PiGbAaTOGX2zEorW8V5w')
+    geocode = geocoder(settings.GOOGLE_GEOCODER_KEY)
     location_data = geocode(str(self))
     try:
       coords = location_data[1]

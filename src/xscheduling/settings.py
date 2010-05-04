@@ -107,13 +107,14 @@ WORKFLOWMAX_APIKEY = '' #'14C10292983D48CE86E1AA1FE0F8DDFE'
 WORKFLOWMAX_ACCOUNTKEY = '' #'0E954F0B52234841BBC64A677C52A77E'
 
 # Google Apps Settings
-GAPPS_DOMAIN = 'lawnandhedgecompany.com'
-GAPPS_USERNAME = 'admin'
-GAPPS_PASSWORD = 'fdbetts'
+GAPPS_DOMAIN = 'cooperativegardeners.com'
+GAPPS_USERNAME = 'systemadmin'
+GAPPS_PASSWORD = 'fredbetts1'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'google_auth.auth.GoogleAppsBackend', )
 
 GOOGLE_APIKEY = 'HJFGHFHFJHJGJHG3927382JHHHI48VY458TY4'
+GOOGLE_GEOCODER_KEY = 'ABQIAAAAjE7l2Vf2rzqYeiBc2Km2WhRi_j0U6kJrkFvY4-OX2XYmEAa76BSDtIb-83PiGbAaTOGX2zEorW8V5w'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.auth",
