@@ -60,7 +60,7 @@
 <p>
   <a href="{% url fullcalendar-events %}" id="switch_admin">admin</a> |
 {% for staff in staff_list %}
-  <a href="{% url fullcalendar-staff-events staff.id %}" id="switch_staff_{{ staff.id }}">{{ staff }}</a> | 
+  <a class="{{ staff.style }}" href="{% url fullcalendar-staff-events staff.id %}" id="switch_staff_{{ staff.id }}">{{ staff }}</a> | 
 {% endfor %}
 </p>
 {% endif %}

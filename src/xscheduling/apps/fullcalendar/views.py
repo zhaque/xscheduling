@@ -44,7 +44,7 @@ def events(request, object_id=None):
   admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
   srv = client_login(admin_email, settings.GAPPS_PASSWORD)
   if staff:
-    events = get_events(srv, start, end, staff.email)
+    events = get_events(srv, start, end, staff.email, staff.style)
   else:
     events = get_events(srv, start, end)
   

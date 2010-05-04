@@ -1,0 +1,31 @@
+.staff_pink,
+.fc-agenda .staff_pink .fc-event-time,
+.staff_pink a {
+    background-color: pink; /* background color */
+    border-color: pink;     /* border color */
+    color: black;           /* text color */
+    }
+
+.staff_green,
+.fc-agenda .staff_green .fc-event-time,
+.staff_green a {
+    background-color: green; /* background color */
+    border-color: green;     /* border color */
+    color: white;           /* text color */
+    }
+
+.staff_red,
+.fc-agenda .staff_red .fc-event-time,
+.staff_red a {
+    background-color: red; /* background color */
+    border-color: red;     /* border color */
+    color: white;           /* text color */
+    }
+
+.staff_yellow,
+.fc-agenda .staff_yellow .fc-event-time,
+.staff_yellow a {
+    background-color: yellow; /* background color */
+    border-color: yellow;     /* border color */
+    color: blue;           /* text color */
+    }

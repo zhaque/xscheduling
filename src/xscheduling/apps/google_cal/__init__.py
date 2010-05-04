@@ -48,7 +48,7 @@ def insert_single_event(calendar_service, title='Sample Title',
     return new_event
 
 
-def get_events(calendar_service, start_date=None, end_date=None, user=None):
+def get_events(calendar_service, start_date=None, end_date=None, user=None, css_class=None):
   if start_date and end_date:
     if not user:
       user = 'default'
@@ -78,6 +78,8 @@ def get_events(calendar_service, start_date=None, end_date=None, user=None):
         event['end'] = end.ctime()
       event['start'] = start.ctime()
     event['allDay'] = all_day
+    if css_class:
+      event['className'] = css_class
     events.append(event)
   return events
 

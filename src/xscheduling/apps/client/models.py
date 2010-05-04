@@ -34,7 +34,7 @@ class ContactBase(WorkflowmaxBase):
     (MS, capfirst(_('ms'))),
     (MRS, capfirst(_('mrs'))),
   )
-  salutation = models.CharField(_('salutation'), max_length=3, choices = SALUTATION_LIST, default=MR)
+  salutation = models.PositiveSmallIntegerField(_('salutation'), max_length=3, choices = SALUTATION_LIST, default=MR)
   name = models.CharField(_('name'), max_length=255, help_text=_('(Ex. John Smith)'))
   mobile = models.CharField(_('mobile'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
   email = models.EmailField(_('email'), null=True, blank=True)

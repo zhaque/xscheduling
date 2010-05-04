@@ -20,7 +20,13 @@ class Skill(models.Model):
     return self.name
 
 class Staff(WorkflowmaxBase, User):
-  salutation = models.CharField(_('salutation'), max_length=3, choices = ContactBase.SALUTATION_LIST, default=ContactBase.MR)
+  CSS_CLASSES = (
+    ('staff_pink', _('pink')),
+    ('staff_green', _('green')),
+    ('staff_red', _('red')),
+    ('staff_yellow', _('yellow')),
+  )
+  salutation = models.PositiveSmallIntegerField(_('salutation'), max_length=3, choices = ContactBase.SALUTATION_LIST, default=ContactBase.MR)
 #  name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='staff_address', verbose_name=_('address'), blank=True, null=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
@@ -28,6 +34,7 @@ class Staff(WorkflowmaxBase, User):
 #  email = models.EmailField(_('email'), null=True, blank=True)
   payrollcode = models.CharField(_('payrollcode'), max_length=255, null=True, blank=True)
   skills = models.ManyToManyField(Skill, related_name='staff', verbose_name=_('skills'))
+  style = models.CharField(_('style'), max_length=255, null=True, blank=True, choices=CSS_CLASSES, help_text=_('calendar color style'))
 
   class Meta:
     verbose_name = _('staff')

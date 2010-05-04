@@ -14,8 +14,16 @@
 				center: 'title',
 				right: 'prev,next today'
 			},
-		
-			events: "{% if staff %}{% url fullcalendar-staff-events staff.id %}{% else %}{% url fullcalendar-events %}{% endif %}",
+		  {% if staff %}
+			events: "{% url fullcalendar-staff-events staff.id %}"
+			{% else %}
+			eventSources: [
+			  "{% url fullcalendar-events %}",
+			  {% for staff_obj in staff_list %}
+			  "{% url fullcalendar-staff-events staff_obj.id %}",
+			  {% endfor %}
+		  ]
+			{% endif %},
       defaultView : 'agendaWeek',
 			loading: function(bool) {
 				if (bool) {
