@@ -109,7 +109,7 @@ WORKFLOWMAX_ACCOUNTKEY = '' #'0E954F0B52234841BBC64A677C52A77E'
 # Google Apps Settings
 GAPPS_DOMAIN = 'lawnandhedgecompany.com'
 GAPPS_USERNAME = 'admin'
-GAPPS_PASSWORD = 'fdbetts'
+GAPPS_PASSWORD = 'fbetts'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'google_auth.auth.GoogleAppsBackend', )
 
@@ -125,3 +125,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 )
 
+DATE_INPUT_FORMATS = ('%m.%d.%Y',)
+TIME_INPUT_FORMATS = ('%H:%M',)
