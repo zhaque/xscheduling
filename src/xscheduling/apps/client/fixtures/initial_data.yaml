@@ -1,0 +1,16 @@
+- model: client.ReferralSource
+  pk: 1
+  fields:
+    name: Lefleat
+- model: client.ReferralSource
+  pk: 2
+  fields:
+    name: Recommendation
+- model: client.ReferralSource
+  pk: 3
+  fields:
+    name: Google Ads
+- model: client.ReferralSource
+  pk: 4
+  fields:
+    name: Yellow Pages

@@ -11,6 +11,17 @@ class NotImplementedException(Exception):
   "Method not implemented"
   pass
 
+class ReferralSource(models.Model):
+  name = models.CharField(_('name'), max_length=255)
+
+  class Meta:
+    ordering = ['name']
+    verbose_name = _('referral source')
+    verbose_name_plural = _('referral sources')
+
+  def __unicode__(self):
+    return self.name
+
 class WorkflowmaxBase(models.Model):
   wm_id = models.CharField(_('worfkflowmax id'), max_length=255, default='', blank=True)
   class Meta:
@@ -158,7 +169,8 @@ class ClientBase(WorkflowmaxBase):
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
   fax = models.CharField(_('fax'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
   website = models.URLField(_('website'), null=True, blank=True, help_text=_('(Ex. www.xsdf.com)'))
-  referral_source = models.CharField(_('referral source'), max_length=255, null=True, blank=True)
+#  referral_source = models.CharField(_('referral source'), max_length=255, null=True, blank=True)
+  referral_source = models.ForeignKey(ReferralSource, verbose_name=_('referral source'), null=True, blank=True, related_name='%(class)s')
 
   class Meta:
     abstract = True
