@@ -2,3 +2,11 @@
   pk: 1
   fields:
     name: Software Development
+- model: staff.Skill
+  pk: 2
+  fields:
+    name: Gardening
+- model: staff.Skill
+  pk: 3
+  fields:
+    name: House Cleaning
