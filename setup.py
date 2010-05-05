@@ -11,7 +11,7 @@ install_requires = [
         'South==0.6.2',
         'django-extensions==0.4.1',
         'geopy==0.94',
-        'gdata==2.0.6',
+        'gdata==2.0.9',
         'pyyaml==3.09',
         'simplejson==2.1.0',
         'Fabric',
