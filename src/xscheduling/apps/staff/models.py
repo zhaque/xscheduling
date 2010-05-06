@@ -26,7 +26,7 @@ class Staff(WorkflowmaxBase, User):
     ('staff_red', _('red')),
     ('staff_yellow', _('yellow')),
   )
-  salutation = models.PositiveSmallIntegerField(_('salutation'), max_length=3, choices = ContactBase.SALUTATION_LIST, default=ContactBase.MR)
+  salutation = models.PositiveSmallIntegerField(_('salutation'), choices = ContactBase.SALUTATION_LIST, default=ContactBase.MR)
 #  name = models.CharField(_('name'), max_length=255)
   address = models.OneToOneField(Address, related_name='staff_address', verbose_name=_('address'), blank=True, null=True)
   phone = models.CharField(_('phone'), max_length=255, null=True, blank=True, help_text=_('(Ex. 020828129)'))
