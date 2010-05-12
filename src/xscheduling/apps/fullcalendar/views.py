@@ -39,7 +39,9 @@ def events(request, object_id=None):
   except ValueError:
     raise
   
+  start = start + timedelta(days=1)
   start = start.strftime('%Y-%m-%d')
+  end = end + timedelta(days=1)
   end = end.strftime('%Y-%m-%d')
   admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
   srv = client_login(admin_email, settings.GAPPS_PASSWORD)
