@@ -12,6 +12,7 @@ from workflowmax.job.models import Job as WorkflowmaxJob, Note as WorkflowmaxNot
 from workflowmax.staff.models import Staff as WorkflowmaxStaff
 from django.conf import settings
 from google_cal import client_login, insert_single_event
+from gdata.service import RequestError
 import urllib
 
 class InvalidStaff(Exception):
@@ -205,25 +206,44 @@ class Job(WorkflowmaxBase):
             pass
         wm_job.save()
 
-  def gcal_sync(self):
-    #post to admin cal
-    admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
-    srv = client_login(admin_email, settings.GAPPS_PASSWORD)
-    feed = srv.GetAllCalendarsFeed()
-    cals = feed.entry
+  def _add_event_to_admin_cal(self, srv, cals, admin_email):
     for cal in cals:
       if cal.content.src.find(urllib.quote(admin_email)) != -1: 
         href = cal.content.src
     event = insert_single_event(srv, self.brief(), self.description, str(self.client.address), self.start_date, self.due_date, href)
 
+  def _add_event_to_staff_cal(self, srv, cals, staff):
+    href = ''
+    for cal in cals:
+      if cal.content.src.find(urllib.quote(staff.email)) != -1:
+        href = cal.content.src
+    if href:
+      event = insert_single_event(srv, self.brief(), self.description, str(self.client.address), self.start_date, self.due_date, href)
+
+  def gcal_sync(self):
+    admin_email = '%s@%s' % (settings.GAPPS_USERNAME, settings.GAPPS_DOMAIN)
+    srv = client_login(admin_email, settings.GAPPS_PASSWORD)
+    feed = srv.GetAllCalendarsFeed()
+    cals = feed.entry
+
+    #post to admin cal
+    success = False
+    while not success:
+      try:
+        self._add_event_to_admin_cal(srv, cals, admin_email)
+        success = True
+      except RequestError:
+        continue
+
     #post to staff cals
-    for staff in self.staff.all():      
-      href = ''
-      for cal in cals:
-        if cal.content.src.find(urllib.quote(staff.email)) != -1:
-          href = cal.content.src
-      if href:
-        event = insert_single_event(srv, self.brief(), self.description, str(self.client.address), self.start_date, self.due_date, href)
+    for staff in self.staff.all():
+      success = False
+      while not success:
+        try:
+          self._add_event_to_staff_cal(srv, cals, staff)  
+          success = True
+        except RequestError:
+          continue
 
   def is_staff_skillful(self, staff):
     staff_skills = staff.skills.all()
