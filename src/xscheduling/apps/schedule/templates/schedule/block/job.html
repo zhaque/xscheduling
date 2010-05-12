@@ -11,6 +11,19 @@
                             <h3>{% filter capfirst %}{% trans 'new job for' %}{% endfilter %} {{ client }}</h3>
   {% uni_form job_form helper %}
 <script>
+function get_staff() {
+  var lSkill = $('#{{ job_form.type.auto_id }}').attr('value');
+  var lStartDate = $('#{{ job_form.start_date.auto_id }}_0').attr('value') + ' ' + $('#{{ job_form.start_date.auto_id }}_1').attr('value');
+  var lDueDate = $('#{{ job_form.due_date.auto_id }}_0').attr('value') + ' ' + $('#{{ job_form.due_date.auto_id }}_1').attr('value');
+  $.get('{% url job-get-valid-staff %}', {skill: lSkill, start: lStartDate, due: lDueDate}, function(json) {
+    html = ''
+    for (var key in json) {
+      staff = json[key];
+      html += '<option value="'+staff[0]+'">'+staff[1]+'</option>'
+    }
+    $('#{{ job_form.staff.auto_id }}').html(html);
+  }, "json");
+}
 $(document).ready(function() {
 $('a').click(function(event) {
   if ($('#{{ job_form.description.auto_id }}').attr('value')) {
@@ -18,6 +31,21 @@ $('a').click(function(event) {
       event.preventDefault();
     }
   }
+});
+$('#{{ job_form.type.auto_id }}').change(function(e){
+  get_staff();
+});
+$('#{{ job_form.start_date.auto_id }}_0').change(function(e){
+  get_staff();
+});
+$('#{{ job_form.start_date.auto_id }}_1').change(function(e){
+  get_staff();
+});
+$('#{{ job_form.due_date.auto_id }}_0').change(function(e){
+  get_staff();
+});
+$('#{{ job_form.due_date.auto_id }}_1').change(function(e){
+  get_staff();
 });
 });
 </script>

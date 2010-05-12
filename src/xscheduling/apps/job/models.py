@@ -50,8 +50,8 @@ class Task(WorkflowmaxBase):
   actual_minutes = models.PositiveIntegerField(_('actual minutes'), default=0)
   completed = models.BooleanField(_('completed'), default=False)
   billable = models.BooleanField(_('billable'), default=True)
-  start_date = models.DateTimeField(_('start date'), default=datetime.now(), null=True, blank=True, help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
-  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), null=True, blank=True, help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  start_date = models.DateTimeField(_('start date'), default=datetime.now(), null=True, blank=True, help_text=_('(Format: DD/MM/YYYY HH:MM)'))
+  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), null=True, blank=True, help_text=_('(Format: DD/MM/YYYY HH:MM)'))
   staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='tasks')
   job = models.ForeignKey('Job', verbose_name = _('job'), related_name='tasks')
 
@@ -91,7 +91,7 @@ class Task(WorkflowmaxBase):
       wm_task.save()
 
 class Milestone(models.Model):
-  date = models.DateTimeField(_('date'), default=datetime.now()+timedelta(days=7), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  date = models.DateTimeField(_('date'), default=datetime.now()+timedelta(days=7), help_text=_('(Format: DD/MM/YYYY HH:MM)'))
   description = models.TextField(_('description'), help_text=_('(Ex. Beta version)'))
   completed = models.BooleanField(_('completed'), default=False)
   job = models.ForeignKey('Job', verbose_name = _('job'), related_name='milestones')
@@ -114,8 +114,8 @@ class Job(WorkflowmaxBase):
   description = models.TextField(_('description'))
   state = models.ForeignKey(JobState, verbose_name = _('state'), related_name='jobs', default=1) #default=1 means Planned state here, so initial_data.jaml must be loaded
   type = models.ForeignKey(Skill, verbose_name = _('type'), related_name='jobs')
-  start_date = models.DateTimeField(_('start date'), default=datetime.now(), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
-  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), help_text=_('(Format: YYYY-MM-DD HH:MM:SS)'))
+  start_date = models.DateTimeField(_('start date'), default=datetime.now(), help_text=_('(Format: DD/MM/YYYY HH:MM)'))
+  due_date = models.DateTimeField(_('due date'), default=datetime.now()+timedelta(days=1), help_text=_('(Format: DD/MM/YYYY HH:MM)'))
   client = models.ForeignKey(Client, verbose_name = _('client'), related_name='jobs')
   staff = models.ManyToManyField(Staff, verbose_name = _('staff'), related_name='jobs', null=True, blank=True)
   suppliers = models.ManyToManyField(Supplier, verbose_name = _('suppliers'), related_name='jobs', null=True, blank=True)

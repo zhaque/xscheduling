@@ -21,6 +21,20 @@
                         <div class="bd">
 {% uni_form form helper %}
 <script>
+function get_staff() {
+  var lSkill = $('#{{ form.type.auto_id }}').attr('value');
+  var lStartDate = $('#{{ form.start_date.auto_id }}_0').attr('value') + ' ' + $('#{{ form.start_date.auto_id }}_1').attr('value');
+  var lDueDate = $('#{{ form.due_date.auto_id }}_0').attr('value') + ' ' + $('#{{ form.due_date.auto_id }}_1').attr('value');
+  $.get('{% url job-get-valid-staff %}', {skill: lSkill, start: lStartDate, due: lDueDate}, function(json) {
+    html = ''
+    for (var key in json) {
+      staff = json[key];
+      html += '<option value="'+staff[0]+'">'+staff[1]+'</option>'
+    }
+    $('#{{ form.staff.auto_id }}').html(html);
+  }, "json");
+}
+
 $(document).ready(function() {
 $('a').click(function(event) {
   if ($('#{{ form.description.auto_id }}').attr('value')) {
@@ -28,6 +42,21 @@ $('a').click(function(event) {
       event.preventDefault();
     }
   }
+});
+$('#{{ form.type.auto_id }}').change(function(e){
+  get_staff();
+});
+$('#{{ form.start_date.auto_id }}_0').change(function(e){
+  get_staff();
+});
+$('#{{ form.start_date.auto_id }}_1').change(function(e){
+  get_staff();
+});
+$('#{{ form.due_date.auto_id }}_0').change(function(e){
+  get_staff();
+});
+$('#{{ form.due_date.auto_id }}_1').change(function(e){
+  get_staff();
 });
 });
 </script>

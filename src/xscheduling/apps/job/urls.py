@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^(?P<owner_id>\d+)/note/(?P<object_id>\d+)/edit/$', 'job.views.edit_note', name='job-note-edit'),
     url(r'^(?P<owner_id>\d+)/note/(?P<object_id>\d+)/delete/$', 'job.views.delete_note', name='job-note-delete'),
     url(r'^import/$', 'job.views.import_jobs', name='job-import'),
+    url(r'^ajax/staff/$', 'job.views.get_valid_staff', name='job-get-valid-staff'),
 )

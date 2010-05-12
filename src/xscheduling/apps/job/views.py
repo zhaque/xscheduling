@@ -4,11 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.utils import formats
 from django.utils.translation import ugettext as _
 from django.utils.text import capfirst
 from django.views.generic.create_update import delete_object
 from django.views.generic.simple import direct_to_template
+
+import simplejson
 
 from uni_form.helpers import FormHelper, Submit, Reset, Layout, HTML, Row
 
@@ -16,7 +20,7 @@ from client.models import Client, Address
 from job.exceptions import NoInitialData
 from job.forms import AddJobForm, EditJobForm, TaskForm, MilestoneForm, NoteForm
 from job.models import Job, Task, Milestone, JobState, Note
-from staff.models import Staff
+from staff.models import Staff, Skill
 from workflowmax.job.models import Job as WorkflowmaxJob
 
 @login_required
@@ -448,3 +452,30 @@ def delete_note(request, owner_id, object_id):
 #    note.wm_delete()
   
   return delete_object(request, object_id=note.id, model=Note, login_required=True, template_name='job/delete.html', post_delete_redirect=reverse('job-list'), extra_context={'header': capfirst(_('delete note')), 'comment': capfirst(_('you are trying to delete note "%s". Sure?') % note)})
+
+
+@login_required
+def get_valid_staff(request):
+  skill = request.GET.get('skill', '')
+  if not skill:
+    return HttpResponse('', mimetype="application/json")
+  start_date = request.GET.get('start', '')
+  due_date = request.GET.get('due', '')
+  for format in formats.get_format('DATETIME_INPUT_FORMATS'):
+    try:
+      start_date = datetime.strptime(start_date, format)
+      due_date = datetime.strptime(due_date, format)
+    except ValueError:
+        continue
+    
+  skill = get_object_or_404(Skill, id=skill)
+  job = Job()
+  job.type = skill
+  job.start_date = start_date
+  job.due_date = due_date
+  staff = job.get_valid_staff()
+  staff_list = []
+  for staff_obj in staff:
+    staff_list.append((staff_obj.id, staff_obj.username))
+  json = simplejson.dumps(staff_list)
+  return HttpResponse(json, mimetype="application/json")

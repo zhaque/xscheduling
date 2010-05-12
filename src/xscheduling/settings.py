@@ -125,5 +125,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 )
 
+DATETIME_INPUT_FORMATS = ('%d/%m/%Y %H:%M',)
 DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 TIME_INPUT_FORMATS = ('%H:%M',)
